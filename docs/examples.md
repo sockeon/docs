@@ -2,14 +2,6 @@
 
 This document provides comprehensive examples demonstrating the implementation of Sockeon for various real-world use cases. Each example is designed to showcase specific features and capabilities of the library.
 
-## Example Files Overview
-
-The library includes several example implementations in the `examples` directory:
-
-1. `example.php` - Fundamental implementation with integrated WebSocket and HTTP capabilities
-2. `namespace_example.php` - Advanced demonstration of the namespace and room management system
-3. `advanced_http_example.php` - Comprehensive showcase of HTTP request/response handling with content negotiation, middleware, and authentication
-
 ## Basic WebSocket and HTTP Example
 
 The basic example demonstrates handling both WebSocket events and HTTP requests in a single controller:
@@ -68,7 +60,7 @@ $server->addWebSocketMiddleware(function ($clientId, $event, $data, $next) use (
     return $next();
 });
 
-$server->registerController(new ChatController());
+$server->registerController(new AppController());
 $server->run();
 ```
 
@@ -230,17 +222,6 @@ use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
 
 class TestController extends SocketController
 {
-    /**
-     * Handle test.event WebSocket event
-     * 
-     * Processes incoming messages and broadcasts them to role-specific rooms
-     * 
-     * @param string $clientId   The ID of the client sending the message
-     * @param array  $data       Message data containing:
-     *                          - role: (string) User role ('admin' or other)
-     *                          - message: (string) Optional message content
-     * @return void
-     */
     #[SocketOn('test.event')]
     public function sendMessage($clientId, $data)
     {
@@ -343,20 +324,14 @@ class AdvancedApiController extends SocketController
         return Response::json($this->products[$id]);
     }
     
-    // Additional endpoints showing various response types...
 }
 ```
 
 This example showcases:
 - Path parameters: `/products/{id}`
-- Query parameters: `GET /filter?category=electronics`
 - Content negotiation based on Accept headers
 - Various response types (JSON, HTML, errors, downloads)
 - Enhanced Request methods (isAjax(), getUrl(), getIpAddress())
 - Enhanced Response methods (notFound(), unauthorized(), redirect(), download())
 
 To experiment with this API, run the example and use a tool like curl or Postman to make requests to different endpoints.
-
-For more details about the concepts used in these examples, refer to:
-- [Core Concepts](./core-concepts.md)
-- [API Reference](./api-reference.md)

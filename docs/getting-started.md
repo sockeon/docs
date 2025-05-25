@@ -134,9 +134,3 @@ public function onRoomMessage(int $clientId, array $data)
     }
 }
 ```
-
-For more detailed information, check out the other documentation sections:
-- [Core Concepts](./core-concepts.md)
-- [API Reference](./api-reference.md)
-- [Examples](./examples.md)
-- [Advanced Topics](./advanced-topics.md)

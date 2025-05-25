@@ -279,7 +279,3 @@ try {
     error_log("Server error: " . $e->getMessage());
 }
 ```
-
-For more detailed information about specific components, check out:
-- [API Reference](./api-reference.md)
-- [Advanced Topics](./advanced-topics.md)

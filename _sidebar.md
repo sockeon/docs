@@ -5,4 +5,3 @@
 * [Core Concepts](/docs/core-concepts)
 * [Examples](/docs/examples)
 * [API Reference](/docs/api-reference)
-* [Advanced Topics](/docs/advanced-topics)
