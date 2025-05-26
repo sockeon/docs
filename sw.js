@@ -1,7 +1,7 @@
 /* ===========================================================
  * docsify sw.js
  * ===========================================================
- * Copyright 2016 @sockeon
+ * Copyright 2025 @sockeon
  * Licensed under MIT
  * Register service worker for Sockeon documentation
  * ========================================================== */
