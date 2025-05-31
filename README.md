@@ -1,18 +1,15 @@
-# Sockeon
+# WebSocket and Socket Programming in PHP
 
-Welcome to the official Sockeon documentation. Sockeon is a high-performance, framework-agnostic PHP WebSocket and HTTP server library designed for modern applications requiring real-time communication capabilities. It offers attribute-based routing and powerful namespace and room management features.
+Welcome to the official Sockeon documentation. Sockeon is a high-performance WebSocket library for PHP that enables real-time bidirectional communication for modern web applications. Perfect for building chat systems, live dashboards, and multiplayer games, Sockeon offers an intuitive API to handle both WebSocket and HTTP connections efficiently.
 
-## Features
+## Key Features
 
-- WebSocket and HTTP combined server
-- Attribute-based routing for both WebSocket events and HTTP endpoints
-- Advanced HTTP request and response handling
-- Path parameters and query parameter support
-- RESTful API support with content negotiation
-- Namespaces and rooms support for WebSocket communication
-- Middleware support for authentication and request processing
-- Zero dependencies - built with PHP core functionality only
-- Easy-to-use event-based architecture
+- **Unified Communication**: Combined WebSocket and HTTP server on a single port
+- **Simple Event Handling**: Attribute-based routing for WebSocket events
+- **Real-time Messaging**: Efficient bidirectional communication system
+- **Advanced Room Management**: Support for channels and private communication
+- **Built-in Security**: CORS support and authentication middleware
+- **Zero Dependencies**: Built with PHP's native socket extensions
 
 ## Installation
 
@@ -20,117 +17,54 @@ Welcome to the official Sockeon documentation. Sockeon is a high-performance, fr
 composer require sockeon/sockeon
 ```
 
-## Quick Start
+## Quick Start Example
 
 ```php
 use Sockeon\Sockeon\Core\Server;
 use Sockeon\Sockeon\Core\Contracts\SocketController;
 use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
 use Sockeon\Sockeon\Http\Attributes\HttpRoute;
-use Sockeon\Sockeon\Http\Request;
-use Sockeon\Sockeon\Http\Response;
 
-class MyController extends SocketController
+class ChatController extends SocketController
 {
-    // WebSocket event handler
+    // Handle incoming WebSocket messages
     #[SocketOn('message')]
     public function handleMessage(int $clientId, array $data)
     {
+        // Broadcast the message to all connected clients
         $this->broadcast('message', [
             'from' => $clientId,
             'text' => $data['text'] ?? ''
         ]);
     }
-    
-    // HTTP route with path parameter
-    #[HttpRoute('GET', '/users/{id}')]
-    public function getUser(Request $request): Response
-    {
-        $userId = $request->getParam('id');
-        return Response::json([
-            'id' => $userId,
-            'name' => 'Example User'
-        ]);
-    }
 }
 
-// Initialize server
+// Create and run the server
 $server = new Server("0.0.0.0", 8000);
-
-// Register your controller
-$server->registerController(new MyController());
-
-// Start the server
+$server->registerController(new ChatController());
 $server->run();
 ```
 
-See the example files for complete demonstrations:
-- `examples/example.php` - Basic WebSocket and HTTP example
-- `examples/namespace_example.php` - WebSocket namespaces and rooms
-- `examples/advanced_http_example.php` - Advanced HTTP features
-
 ## Documentation
 
-1. [Getting Started](/docs/getting-started)
-   - Installation
-   - Server Configuration
-   - Basic Implementation
-   - First Application
+Our comprehensive documentation will guide you through building real-time applications with WebSockets:
 
-2. [Core Concepts](/docs/core-concepts)
-   - Server Architecture
-   - WebSocket Communication
-   - HTTP Routing
-   - Namespaces & Rooms
-   - Middleware Pipeline
+- [**Getting Started**](/docs/getting-started): Installation and basic setup
+- [**WebSocket Architecture**](/docs/core-concepts): Core concepts and implementation details
+- [**Code Examples**](/docs/examples): Working examples for common use cases
+- [**API Reference**](/docs/api-reference): Complete class and method documentation
 
-3. [API Reference](/docs/api-reference)
-   - Server Class
-   - WebSocket Handler
-   - HTTP Handler
-   - Controllers
-   - Attributes Reference
+## Installation
 
-4. [Examples](/docs/examples)
-   - Real-time Chat Application
-   - Room Management System
-   - RESTful API Implementation
-   - Hybrid Applications
+```bash
+composer require sockeon/sockeon
+```
 
-5. [Advanced Topics](/docs/advanced-topics)
-   - Custom Middleware Development
-   - Error Handling Strategies
-   - Performance Optimization
-   - Security Best Practices
-
-## Requirements
+## System Requirements
 
 - PHP >= 8.0
-
-## Performance & Scalability
-
-Sockeon is optimized for high-performance applications and can handle thousands of concurrent connections with minimal resource utilization. Our benchmarks show excellent performance characteristics even under high load conditions.
-
-## Contributing
-
-We welcome contributions from the community! To contribute:
-
-1. Fork the project repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please read our [Contributing Guidelines](https://github.com/sockeon/sockeon/blob/main/CONTRIBUTING.md) for more details.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- ext-sockets PHP extension
 
 ## Resources
 
 - [GitHub Repository](https://github.com/sockeon/sockeon)
-- [Issue Tracker](https://github.com/sockeon/sockeon/issues)
-- [Example Collection](examples)
-- [Community Chat](https://gitter.im/sockeon/community)
-- [Release Notes](https://github.com/sockeon/sockeon/releases)

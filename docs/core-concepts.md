@@ -1,6 +1,6 @@
-# Core Concepts
+# WebSocket Architecture and Implementation
 
-This document outlines the fundamental architecture and core components of the Sockeon library, providing a comprehensive understanding of its design principles and operational capabilities.
+This document outlines the fundamental architecture and core components of socket programming with the Sockeon library, providing a comprehensive understanding of WebSocket design principles and how to implement efficient real-time communication in PHP applications.
 
 ## Server Architecture
 

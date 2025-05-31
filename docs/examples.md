@@ -1,6 +1,6 @@
-# Examples
+# PHP WebSocket Examples & Tutorials
 
-This document provides comprehensive examples demonstrating the implementation of Sockeon for various real-world use cases. Each example is designed to showcase specific features and capabilities of the library.
+This document provides comprehensive code examples and tutorials demonstrating how to implement WebSockets in PHP for various real-world use cases. Each example is designed to showcase specific features and capabilities of socket programming with practical implementation steps.
 
 ## Basic WebSocket and HTTP Example
 

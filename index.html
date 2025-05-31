@@ -1,15 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="description" content="Sockeon - A framework-agnostic PHP WebSocket and HTTP server library" />
+  <meta name="description" content="Sockeon is a high-performance PHP WebSocket & HTTP server library that enables real-time bidirectional communication for modern web applications through reliable socket programming" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
-  <title>Sockeon Documentation</title>
-  <meta name="keywords" content="PHP, WebSocket, HTTP, Server, Real-time, Communication, Sockeon">
+  <title>Sockeon - PHP WebSocket & Socket Programming Library | Documentation</title>
+  <meta name="keywords" content="PHP, WebSocket, HTTP, Server, socket, socket programming, sockeon, php sockets, websocket server, php socket library, real-time communication, bidirectional communication">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sockeon.com/">
+  <meta property="og:title" content="Sockeon - PHP WebSocket & Socket Programming Library">
+  <meta property="og:description" content="Build real-time web applications with this high-performance PHP WebSocket library. Create chat apps, dashboards, and multiplayer games with bidirectional communication.">
+  <meta property="og:image" content="https://sockeon.com/assets/logo.png">
+
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://sockeon.com/">
+  <meta property="twitter:title" content="Sockeon - PHP WebSocket & Socket Programming Library">
+  <meta property="twitter:description" content="Build real-time web applications with this high-performance PHP WebSocket library. Create chat apps, dashboards, and multiplayer games with bidirectional communication.">
+  <meta property="twitter:image" content="https://sockeon.com/assets/logo.png">
+  
+  <link rel="canonical" href="https://sockeon.com/">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/themes/vue.css" />
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-  <!-- Custom theme stylesheet -->
+  
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Sockeon",
+      "description": "A high-performance PHP WebSocket library for building real-time applications with bidirectional communication. Create chat systems, live dashboards, and game servers efficiently.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "keywords": "socket, socket programming, php sockets, websocket, websocket server, php socket library, real-time communication, bidirectional communication",
+      "softwareHelp": {
+        "@type": "CreativeWork",
+        "url": "https://sockeon.com/docs/getting-started"
+      }
+    }
+  </script>
+  
   <style>
     :root {
       --theme-color: #42b983;
@@ -47,6 +82,40 @@
         '/.*/_sidebar.md': '/_sidebar.md',
         '/.*/_coverpage.md': '/_coverpage.md'
       },
+      customPageTitle: {
+        '/': 'Sockeon - PHP WebSocket & Socket Programming Library | Documentation',
+        '/docs/getting-started': 'Getting Started with PHP WebSockets | Sockeon Documentation',
+        '/docs/core-concepts': 'PHP WebSocket Architecture & Core Concepts | Sockeon Documentation',
+        '/docs/examples': 'PHP WebSocket Code Examples & Tutorials | Sockeon Documentation',
+        '/docs/api-reference': 'PHP WebSocket API Reference | Sockeon Documentation'
+      },
+      customMetaTags: [
+        {
+          name: 'description',
+          content: 'Sockeon is a high-performance PHP WebSocket & HTTP server library that enables real-time bidirectional communication for modern web applications through reliable socket programming',
+          path: '/'
+        },
+        {
+          name: 'description',
+          content: 'Learn how to set up and use the Sockeon PHP WebSocket library to create real-time applications with this comprehensive getting started guide',
+          path: '/docs/getting-started'
+        },
+        {
+          name: 'description',
+          content: 'Understand the fundamental architecture and components behind PHP WebSocket programming with Sockeon\'s detailed core concepts documentation',
+          path: '/docs/core-concepts'
+        },
+        {
+          name: 'description',
+          content: 'Explore practical code examples of PHP WebSocket implementation for chat applications, real-time dashboards and more using the Sockeon library',
+          path: '/docs/examples'
+        },
+        {
+          name: 'description',
+          content: 'Complete technical reference for the Sockeon PHP WebSocket library with detailed class, method and attribute documentation for developers',
+          path: '/docs/api-reference'
+        }
+      ],
       formatUpdated: '{MM}/{DD}/{YYYY}',
       search: {
         maxAge: 86400000,
@@ -87,7 +156,6 @@
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/external-script.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify-tabs/dist/docsify-tabs.min.js"></script>
   
-  <!-- Syntax highlighting for code blocks -->
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-php.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-bash.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-json.min.js"></script>
@@ -95,11 +163,48 @@
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-yaml.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-http.min.js"></script>
 
-  <!-- Google Analytics or similar tracking (replace UA-XXXXX-Y with your tracking ID) -->
   <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
       navigator.serviceWorker.register('sw.js')
     }
+  </script>
+  
+  <script>
+    (function() {
+      const customPageTitles = window.$docsify.customPageTitle || {};
+      const customMetaTags = window.$docsify.customMetaTags || [];
+      
+      const updateMetadata = function(event) {
+        const currentPath = window.location.hash.split('?')[0].replace('#', '');
+        
+        for (const path in customPageTitles) {
+          if (currentPath === path || currentPath === path.replace(/^\//,'')) {
+            document.title = customPageTitles[path];
+            break;
+          }
+        }
+        
+        customMetaTags.forEach(function(metaTag) {
+          const metaPath = metaTag.path.replace(/^\//,'');
+          if (currentPath === metaTag.path || currentPath === metaPath) {
+            let meta = document.querySelector('meta[name="' + metaTag.name + '"]');
+            if (meta) {
+              meta.setAttribute('content', metaTag.content);
+            } else {
+              meta = document.createElement('meta');
+              meta.name = metaTag.name;
+              meta.content = metaTag.content;
+              document.head.appendChild(meta);
+            }
+          }
+        });
+      };
+      
+      window.addEventListener('hashchange', updateMetadata);
+      window.$docsify.plugins = [].concat(function(hook) {
+        hook.doneEach(updateMetadata);
+      }, window.$docsify.plugins || []);
+    })();
   </script>
 </body>
 </html>

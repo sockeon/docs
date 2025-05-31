@@ -1,6 +1,6 @@
-# API Reference
+# PHP WebSocket API Reference
 
-This document provides detailed technical reference for the Sockeon package - a PHP WebSocket and HTTP server library.
+This document provides detailed technical reference for implementing WebSockets in PHP using the Sockeon package. Use this comprehensive guide to understand all available classes, methods, and configuration options for building real-time web applications with socket programming.
 
 ## Core Classes
 

@@ -1,8 +1,8 @@
 <!-- _coverpage.md -->
 
-# Sockeon <small>Documentation</small>
+# Sockeon <small>WebSocket & Socket Programming</small>
 
-> Enterprise-Grade WebSocket & HTTP Server Library for PHP
+> Enterprise-Grade WebSocket Library for Real-Time PHP Applications
 
 - High-Performance WebSocket and HTTP Integration
 - Modern Attribute-Based Routing System

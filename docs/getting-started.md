@@ -1,6 +1,6 @@
-# Getting Started with Sockeon
+# Getting Started with PHP WebSockets
 
-This guide will help you set up Sockeon in your PHP project and create your first WebSocket and HTTP server.
+This comprehensive guide will help you set up Sockeon in your PHP project and create your first WebSocket and HTTP server using PHP's socket programming capabilities. You'll learn how to establish persistent connections, handle real-time events, and build interactive applications with bidirectional communication.
 
 ## System Requirements
 

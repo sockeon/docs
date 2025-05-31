@@ -1,7 +1,7 @@
 <!-- _sidebar.md -->
 
-* [Home](/)
-* [Getting Started](/docs/getting-started)
-* [Core Concepts](/docs/core-concepts)
-* [Examples](/docs/examples)
-* [API Reference](/docs/api-reference)
+* [WebSocket Programming in PHP](/)
+* [Getting Started with WebSockets](/docs/getting-started)
+* [WebSocket Architecture](/docs/core-concepts)
+* [WebSocket Code Examples](/docs/examples)
+* [WebSocket API Reference](/docs/api-reference)
