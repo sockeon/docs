@@ -1,6 +1,6 @@
-# PHP WebSocket Examples & Tutorials
+# WebSocket & HTTP Examples
 
-This document provides comprehensive code examples and tutorials demonstrating how to implement WebSockets in PHP for various real-world use cases. Each example is designed to showcase specific features and capabilities of socket programming with practical implementation steps.
+This document provides comprehensive code examples and tutorials demonstrating how to implement both WebSockets and HTTP endpoints in PHP applications. Learn how to build real-time features with WebSockets alongside RESTful APIs and web content served through HTTP - all from a single unified server.
 
 ## Basic WebSocket and HTTP Example
 

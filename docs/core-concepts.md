@@ -1,6 +1,6 @@
-# WebSocket Architecture and Implementation
+# WebSocket and HTTP Server Architecture
 
-This document outlines the fundamental architecture and core components of socket programming with the Sockeon library, providing a comprehensive understanding of WebSocket design principles and how to implement efficient real-time communication in PHP applications.
+This document outlines the fundamental architecture and core components of the Sockeon library, providing a comprehensive understanding of how the dual-protocol server manages both WebSocket and HTTP connections simultaneously. Learn how the system handles real-time communication alongside traditional HTTP requests.
 
 ## Server Architecture
 

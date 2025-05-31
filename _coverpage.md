@@ -1,12 +1,12 @@
 <!-- _coverpage.md -->
 
-# Sockeon <small>WebSocket & Socket Programming</small>
+# Sockeon <small>WebSocket & HTTP Server</small>
 
-> Enterprise-Grade WebSocket Library for Real-Time PHP Applications
+> Dual-Protocol Server Library for Modern PHP Applications
 
-- High-Performance WebSocket and HTTP Integration
-- Modern Attribute-Based Routing System
-- Advanced Namespace and Room Management
+- WebSocket & HTTP Combined Server
+- RESTful API + Real-time Communication
+- Modern Attribute-Based Routing
 - Zero External Dependencies
 
 [GitHub](https://github.com/sockeon/sockeon)
