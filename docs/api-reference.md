@@ -22,10 +22,11 @@ The main class that handles the socket server implementation, client connections
 - `$namespaceManager`: NamespaceManager instance
 - `$middleware`: Middleware instance
 - `$isDebug`: Boolean flag for debug mode
+- `$logger`: LoggerInterface instance for application logging
 
 #### Methods
 
-- `__construct(string $host = "0.0.0.0", int $port = 6001, bool $debug = false)`: Initializes the server on the specified host and port
+- `__construct(string $host = "0.0.0.0", int $port = 6001, bool $debug = false, array $corsConfig = [], ?LoggerInterface $logger = null)`: Initializes the server on the specified host and port with optional CORS configuration and custom logger
 - `registerController(SocketController $controller): void`: Registers a controller with the server
 - `getRouter(): Router`: Returns the router instance
 - `getNamespaceManager(): NamespaceManager`: Returns the namespace manager instance
@@ -42,6 +43,7 @@ The main class that handles the socket server implementation, client connections
 - `joinRoom(int $clientId, string $room, string $namespace = '/'): void`: Adds a client to a room
 - `leaveRoom(int $clientId, string $room, string $namespace = '/'): void`: Removes a client from a room
 - `log(string $message): void`: Logs a message if debug mode is enabled
+- `getLogger(): LoggerInterface`: Returns the logger instance for advanced logging
 
 ### Router
 
@@ -118,10 +120,11 @@ Handles WebSocket protocol implementation, connections and message framing.
 
 - `$server`: Reference to the server instance
 - `$handshakes`: Array tracking completed handshakes by client ID
+- `$allowedOrigins`: Array of allowed origins for WebSocket connections
 
 #### Methods
 
-- `__construct(Server $server)`: Constructor that takes a Server instance
+- `__construct(Server $server, array $allowedOrigins = ['*'])`: Constructor that takes a Server instance and optional allowed origins
 - `handle(int $clientId, resource $client, string $data): bool`: Handle an incoming WebSocket message
 - `performHandshake(int $clientId, resource $client, string $data): bool`: Perform WebSocket handshake with client
 - `decodeWebSocketFrame(string $data): array`: Decode WebSocket frames from raw data
@@ -145,6 +148,30 @@ Attribute for marking methods as WebSocket event handlers.
 
 ## HTTP Components
 
+### CorsConfig
+
+`Sockeon\Sockeon\Http\CorsConfig`
+
+Handles Cross-Origin Resource Sharing (CORS) configurations for the server.
+
+#### Properties
+
+- `$allowedOrigins`: Array of allowed origins, defaults to ['*'] (allow all)
+- `$allowedMethods`: Array of allowed HTTP methods, defaults to ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD']
+- `$allowedHeaders`: Array of allowed headers, defaults to ['Content-Type', 'X-Requested-With', 'Authorization']
+- `$allowCredentials`: Whether to allow credentials (cookies, authorization headers), defaults to false
+- `$maxAge`: Max age for preflight requests in seconds, defaults to 86400 (1 day)
+
+#### Methods
+
+- `__construct(array $config = [])`: Creates a new CORS configuration instance with optional config parameters
+- `getAllowedOrigins(): array`: Returns the array of allowed origins
+- `getAllowedMethods(): array`: Returns the array of allowed methods
+- `getAllowedHeaders(): array`: Returns the array of allowed headers
+- `getAllowCredentials(): bool`: Returns whether credentials are allowed
+- `getMaxAge(): int`: Returns the max age for preflight requests
+- `isOriginAllowed(string $origin): bool`: Checks if the given origin is allowed
+
 ### HttpHandler
 
 `Sockeon\Sockeon\Http\HttpHandler`
@@ -155,13 +182,16 @@ Handles HTTP protocol implementation, request parsing and responses.
 
 - `$server`: Reference to the server instance
 - `$routes`: Registered HTTP routes
+- `$corsConfig`: CORS configuration for HTTP responses
 
 #### Methods
 
-- `__construct(Server $server)`: Constructor that takes a Server instance
+- `__construct(Server $server, array $corsConfig = [])`: Constructor that takes a Server instance and optional CORS configuration
 - `handle(int $clientId, resource $client, string $data): void`: Handle an incoming HTTP request
 - `parseHttpRequest(string $data): array`: Parse raw HTTP request into structured format
 - `processRequest(Request $request): string`: Process an HTTP request and generate a response
+- `addCorsHeaders(Response $response, Request $request): Response`: Add CORS headers to a response based on configuration
+- `handlePreflightRequest(Request $request): Response`: Handle CORS preflight requests
 
 ### Request
 
@@ -276,3 +306,79 @@ Base class for all socket controllers providing access to core server functional
 - `joinRoom(int $clientId, string $room, string $namespace = '/'): void`: Adds a client to a room
 - `leaveRoom(int $clientId, string $room, string $namespace = '/'): void`: Removes a client from a room
 - `disconnectClient(int $clientId): void`: Disconnects a client from the server
+
+## Logging Components
+
+### LoggerInterface
+
+`Sockeon\Sockeon\Logging\LoggerInterface`
+
+Interface that defines standard logging methods according to PSR-3 logging standards.
+
+#### Methods
+
+- `emergency(string $message, array $context = []): void`: Log a message with emergency level (system is unusable)
+- `alert(string $message, array $context = []): void`: Log a message with alert level (action must be taken immediately)
+- `critical(string $message, array $context = []): void`: Log a message with critical level (critical conditions)
+- `error(string $message, array $context = []): void`: Log a message with error level (error conditions)
+- `warning(string $message, array $context = []): void`: Log a message with warning level (warning conditions)
+- `notice(string $message, array $context = []): void`: Log a message with notice level (normal but significant events)
+- `info(string $message, array $context = []): void`: Log a message with info level (informational messages)
+- `debug(string $message, array $context = []): void`: Log a message with debug level (detailed debug information)
+- `log(string $level, string $message, array $context = []): void`: Log a message with an arbitrary level
+- `exception(Throwable $exception, array $context = []): void`: Log an exception with error level
+
+### Logger
+
+`Sockeon\Sockeon\Logging\Logger`
+
+Default implementation of LoggerInterface. Supports console and file logging with ANSI color formatting.
+
+#### Properties
+
+- `$logDirectory`: Directory path where log files will be stored
+- `$minLogLevel`: Current minimum log level
+- `$logToConsole`: Whether to output logs to the console
+- `$logToFile`: Whether to log to a file
+- `$separateLogFiles`: Whether to create separate log files for each level
+- `$colors`: ANSI color codes for console output
+
+#### Methods
+
+- `__construct(string $minLogLevel = LogLevel::DEBUG, bool $logToConsole = true, bool $logToFile = true, ?string $logDirectory = null, bool $separateLogFiles = false)`: Create a new logger instance
+- `emergency(string $message, array $context = []): void`: Log with emergency level
+- `alert(string $message, array $context = []): void`: Log with alert level
+- `critical(string $message, array $context = []): void`: Log with critical level
+- `error(string $message, array $context = []): void`: Log with error level
+- `warning(string $message, array $context = []): void`: Log with warning level
+- `notice(string $message, array $context = []): void`: Log with notice level
+- `info(string $message, array $context = []): void`: Log with info level
+- `debug(string $message, array $context = []): void`: Log with debug level
+- `log(string $level, string $message, array $context = []): void`: Log with an arbitrary level
+- `exception(Throwable $exception, array $context = []): void`: Log an exception with error level
+- `formatMessage(string $level, string $message, array $context = []): string`: Format a log message
+- `shouldLog(string $level): bool`: Check if a message at the given level should be logged
+
+### LogLevel
+
+`Sockeon\Sockeon\Logging\LogLevel`
+
+Class with constants for standard logging levels according to PSR-3.
+
+#### Constants
+
+- `EMERGENCY`: System is unusable
+- `ALERT`: Action must be taken immediately
+- `CRITICAL`: Critical conditions
+- `ERROR`: Error conditions
+- `WARNING`: Warning conditions
+- `NOTICE`: Normal but significant events
+- `INFO`: Informational messages
+- `DEBUG`: Detailed debug information
+
+#### Methods
+
+- `getLevels(): array`: Get all available log levels
+- `isValidLevel(string $level): bool`: Check if a level name is valid
+- `toInt(string $level): int`: Convert a level name to its numeric priority
+- `toString(int $level): string`: Convert a numeric level to its string name

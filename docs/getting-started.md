@@ -24,7 +24,24 @@ composer require sockeon/sockeon
 use Sockeon\Sockeon\Core\Server;
 
 // Initialize server on localhost:8000
-$server = new Server("0.0.0.0", 8000);
+$server = new Server(
+    host: "0.0.0.0", 
+    port: 8000,
+    debug: false,
+    corsConfig: [
+        'allowed_origins' => ['*'],
+        'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization'],
+        'allow_credentials' => false,
+        'max_age' => 86400
+    ],
+    logger: new \Sockeon\Sockeon\Logging\Logger(
+        minLogLevel: \Sockeon\Sockeon\Logging\LogLevel::INFO,
+        logToConsole: true,
+        logToFile: true,
+        logDirectory: __DIR__ . '/logs'
+    )
+);
 
 // Start the server
 $server->run();
@@ -105,6 +122,94 @@ socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     console.log('Received:', data);
 };
+```
+
+## Cross-Origin Resource Sharing (CORS)
+
+Sockeon provides built-in support for CORS, allowing you to control which origins can connect to your server:
+
+```php
+// Configure CORS when creating the server
+$server = new Server(
+    host: "0.0.0.0",
+    port: 8000,
+    debug: false,
+    corsConfig: [
+        'allowed_origins' => ['https://example.com', 'https://app.example.com'],
+        'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE'],
+        'allowed_headers' => ['Content-Type', 'Authorization'],
+        'allow_credentials' => true,
+        'max_age' => 86400
+    ]
+);
+```
+
+For WebSocket connections, the origin header is validated against the allowed origins list. For HTTP requests, appropriate CORS headers are automatically added to responses.
+
+## Logging
+
+Sockeon provides a flexible logging system that follows PSR-3 standards:
+
+```php
+// Import the necessary classes
+use Sockeon\Sockeon\Core\Server;
+use Sockeon\Sockeon\Logging\Logger;
+use Sockeon\Sockeon\Logging\LogLevel;
+
+// Create a server with custom logger
+$server = new Server(
+    host: "0.0.0.0",
+    port: 8000,
+    debug: false,
+    corsConfig: [],
+    logger: new Logger(
+        minLogLevel: LogLevel::INFO,        // Only log INFO and higher
+        logToConsole: true,                 // Output to console
+        logToFile: true,                    // Write to file
+        logDirectory: __DIR__ . '/logs',    // Store logs here
+        separateLogFiles: false             // Single log file
+    )
+);
+
+// Using the logger in your application
+$server->getLogger()->info("Server starting on port 8000");
+$server->getLogger()->error("Database connection failed", ['host' => 'db.example.com']);
+
+// Log an exception with context data
+try {
+    // Some code that might throw an exception
+} catch (\Exception $e) {
+    $server->getLogger()->exception($e, [
+        'requestId' => $requestId,
+        'user' => $userId
+    ]);
+}
+```
+
+### Environment-Specific Logging
+
+For development environments, enable detailed logging:
+
+```php
+$logger = new Logger(
+    minLogLevel: LogLevel::DEBUG,    // Capture all log levels
+    logToConsole: true,              // Show logs in console for immediate feedback
+    logToFile: true,                 // Also write to file
+    logDirectory: __DIR__ . '/logs', 
+    separateLogFiles: false          // Single combined file for easier review
+);
+```
+
+For production environments, configure more focused logging:
+
+```php
+$logger = new Logger(
+    minLogLevel: LogLevel::WARNING,  // Only capture significant issues
+    logToConsole: false,             // Don't output to console for performance
+    logToFile: true,                 // Write all logs to file
+    logDirectory: '/var/log/sockeon',
+    separateLogFiles: true           // Separate files for easier filtering
+);
 ```
 
 ## Using Rooms

@@ -9,6 +9,8 @@ Welcome to the official Sockeon documentation. Sockeon is a high-performance, fr
 - Advanced HTTP request and response handling
 - Path parameters and query parameter support
 - RESTful API support with content negotiation
+- Built-in CORS support for both HTTP and WebSocket connections
+- PSR-3 compliant logging system with file and console output
 - Namespaces and rooms support for WebSocket communication
 - Middleware support for authentication and request processing
 - Zero dependencies - built with PHP core functionality only

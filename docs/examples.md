@@ -335,3 +335,225 @@ This example showcases:
 - Enhanced Response methods (notFound(), unauthorized(), redirect(), download())
 
 To experiment with this API, run the example and use a tool like curl or Postman to make requests to different endpoints.
+
+## CORS Configuration Example
+
+This example shows how to configure Cross-Origin Resource Sharing (CORS) for your Sockeon server:
+
+```php
+<?php
+
+use Sockeon\Sockeon\Core\Server;
+use Sockeon\Sockeon\Core\Contracts\SocketController;
+use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
+use Sockeon\Sockeon\Http\Attributes\HttpRoute;
+use Sockeon\Sockeon\Http\Request;
+use Sockeon\Sockeon\Http\Response;
+
+// Define CORS configuration
+$corsConfig = [
+    'allowed_origins' => [
+        'https://app.example.com',
+        'http://localhost:8080',
+        'http://localhost:3000'
+    ],
+    'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization'],
+    'allow_credentials' => true,
+    'max_age' => 86400
+];
+
+// Initialize server with CORS configuration
+$server = new Server(
+    host: "0.0.0.0",
+    port: 8000,
+    debug: true,
+    corsConfig: $corsConfig
+);
+
+class ApiController extends SocketController
+{
+    #[HttpRoute('GET', '/api/data')]
+    public function getData(Request $request): Response
+    {
+        return Response::json([
+            'success' => true,
+            'data' => ['item1', 'item2', 'item3']
+        ]);
+    }
+    
+    #[SocketOn('connect')]
+    public function onConnect(int $clientId, array $data)
+    {
+        $this->emit($clientId, 'welcome', [
+            'message' => 'Connected to secure server'
+        ]);
+    }
+}
+
+$server->registerController(new ApiController());
+$server->run();
+```
+
+With this configuration:
+- Only requests from the specified origins will be allowed
+- WebSocket connections will be validated against allowed origins
+- HTTP responses will include appropriate CORS headers
+- Credentials (cookies, HTTP authentication) will be allowed
+- Preflight requests will be cached for 24 hours
+
+## Logging Example
+
+This example shows how to configure custom logging for your Sockeon server:
+
+```php
+<?php
+
+use Sockeon\Sockeon\Core\Server;
+use Sockeon\Sockeon\Core\Contracts\SocketController;
+use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
+use Sockeon\Sockeon\Logging\Logger;
+use Sockeon\Sockeon\Logging\LogLevel;
+
+// Define logger configuration
+$logger = new Logger(
+    minLogLevel: LogLevel::DEBUG,           // Capture all log levels
+    logToConsole: true,                     // Show logs in console
+    logToFile: true,                        // Write logs to file
+    logDirectory: __DIR__ . '/app/logs',    // Custom log directory
+    separateLogFiles: true                  // Create separate files by level
+);
+
+// Initialize server with custom logger
+$server = new Server(
+    host: "0.0.0.0",
+    port: 8000,
+    debug: true,
+    corsConfig: [],
+    logger: $logger
+);
+
+// Example controller with logging
+class GameController extends SocketController
+{
+    #[SocketOn('join.game')]
+    public function onJoinGame(int $clientId, array $data)
+    {
+        $gameId = $data['gameId'] ?? null;
+        $playerName = $data['playerName'] ?? 'Anonymous';
+        
+        // Log player joining with context data
+        $this->server->getLogger()->info("Player joined game", [
+            'clientId' => $clientId,
+            'gameId' => $gameId,
+            'playerName' => $playerName
+        ]);
+        
+        try {
+            // Game logic...
+            $this->joinRoom($clientId, "game.$gameId");
+            
+            $this->emit($clientId, 'game.joined', [
+                'success' => true,
+                'gameId' => $gameId
+            ]);
+            
+            // Log successful join
+            $this->server->getLogger()->debug("Player added to game room", [
+                'room' => "game.$gameId"
+            ]);
+        } catch (\Throwable $e) {
+            // Log the exception with context
+            $this->server->getLogger()->exception($e, [
+                'gameId' => $gameId,
+                'clientId' => $clientId
+            ]);
+            
+            // Notify client of error
+            $this->emit($clientId, 'game.error', [
+                'message' => 'Failed to join game'
+            ]);
+        }
+    }
+}
+
+$server->registerController(new GameController());
+$server->run();
+```
+
+With this configuration:
+- All log events from DEBUG level and above will be captured
+- Logs will be displayed in the console with color coding by severity
+- Each log level will be written to a separate file (debug/yyyy-mm-dd.log, info/yyyy-mm-dd.log, etc.)
+- Log files will be stored in the app/logs directory
+- Exception details will be automatically captured with stack traces
+- Context data is included in structured format
+- Exceptions are logged with file, line number, code, and stack trace
+- Daily log rotation happens automatically with date-stamped filenames
+
+### Error Handling with Logger
+
+Here's an example of using the Logger for error handling in a Sockeon application:
+
+```php
+<?php
+// error_handler.php
+
+use Sockeon\Sockeon\Core\Server;
+use Sockeon\Sockeon\Logging\Logger;
+use Sockeon\Sockeon\Logging\LogLevel;
+
+// Create a custom logger
+$logger = new Logger(
+    minLogLevel: LogLevel::ERROR,
+    logToConsole: true,
+    logToFile: true,
+    logDirectory: __DIR__ . '/logs',
+    separateLogFiles: false
+);
+
+// Set up global PHP error handling
+set_error_handler(function($errno, $errstr, $errfile, $errline) use ($logger) {
+    $errorType = match($errno) {
+        E_ERROR, E_USER_ERROR => 'ERROR',
+        E_WARNING, E_USER_WARNING => 'WARNING',
+        E_NOTICE, E_USER_NOTICE => 'NOTICE',
+        default => 'DEBUG'
+    };
+    
+    $logger->log($errorType, $errstr, [
+        'file' => $errfile,
+        'line' => $errline,
+        'type' => $errno
+    ]);
+});
+
+// Set up global exception handling
+set_exception_handler(function(\Throwable $e) use ($logger) {
+    $logger->exception($e, [
+        'uncaught' => true,
+        'timestamp' => date('Y-m-d H:i:s')
+    ]);
+    
+    // Graceful shutdown
+    echo "An error occurred. Please check logs for details.\n";
+    exit(1);
+});
+
+// Initialize server with the custom logger
+$server = new Server(
+    host: "0.0.0.0",
+    port: 8000,
+    debug: false,
+    corsConfig: [],
+    logger: $logger
+);
+
+// Run server in try-catch block for added safety
+try {
+    $server->run();
+} catch (\Throwable $e) {
+    $logger->exception($e, ['fatal' => true]);
+    exit(1);
+}
+```

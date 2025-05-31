@@ -20,7 +20,14 @@ use Sockeon\Sockeon\Core\Server;
 $server = new Server(
     host: "0.0.0.0",      // Listen on all interfaces
     port: 8000,           // Port number
-    debug: false          // Enable/disable debug mode
+    debug: false,         // Enable/disable debug mode
+    corsConfig: [         // CORS configuration
+        'allowed_origins' => ['*'], 
+        'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization'],
+        'allow_credentials' => false,
+        'max_age' => 86400
+    ]
 );
 ```
 
@@ -277,5 +284,186 @@ try {
     $server->run();
 } catch (\Exception $e) {
     error_log("Server error: " . $e->getMessage());
+}
+```
+
+## Cross-Origin Resource Sharing (CORS)
+
+Sockeon provides built-in support for Cross-Origin Resource Sharing (CORS), which allows controlled access to resources from different origins.
+
+### CORS Configuration
+
+The `CorsConfig` class provides a flexible way to configure CORS settings:
+
+```php
+$corsConfig = [
+    'allowed_origins' => ['https://example.com', 'https://app.example.com'], // Use ['*'] to allow all origins
+    'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization'],
+    'allow_credentials' => true, // Whether to allow cookies and credentials
+    'max_age' => 86400 // Cache preflight requests for 24 hours
+];
+
+$server = new Server("0.0.0.0", 8000, false, $corsConfig);
+```
+
+### WebSocket Origin Validation
+
+For WebSocket connections, Sockeon validates the `Origin` header against the list of allowed origins:
+
+```php
+// Only allow connections from these origins
+$corsConfig = [
+    'allowed_origins' => [
+        'https://example.com',
+        'https://app.example.com'
+    ]
+];
+```
+
+### HTTP CORS Headers
+
+For HTTP requests, Sockeon automatically adds the appropriate CORS headers to responses based on the configuration:
+
+- `Access-Control-Allow-Origin`
+- `Access-Control-Allow-Methods`
+- `Access-Control-Allow-Headers`
+- `Access-Control-Allow-Credentials`
+- `Access-Control-Max-Age`
+
+## Logging System
+
+Sockeon provides a comprehensive logging system that follows PSR-3 standards. The logging system offers flexible configuration options for both development and production environments.
+
+### Configuration
+
+When creating a Server instance, you can configure logging behavior:
+
+```php
+use Sockeon\Sockeon\Core\Server;
+use Sockeon\Sockeon\Logging\Logger;
+use Sockeon\Sockeon\Logging\LogLevel;
+
+// Create a server with custom logging configuration
+$server = new Server(
+    host: "0.0.0.0", 
+    port: 8000,
+    debug: true,
+    corsConfig: [],
+    logger: new Logger(
+        minLogLevel: LogLevel::INFO,        // Minimum log level to record
+        logToConsole: true,                 // Output logs to console
+        logToFile: true,                    // Write logs to file
+        logDirectory: __DIR__ . '/logs',    // Custom log directory
+        separateLogFiles: true              // Separate files by log level
+    )
+);
+```
+
+### Log File Organization
+
+By default, log messages are written to a daily file in the format `sockeon-YYYY-MM-DD.log`. When `separateLogFiles` is enabled, logs are additionally written to level-specific subdirectories:
+
+```
+/logs
+  ├── sockeon-2025-05-31.log     # All logs combined
+  ├── debug/
+  │   └── 2025-05-31.log        # Debug level logs only
+  ├── info/
+  │   └── 2025-05-31.log        # Info level logs only
+  ├── warning/
+  │   └── 2025-05-31.log        # Warning level logs only
+  └── error/
+      └── 2025-05-31.log        # Error level logs only
+```
+
+This organization makes it easier to filter logs by severity level while maintaining a complete record in the main log file.
+
+### Log Levels
+
+Sockeon supports the following log levels, in order of decreasing severity:
+
+1. **EMERGENCY**: System is unusable
+2. **ALERT**: Action must be taken immediately
+3. **CRITICAL**: Critical conditions
+4. **ERROR**: Error conditions
+5. **WARNING**: Warning conditions
+6. **NOTICE**: Normal but significant events
+7. **INFO**: Informational messages
+8. **DEBUG**: Detailed debug information
+
+### Context Data in Logs
+
+Logs can include structured context data, following PSR-3 recommendations. Context data is included in log messages for both console and file output:
+
+```php
+// Log with context data
+$logger->info("User logged in", [
+    'userId' => 12345,
+    'email' => 'user@example.com',
+    'ipAddress' => '192.168.1.1',
+    'timestamp' => time()
+]);
+
+// Output: [2025-05-31 14:30:45] [INFO]: User logged in 
+// {userId: 12345, email: user@example.com, ipAddress: 192.168.1.1, timestamp: 1748123445}
+```
+
+### Log Message Formatting
+
+Console logs are automatically color-coded by severity level:
+- Emergency: White on Red background
+- Alert: Bold Red
+- Critical: Bold Red
+- Error: Red
+- Warning: Yellow
+- Notice: Cyan
+- Info: Green
+- Debug: Gray
+
+### Logging in Controllers
+
+You can access the logger from any controller:
+
+```php
+use Sockeon\Sockeon\Core\Contracts\SocketController;
+use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
+
+class ChatController extends SocketController
+{
+    #[SocketOn('message.send')]
+    public function onMessage(int $clientId, array $data)
+    {
+        // Log an informational message
+        $this->server->getLogger()->info(
+            "Message received", 
+            ['clientId' => $clientId, 'message' => $data['message'] ?? null]
+        );
+        
+        // Process message...
+    }
+    
+    #[SocketOn('connect')]
+    public function onConnect(int $clientId, array $data)
+    {
+        // Log with context data
+        $this->server->getLogger()->debug(
+            "Client connected", 
+            ['clientId' => $clientId, 'ip' => $this->server->getClientIp($clientId)]
+        );
+    }
+    
+    public function processPayment($payment)
+    {
+        try {
+            // Processing code...
+        } catch (\Throwable $e) {
+            // Log exceptions with context
+            $this->server->getLogger()->exception($e, [
+                'paymentId' => $payment->id,
+                'amount' => $payment->amount
+            ]);
+        }
+    }
 }
 ```
