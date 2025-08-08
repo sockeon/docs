@@ -43,7 +43,7 @@ class RequestController extends SocketController
 }
 ```
 
-### POST Data
+### POST Data with Validation
 
 ```php
 class PostDataController extends SocketController
@@ -51,9 +51,32 @@ class PostDataController extends SocketController
     #[HttpRoute('POST', '/api/users')]
     public function createUser(Request $request): Response
     {
+        // Validate and get sanitized data
+        $data = $request->validated([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email',
+            'age' => 'integer|min:18|max:120',
+            'bio' => 'string|max:1000'
+        ]);
+        
+        // Data is automatically sanitized and validated
+        $user = [
+            'id' => 1,
+            'name' => $data['name'],      // Trimmed string
+            'email' => $data['email'],    // Lowercase email
+            'age' => $data['age'],        // Integer
+            'bio' => $data['bio']         // Trimmed string
+        ];
+        
+        return Response::json($user, 201);
+    }
+    
+    #[HttpRoute('POST', '/api/users/legacy')]
+    public function createUserLegacy(Request $request): Response
+    {
         $data = $request->all();
         
-        // Validate required fields
+        // Manual validation (not recommended)
         if (empty($data['name']) || empty($data['email'])) {
             return Response::json(['error' => 'Name and email are required'], 400);
         }
@@ -123,6 +146,36 @@ class StatusController extends SocketController
     public function badRequest(Request $request): Response
     {
         return Response::badRequest('Invalid data');
+    }
+}
+```
+
+### Validation Error Handling
+
+For comprehensive validation and sanitization, see the [Data Validation](validation/validation.md) documentation.
+
+```php
+class ValidationController extends SocketController
+{
+    #[HttpRoute('POST', '/api/users')]
+    public function createUser(Request $request): Response
+    {
+        try {
+            $data = $request->validated([
+                'name' => 'required|string|max:100',
+                'email' => 'required|email',
+                'age' => 'integer|min:18|max:120'
+            ]);
+            
+            // Process validated data...
+            return Response::json(['success' => true, 'data' => $data], 201);
+            
+        } catch (ValidationException $e) {
+            return Response::json([
+                'message' => 'Validation failed',
+                'errors' => $e->getErrors()
+            ], 422);
+        }
     }
 }
 ```

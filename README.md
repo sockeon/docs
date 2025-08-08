@@ -34,6 +34,10 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 - [Request and Response](http/request-response.md)
 - [CORS Configuration](http/cors.md)
 
+### Data Validation and Sanitization
+- [Data Validation](validation/validation.md)
+- [Data Sanitization](validation/sanitization.md)
+
 ### Advanced Features
 - [Rate Limiting](advanced/rate-limiting.md)
 - [Logging](advanced/logging.md)
@@ -63,6 +67,7 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 - **Zero Dependencies** - Built with PHP core functionality only
 - **PHP Client** - Connect to Sockeon servers from PHP applications
 - **WebSocket Authentication** - Key-based authentication for secure connections
+- **Unified Validation System** - Shared validation and sanitization for HTTP and WebSocket data
 - **Exception Handling** - Comprehensive error handling with contextual logging
 
 ## Requirements
