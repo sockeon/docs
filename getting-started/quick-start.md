@@ -331,11 +331,11 @@ curl -X POST http://localhost:6001/api/broadcast \
 
 Congratulations! You've created your first Sockeon application. Here's what you can explore next:
 
-- [Basic Concepts](getting-started/basic-concepts.md) - Understand core Sockeon concepts
-- [Server Configuration](core/server-configuration.md) - Learn about advanced configuration options
-- [Middleware](core/middleware.md) - Add authentication and request processing
-- [Rate Limiting](advanced/rate-limiting.md) - Protect your server from abuse
-- [Examples](../examples/) - See more complex examples
+- [Basic Concepts](/v2.0/getting-started/basic-concepts.md) - Understand core Sockeon concepts
+- [Server Configuration](/v2.0/core/server-configuration.md) - Learn about advanced configuration options
+- [Middleware](/v2.0/core/middleware.md) - Add authentication and request processing
+- [Rate Limiting](/v2.0/advanced/rate-limiting.md) - Protect your server from abuse
+- [Examples](/v2.0/examples/) - See more complex examples
 
 ## Common Issues
 

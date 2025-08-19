@@ -12,48 +12,48 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 ## Table of Contents
 
 ### Getting Started
-- [Installation](getting-started/installation.md)
-- [Quick Start](getting-started/quick-start.md)
-- [Basic Concepts](getting-started/basic-concepts.md)
+- [Installation](/v2.0/getting-started/installation.md)
+- [Quick Start](/v2.0/getting-started/quick-start.md)
+- [Basic Concepts](/v2.0/getting-started/basic-concepts.md)
 
 ### Core Components
-- [Server Configuration](core/server-configuration.md)
-- [Controllers](core/controllers.md)
-- [Routing](core/routing.md)
-- [Middleware](core/middleware.md)
-- [Namespaces and Rooms](core/namespaces-rooms.md)
+- [Server Configuration](/v2.0/core/server-configuration.md)
+- [Controllers](/v2.0/core/controllers.md)
+- [Routing](/v2.0/core/routing.md)
+- [Middleware](/v2.0/core/middleware.md)
+- [Namespaces and Rooms](/v2.0/core/namespaces-rooms.md)
 
 ### WebSocket Features
-- [WebSocket Events](websocket/events.md)
-- [Connection Management](websocket/connections.md)
-- [Broadcasting](websocket/broadcasting.md)
-- [WebSocket Client](websocket/client.md)
+- [WebSocket Events](/v2.0/websocket/events.md)
+- [Connection Management](/v2.0/websocket/connections.md)
+- [Broadcasting](/v2.0/websocket/broadcasting.md)
+- [WebSocket Client](/v2.0/websocket/client.md)
 
 ### HTTP Features
-- [HTTP Routing](http/routing.md)
-- [Request and Response](http/request-response.md)
-- [CORS Configuration](http/cors.md)
+- [HTTP Routing](/v2.0/http/routing.md)
+- [Request and Response](/v2.0/http/request-response.md)
+- [CORS Configuration](/v2.0/http/cors.md)
 
 ### Data Validation and Sanitization
-- [Data Validation](validation/validation.md)
-- [Data Sanitization](validation/sanitization.md)
+- [Data Validation](/v2.0/validation/validation.md)
+- [Data Sanitization](/v2.0/validation/sanitization.md)
 
 ### Advanced Features
-- [Rate Limiting](advanced/rate-limiting.md)
-- [Logging](advanced/logging.md)
-- [Error Handling](advanced/error-handling.md)
+- [Rate Limiting](/v2.0/advanced/rate-limiting.md)
+- [Logging](/v2.0/advanced/logging.md)
+- [Error Handling](/v2.0/advanced/error-handling.md)
 
 ### API Reference
-- [Server API](api/server.md)
-- [Controller API](api/controller.md)
-- [Router API](api/router.md)
-- [Request API](api/request.md)
-- [Response API](api/response.md)
-- [Client API](api/client.md)
+- [Server API](/v2.0/api/server.md)
+- [Controller API](/v2.0/api/controller.md)
+- [Router API](/v2.0/api/router.md)
+- [Request API](/v2.0/api/request.md)
+- [Response API](/v2.0/api/response.md)
+- [Client API](/v2.0/api/client.md)
 
 ### Examples
-- [Basic WebSocket Server](examples/basic-server.md)
-- [HTTP API Server](examples/http-server.md)
+- [Basic WebSocket Server](/v2.0/examples/basic-server.md)
+- [HTTP API Server](/v2.0/examples/http-server.md)
 
 ## Features Overview
 

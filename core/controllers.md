@@ -685,7 +685,7 @@ $server->registerController(new UserController($userRepository, $authService));
 
 ## Next Steps
 
-- [Routing](core/routing.md) - Learn about advanced routing features
-- [Middleware](core/middleware.md) - Add request/response processing
-- [WebSocket Events](websocket/events.md) - Deep dive into WebSocket handling
-- [HTTP Features](http/routing.md) - Advanced HTTP request handling
+- [Routing](/v2.0/core/routing.md) - Learn about advanced routing features
+- [Middleware](/v2.0/core/middleware.md) - Add request/response processing
+- [WebSocket Events](/v2.0/websocket/events.md) - Deep dive into WebSocket handling
+- [HTTP Features](/v2.0/http/routing.md) - Advanced HTTP request handling

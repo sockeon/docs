@@ -402,10 +402,10 @@ public function handleRiskyOperation(int $clientId, array $data): void
 
 Now that you understand the basic concepts, explore these topics:
 
-- [Server Configuration](core/server-configuration.md) - Detailed configuration options
-- [Controllers](core/controllers.md) - Advanced controller features
-- [Middleware](core/middleware.md) - Create custom middleware
-- [Examples](../examples/) - See real-world applications
+- [Server Configuration](/v2.0/core/server-configuration.md) - Detailed configuration options
+- [Controllers](/v2.0/core/controllers.md) - Advanced controller features
+- [Middleware](/v2.0/core/middleware.md) - Create custom middleware
+- [Examples](/v2.0/examples/) - See real-world applications
 
 ## Best Practices
 

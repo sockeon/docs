@@ -110,6 +110,6 @@ ulimit -n 65536
 
 ## Next Steps
 
-- [Quick Start Guide](getting-started/quick-start.md) - Build your first Sockeon application
-- [Basic Concepts](getting-started/basic-concepts.md) - Learn the core concepts
-- [Server Configuration](core/server-configuration.md) - Detailed configuration options
+- [Quick Start Guide](/v2.0/getting-started/quick-start.md) - Build your first Sockeon application
+- [Basic Concepts](/v2.0/getting-started/basic-concepts.md) - Learn the core concepts
+- [Server Configuration](/v2.0/core/server-configuration.md) - Detailed configuration options
