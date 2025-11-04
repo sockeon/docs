@@ -92,14 +92,17 @@ class AuthMiddleware implements HttpMiddleware
 Configure CORS in your server configuration:
 
 ```php
-$config = new ServerConfig();
-$config->cors = [
-    'allowed_origins' => ['https://myapp.com', 'https://admin.myapp.com'],
-    'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    'allowed_headers' => ['Content-Type', 'Authorization', 'X-Requested-With'],
-    'allow_credentials' => true,
-    'max_age' => 86400
-];
+use Sockeon\Sockeon\Config\ServerConfig;
+
+$config = new ServerConfig([
+    'cors' => [
+        'allowed_origins' => ['https://myapp.com', 'https://admin.myapp.com'],
+        'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        'allowed_headers' => ['Content-Type', 'Authorization', 'X-Requested-With'],
+        'allow_credentials' => true,
+        'max_age' => 86400
+    ]
+]);
 ```
 
 #### Request Validation Middleware

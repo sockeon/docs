@@ -27,9 +27,10 @@ Creates a new server instance with the provided configuration.
 use Sockeon\Sockeon\Config\ServerConfig;
 use Sockeon\Sockeon\Connection\Server;
 
-$config = new ServerConfig();
-$config->host = '0.0.0.0';
-$config->port = 6001;
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 6001
+]);
 
 $server = new Server($config);
 ```
@@ -437,10 +438,11 @@ use Sockeon\Sockeon\Config\ServerConfig;
 use Sockeon\Sockeon\Connection\Server;
 
 // Create configuration
-$config = new ServerConfig();
-$config->host = '0.0.0.0';
-$config->port = 6001;
-$config->debug = true;
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 6001,
+    'debug' => true
+]);
 
 // Create server
 $server = new Server($config);
@@ -454,7 +456,9 @@ $server->registerController(new ChatController());
 $server->registerController(new ApiController());
 
 // Start server
-echo "Starting server on {$config->host}:{$config->port}\n";
+$host = $config->getHost();
+$port = $config->getPort();
+echo "Starting server on {$host}:{$port}\n";
 $server->run();
 ```
 

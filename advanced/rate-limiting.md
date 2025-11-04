@@ -76,23 +76,58 @@ class ApiController extends SocketController
 
 Configure rate limiting globally using `RateLimitConfig`:
 
+### Using Constructor with Array
+
+```php
+use Sockeon\Sockeon\Config\ServerConfig;
+use Sockeon\Sockeon\Config\RateLimitConfig;
+
+$rateLimitConfig = new RateLimitConfig([
+    'enabled' => true,
+    'maxHttpRequestsPerIp' => 100,           // 100 HTTP requests per IP per time window
+    'maxWebSocketMessagesPerClient' => 200,  // 200 WebSocket messages per client per time window
+    'httpTimeWindow' => 60,                  // 1 minute for HTTP
+    'webSocketTimeWindow' => 60              // 1 minute for WebSocket
+]);
+
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 6001
+]);
+$config->setRateLimitConfig($rateLimitConfig);
+```
+
+### Using Setters
+
 ```php
 use Sockeon\Sockeon\Config\RateLimitConfig;
 
-$config = new ServerConfig();
-$config->host = '0.0.0.0';
-$config->port = 6001;
+$rateLimitConfig = new RateLimitConfig();
+$rateLimitConfig->setEnabled(true);
+$rateLimitConfig->setMaxHttpRequestsPerIp(100);
+$rateLimitConfig->setMaxWebSocketMessagesPerClient(200);
+$rateLimitConfig->setHttpTimeWindow(60);
+$rateLimitConfig->setWebSocketTimeWindow(60);
 
-// Configure global rate limiting
-$rateLimitConfig = new RateLimitConfig([
-    'enabled' => true,
-    'maxHttpRequestsPerIp' => 100,      // 100 HTTP requests per IP per time window
-    'maxWebSocketMessagesPerClient' => 200, // 200 WebSocket messages per client per time window
-    'httpTimeWindow' => 60,              // 1 minute for HTTP
-    'websocketTimeWindow' => 60          // 1 minute for WebSocket
+$config->setRateLimitConfig($rateLimitConfig);
+```
+
+### Via ServerConfig Constructor
+
+```php
+use Sockeon\Sockeon\Config\ServerConfig;
+
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 6001,
+    'rate_limit' => [
+        'enabled' => true,
+        'maxHttpRequestsPerIp' => 100,
+        'maxWebSocketMessagesPerClient' => 200,
+        'httpTimeWindow' => 60,
+        'webSocketTimeWindow' => 60
+    ]
 ]);
-
-$config->rateLimitConfig = $rateLimitConfig;
 ```
 
 ## Common Use Cases

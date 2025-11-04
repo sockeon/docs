@@ -83,10 +83,11 @@ class ChatController extends SocketController
 }
 
 // Create server configuration
-$config = new ServerConfig();
-$config->host = '0.0.0.0';
-$config->port = 8080;
-$config->debug = true;
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 8080,
+    'debug' => true
+]);
 
 // Create server
 $server = new Server($config);

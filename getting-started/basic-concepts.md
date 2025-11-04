@@ -348,24 +348,24 @@ ws.send(JSON.stringify({
 Server behavior is controlled through the `ServerConfig` class:
 
 ```php
-$config = new ServerConfig();
-$config->host = '0.0.0.0';           // Bind address
-$config->port = 6001;                // Port number
-$config->debug = true;               // Enable debug logging
-$config->authKey = 'secret';         // Optional authentication key
+use Sockeon\Sockeon\Config\ServerConfig;
+use Sockeon\Sockeon\Config\RateLimitConfig;
 
-// CORS configuration
-$config->cors = [
-    'allowed_origins' => ['https://myapp.com'],
-    'allowed_methods' => ['GET', 'POST'],
-    'allowed_headers' => ['Content-Type']
-];
-
-// Rate limiting
-$config->rateLimitConfig = new RateLimitConfig([
-    'enabled' => true,
-    'maxHttpRequestsPerIp' => 100,
-    'httpTimeWindow' => 60
+$config = new ServerConfig([
+    'host' => '0.0.0.0',           // Bind address
+    'port' => 6001,                // Port number
+    'debug' => true,               // Enable debug logging
+    'auth_key' => 'secret',        // Optional authentication key
+    'cors' => [
+        'allowed_origins' => ['https://myapp.com'],
+        'allowed_methods' => ['GET', 'POST'],
+        'allowed_headers' => ['Content-Type']
+    ],
+    'rate_limit' => [
+        'enabled' => true,
+        'maxHttpRequestsPerIp' => 100,
+        'httpTimeWindow' => 60
+    ]
 ]);
 ```
 

@@ -193,17 +193,16 @@ use Sockeon\Sockeon\Config\ServerConfig;
 use Sockeon\Sockeon\Connection\Server;
 
 // Create server configuration
-$config = new ServerConfig();
-$config->host = '0.0.0.0';
-$config->port = 6001;
-$config->debug = true;
-
-// Configure CORS for HTTP requests
-$config->cors = [
-    'allowed_origins' => ['*'],
-    'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    'allowed_headers' => ['Content-Type', 'Authorization']
-];
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 6001,
+    'debug' => true,
+    'cors' => [
+        'allowed_origins' => ['*'],
+        'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        'allowed_headers' => ['Content-Type', 'Authorization']
+    ]
+]);
 
 // Create and configure the server
 $server = new Server($config);
@@ -211,9 +210,12 @@ $server = new Server($config);
 // Register the chat controller
 $server->registerController(new ChatController());
 
-echo "Starting Sockeon server on {$config->host}:{$config->port}\n";
-echo "WebSocket endpoint: ws://{$config->host}:{$config->port}\n";
-echo "HTTP API: http://{$config->host}:{$config->port}/api\n";
+$host = $config->getHost();
+$port = $config->getPort();
+
+echo "Starting Sockeon server on {$host}:{$port}\n";
+echo "WebSocket endpoint: ws://{$host}:{$port}\n";
+echo "HTTP API: http://{$host}:{$port}/api\n";
 
 // Start the server
 $server->run();

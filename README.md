@@ -114,9 +114,10 @@ class MyController extends SocketController
     }
 }
 
-$config = new ServerConfig();
-$config->host = '0.0.0.0';
-$config->port = 6001;
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 6001
+]);
 
 $server = new Server($config);
 $server->registerController(new MyController());

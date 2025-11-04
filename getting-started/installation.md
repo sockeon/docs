@@ -44,16 +44,20 @@ use Sockeon\Sockeon\Config\ServerConfig;
 use Sockeon\Sockeon\Connection\Server;
 
 // Create a basic server configuration
-$config = new ServerConfig();
-$config->host = '127.0.0.1';
-$config->port = 6001;
-$config->debug = true;
+$config = new ServerConfig([
+    'host' => '127.0.0.1',
+    'port' => 6001,
+    'debug' => true
+]);
 
 // Create the server instance
 $server = new Server($config);
 
+$host = $config->getHost();
+$port = $config->getPort();
+
 echo "Sockeon server created successfully!\n";
-echo "Server configured for {$config->host}:{$config->port}\n";
+echo "Server configured for {$host}:{$port}\n";
 ```
 
 Run the test:

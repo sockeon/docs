@@ -127,18 +127,17 @@ class ApiController extends SocketController
 }
 
 // Create server configuration
-$config = new ServerConfig();
-$config->host = '0.0.0.0';
-$config->port = 8080;
-$config->debug = true;
-
-// Configure CORS
-$config->cors = [
-    'allowed_origins' => ['*'],
-    'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    'allowed_headers' => ['Content-Type', 'Authorization'],
-    'allow_credentials' => true
-];
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 8080,
+    'debug' => true,
+    'cors' => [
+        'allowed_origins' => ['*'],
+        'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        'allowed_headers' => ['Content-Type', 'Authorization'],
+        'allow_credentials' => true
+    ]
+]);
 
 // Create server
 $server = new Server($config);
