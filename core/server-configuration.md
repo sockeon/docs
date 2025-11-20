@@ -272,6 +272,154 @@ When set, Sockeon will persist messages to this file, allowing for:
 - Offline message delivery
 - Message history
 
+## Reverse Proxy and Load Balancing
+
+Sockeon supports reverse proxy and load balancer configurations through trust proxy settings and health check endpoints.
+
+### trustProxy
+
+- **Type**: `bool|array<int, string>`
+- **Default**: `false`
+- **Description**: Configure which proxies to trust for X-Forwarded-* headers
+- **Getter**: `getTrustProxy()`
+- **Setter**: `setTrustProxy(bool|array $trustProxy)`
+
+#### Trust All Proxies (Development Only)
+
+```php
+// ⚠️ WARNING: Only use for local development!
+$config->setTrustProxy(true);
+```
+
+#### Trust Specific IPs (Recommended for Production)
+
+```php
+$config->setTrustProxy([
+    '127.0.0.1',        // Localhost
+    '::1',              // IPv6 localhost
+    '10.0.0.0/8',       // Private network (10.0.0.0 - 10.255.255.255)
+    '172.16.0.0/12',    // Private network (172.16.0.0 - 172.31.255.255)
+    '192.168.0.0/16',   // Private network (192.168.0.0 - 192.168.255.255)
+]);
+```
+
+#### Trust Specific Proxy IPs
+
+```php
+$config->setTrustProxy([
+    '10.0.0.5',  // Nginx server 1
+    '10.0.0.6',  // Nginx server 2
+    '172.16.1.10' // Load balancer
+]);
+```
+
+**Security Note**: Never use `trust_proxy => true` in production. Always specify trusted proxy IPs to prevent header spoofing attacks.
+
+### proxyHeaders
+
+- **Type**: `array<string, string>|null`
+- **Default**: `null`
+- **Description**: Custom proxy header names for non-standard configurations
+- **Getter**: `getProxyHeaders()`
+- **Setter**: `setProxyHeaders(?array $headers)`
+
+```php
+$config->setProxyHeaders([
+    'proto' => 'X-Forwarded-Proto',  // Protocol header
+    'host' => 'X-Forwarded-Host',    // Host header
+    'port' => 'X-Forwarded-Port',    // Port header
+]);
+```
+
+### healthCheckPath
+
+- **Type**: `string|null`
+- **Default**: `null`
+- **Description**: Enable health check endpoint at the specified path
+- **Getter**: `getHealthCheckPath()`
+- **Setter**: `setHealthCheckPath(?string $path)`
+
+```php
+$config->setHealthCheckPath('/health');
+```
+
+When enabled, the health check endpoint returns:
+
+```json
+{
+  "status": "healthy",
+  "timestamp": 1234567890,
+  "server": {
+    "clients": 5,
+    "uptime": 12345,
+    "uptime_human": "3h 25m 45s"
+  }
+}
+```
+
+### Via ServerConfig Constructor
+
+```php
+use Sockeon\Sockeon\Config\ServerConfig;
+
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 6001,
+    'trust_proxy' => [
+        '127.0.0.1',
+        '10.0.0.0/8',
+        '192.168.0.0/16',
+    ],
+    'proxy_headers' => [
+        'proto' => 'X-Forwarded-Proto',
+        'host' => 'X-Forwarded-Host',
+        'port' => 'X-Forwarded-Port',
+    ],
+    'health_check_path' => '/health',
+]);
+```
+
+### Complete Reverse Proxy Configuration Example
+
+```php
+use Sockeon\Sockeon\Config\ServerConfig;
+
+$config = new ServerConfig([
+    'host' => '0.0.0.0',
+    'port' => 6001,
+    'trust_proxy' => [
+        '127.0.0.1',
+        '10.0.0.0/8',
+        '172.16.0.0/12',
+        '192.168.0.0/16',
+    ],
+    'health_check_path' => '/health',
+]);
+```
+
+### Nginx Configuration
+
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:6001;
+    proxy_http_version 1.1;
+    
+    # WebSocket support
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    
+    # Forward proxy headers
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Port $server_port;
+}
+```
+
+For more details, see the [Reverse Proxy and Load Balancing Guide](../advanced/reverse-proxy.md).
+
 ## Rate Limiting Configuration
 
 ### rateLimitConfig
@@ -399,6 +547,13 @@ $config = new ServerConfig([
     'debug' => false,
     'auth_key' => $_ENV['SOCKEON_AUTH_KEY'] ?? null,
     'queue_file' => '/tmp/sockeon_queue.json',
+    'trust_proxy' => [
+        '127.0.0.1',
+        '10.0.0.0/8',
+        '172.16.0.0/12',
+        '192.168.0.0/16',
+    ],
+    'health_check_path' => '/health',
     'cors' => [
         'allowed_origins' => [
             'https://yourdomain.com',
@@ -457,6 +612,13 @@ $config->setPort(6001);
 $config->setDebug(false);
 $config->setAuthKey($_ENV['SOCKEON_AUTH_KEY'] ?? null);
 $config->setQueueFile('/tmp/sockeon_queue.json');
+$config->setTrustProxy([
+    '127.0.0.1',
+    '10.0.0.0/8',
+    '172.16.0.0/12',
+    '192.168.0.0/16',
+]);
+$config->setHealthCheckPath('/health');
 
 // Create and set logger
 $logger = new Logger();
@@ -494,6 +656,15 @@ $rateLimitConfig->setCleanupInterval(1800);
 $rateLimitConfig->setWhitelist(['127.0.0.1', '10.0.0.0/8', '192.168.1.100']);
 $config->setRateLimitConfig($rateLimitConfig);
 
+// Configure reverse proxy support
+$config->setTrustProxy([
+    '127.0.0.1',
+    '10.0.0.0/8',
+    '172.16.0.0/12',
+    '192.168.0.0/16',
+]);
+$config->setHealthCheckPath('/health');
+
 return $config;
 ```
 
@@ -509,6 +680,7 @@ $config = new ServerConfig([
     'host' => '127.0.0.1',
     'port' => 6001,
     'debug' => true,
+    'trust_proxy' => ['127.0.0.1', '::1'], // Trust localhost for development
     'cors' => [
         'allowed_origins' => ['*'],
         'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
@@ -550,6 +722,8 @@ $config = new ServerConfig([
     'port' => (int)($_ENV['SOCKEON_PORT'] ?? 6001),
     'debug' => false,
     'auth_key' => $_ENV['SOCKEON_AUTH_KEY'],
+    'trust_proxy' => explode(',', $_ENV['TRUSTED_PROXY_IPS'] ?? '127.0.0.1,10.0.0.0/8'),
+    'health_check_path' => $_ENV['HEALTH_CHECK_PATH'] ?? '/health',
     'cors' => [
         'allowed_origins' => explode(',', $_ENV['ALLOWED_ORIGINS']),
         'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE'],
@@ -618,6 +792,12 @@ $corsConfig = new CorsConfig([
     "host": "0.0.0.0",
     "port": 6001,
     "debug": false,
+    "trust_proxy": [
+        "127.0.0.1",
+        "10.0.0.0/8",
+        "192.168.0.0/16"
+    ],
+    "health_check_path": "/health",
     "cors": {
         "allowed_origins": ["https://example.com"],
         "allowed_methods": ["GET", "POST"],
@@ -660,7 +840,9 @@ $config = new ServerConfig([
     'host' => $_ENV['SOCKEON_HOST'] ?? '0.0.0.0',
     'port' => (int)($_ENV['SOCKEON_PORT'] ?? 6001),
     'debug' => filter_var($_ENV['SOCKEON_DEBUG'] ?? false, FILTER_VALIDATE_BOOLEAN),
-    'auth_key' => $_ENV['SOCKEON_AUTH_KEY'] ?? null
+    'auth_key' => $_ENV['SOCKEON_AUTH_KEY'] ?? null,
+    'trust_proxy' => isset($_ENV['TRUSTED_PROXY_IPS']) ? explode(',', $_ENV['TRUSTED_PROXY_IPS']) : ['127.0.0.1'],
+    'health_check_path' => $_ENV['HEALTH_CHECK_PATH'] ?? null
 ]);
 
 // Or using setters
@@ -669,6 +851,12 @@ $config->setHost($_ENV['SOCKEON_HOST'] ?? '0.0.0.0');
 $config->setPort((int)($_ENV['SOCKEON_PORT'] ?? 6001));
 $config->setDebug(filter_var($_ENV['SOCKEON_DEBUG'] ?? false, FILTER_VALIDATE_BOOLEAN));
 $config->setAuthKey($_ENV['SOCKEON_AUTH_KEY'] ?? null);
+if (isset($_ENV['TRUSTED_PROXY_IPS'])) {
+    $config->setTrustProxy(explode(',', $_ENV['TRUSTED_PROXY_IPS']));
+}
+if (isset($_ENV['HEALTH_CHECK_PATH'])) {
+    $config->setHealthCheckPath($_ENV['HEALTH_CHECK_PATH']);
+}
 ```
 
 ### INI Configuration
@@ -679,6 +867,8 @@ host = 0.0.0.0
 port = 6001
 debug = false
 auth_key = your-secret-key
+health_check_path = /health
+; Note: trust_proxy cannot be set in INI format, use setters or array config
 ```
 
 ```php
@@ -690,16 +880,74 @@ $config = new ServerConfig([
     'host' => $configData['host'],
     'port' => (int)$configData['port'],
     'debug' => filter_var($configData['debug'], FILTER_VALIDATE_BOOLEAN),
-    'auth_key' => $configData['auth_key']
+    'auth_key' => $configData['auth_key'] ?? null,
+    'health_check_path' => $configData['health_check_path'] ?? null
 ]);
+
+// Trust proxy must be set separately if needed
+if (isset($configData['trusted_proxy_ips'])) {
+    $config->setTrustProxy(explode(',', $configData['trusted_proxy_ips']));
+}
 
 // Or using setters
 $config = new ServerConfig();
 $config->setHost($configData['host']);
 $config->setPort((int)$configData['port']);
 $config->setDebug(filter_var($configData['debug'], FILTER_VALIDATE_BOOLEAN));
-$config->setAuthKey($configData['auth_key']);
+$config->setAuthKey($configData['auth_key'] ?? null);
+if (isset($configData['health_check_path'])) {
+    $config->setHealthCheckPath($configData['health_check_path']);
+}
+if (isset($configData['trusted_proxy_ips'])) {
+    $config->setTrustProxy(explode(',', $configData['trusted_proxy_ips']));
+}
 ```
+
+## Configuration Summary
+
+### All Available Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `host` | `string` | `'0.0.0.0'` | Server bind address |
+| `port` | `int` | `6001` | Server port |
+| `debug` | `bool` | `false` | Debug mode |
+| `cors` | `CorsConfig` | Auto-created | CORS configuration |
+| `logger` | `LoggerInterface\|null` | `null` | Custom logger |
+| `queue_file` | `string\|null` | `null` | Queue file path |
+| `auth_key` | `string\|null` | `null` | WebSocket auth key |
+| `rate_limit` | `RateLimitConfig\|null` | `null` | Rate limiting config |
+| `trust_proxy` | `bool\|array<int, string>` | `false` | Trust proxy settings |
+| `proxy_headers` | `array<string, string>\|null` | `null` | Custom proxy headers |
+| `health_check_path` | `string\|null` | `null` | Health check endpoint |
+
+### All Available Methods
+
+#### Getters
+- `getHost()`: Get server host
+- `getPort()`: Get server port
+- `isDebug()`: Check if debug is enabled
+- `getCorsConfig()`: Get CORS configuration
+- `getLogger()`: Get logger instance
+- `getQueueFile()`: Get queue file path
+- `getAuthKey()`: Get authentication key
+- `getRateLimitConfig()`: Get rate limit configuration
+- `getTrustProxy()`: Get trust proxy settings
+- `getProxyHeaders()`: Get custom proxy headers
+- `getHealthCheckPath()`: Get health check path
+
+#### Setters
+- `setHost(string $host)`: Set server host
+- `setPort(int $port)`: Set server port
+- `setDebug(bool $debug)`: Enable/disable debug mode
+- `setCorsConfig(CorsConfig $config)`: Set CORS configuration
+- `setLogger(?LoggerInterface $logger)`: Set custom logger
+- `setQueueFile(?string $path)`: Set queue file path
+- `setAuthKey(?string $key)`: Set authentication key
+- `setRateLimitConfig(?RateLimitConfig $config)`: Set rate limit configuration
+- `setTrustProxy(bool\|array $trustProxy)`: Set trust proxy settings
+- `setProxyHeaders(?array $headers)`: Set custom proxy headers
+- `setHealthCheckPath(?string $path)`: Set health check path
 
 ## Next Steps
 
@@ -707,3 +955,4 @@ $config->setAuthKey($configData['auth_key']);
 - [Middleware](core/middleware.md) - Implement request/response processing
 - [Rate Limiting](advanced/rate-limiting.md) - Deep dive into rate limiting
 - [Logging](advanced/logging.md) - Advanced logging configuration
+- [Reverse Proxy and Load Balancing](advanced/reverse-proxy.md) - Complete reverse proxy guide

@@ -42,6 +42,7 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 - [Rate Limiting](/v2.0/advanced/rate-limiting.md)
 - [Logging](/v2.0/advanced/logging.md)
 - [Error Handling](/v2.0/advanced/error-handling.md)
+- [Reverse Proxy and Load Balancing](/v2.0/advanced/reverse-proxy.md)
 
 ### API Reference
 - [Server API](/v2.0/api/server.md)
@@ -63,6 +64,9 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 - **Middleware Support** - Flexible request/response processing with HTTP and WebSocket middleware
 - **Rate Limiting** - Built-in protection against abuse with configurable limits
 - **CORS Support** - Configurable cross-origin resource sharing
+- **Reverse Proxy Support** - Full compatibility with nginx, Apache, and load balancers
+- **Health Check Endpoints** - Built-in health check for load balancer integration
+- **Server Uptime Tracking** - Monitor server uptime and performance
 - **PSR-3 Logging** - Comprehensive logging with multiple levels
 - **Zero Dependencies** - Built with PHP core functionality only
 - **PHP Client** - Connect to Sockeon servers from PHP applications

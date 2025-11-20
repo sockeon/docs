@@ -604,7 +604,104 @@ function safeSend(Server $server, int $clientId, string $event, array $data): bo
 
 ---
 
+## Server Information
+
+### getStartTime()
+
+```php
+public function getStartTime(): ?float
+```
+
+Returns the server start time as a Unix timestamp with microseconds.
+
+**Returns:** `float|null` - Unix timestamp with microseconds when server started, or null if not started
+
+**Example:**
+```php
+$startTime = $server->getStartTime();
+if ($startTime !== null) {
+    echo "Server started at: " . date('Y-m-d H:i:s', (int)$startTime) . "\n";
+}
+```
+
+### getUptime()
+
+```php
+public function getUptime(): ?int
+```
+
+Returns the server uptime in seconds.
+
+**Returns:** `int|null` - Server uptime in seconds, or null if server hasn't started
+
+**Example:**
+```php
+$uptime = $server->getUptime();
+if ($uptime !== null) {
+    echo "Server has been running for {$uptime} seconds\n";
+    echo "That's " . round($uptime / 3600, 2) . " hours\n";
+}
+```
+
+### getUptimeString()
+
+```php
+public function getUptimeString(): ?string
+```
+
+Returns the server uptime as a human-readable string.
+
+**Returns:** `string|null` - Human-readable uptime string (e.g., "2h 30m 15s"), or null if not started
+
+**Example:**
+```php
+$uptimeString = $server->getUptimeString();
+if ($uptimeString !== null) {
+    echo "Server uptime: {$uptimeString}\n";
+    // Output: "Server uptime: 2h 30m 15s"
+}
+```
+
+### getHealthCheckPath()
+
+```php
+public function getHealthCheckPath(): ?string
+```
+
+Returns the health check endpoint path if configured.
+
+**Returns:** `string|null` - The health check path or null if disabled
+
+**Example:**
+```php
+$healthPath = $server->getHealthCheckPath();
+if ($healthPath !== null) {
+    echo "Health check available at: {$healthPath}\n";
+}
+```
+
+### Complete Server Information Example
+
+```php
+#[HttpRoute('GET', '/api/server-info')]
+public function getServerInfo(Request $request): Response
+{
+    $server = $this->getServer();
+    
+    return Response::json([
+        'clients' => $server->getClientCount(),
+        'uptime' => $server->getUptime(),
+        'uptime_human' => $server->getUptimeString(),
+        'start_time' => $server->getStartTime(),
+        'health_check' => $server->getHealthCheckPath(),
+    ]);
+}
+```
+
+---
+
 ## See Also
 
 - [Controller API](api/controller.md) - Controller base class methods
 - [Router API](api/router.md) - Routing system API
+- [Server Configuration](core/server-configuration.md) - Server configuration options

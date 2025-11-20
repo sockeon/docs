@@ -93,24 +93,123 @@ public function getUser(Request $request): Response
 public function getUrl(bool $includeQuery = true): string
 ```
 
-Returns the full request URL.
+Returns the full request URL. Automatically uses proxy headers (X-Forwarded-Proto, X-Forwarded-Host, X-Forwarded-Port) when trust proxy is enabled.
 
 **Parameters:**
 - `$includeQuery` (`bool`): Whether to include query string (default: true)
 
-**Returns:** `string` - The full request URL
+**Returns:** `string` - The full request URL with correct protocol, host, and port
 
 **Example:**
 ```php
 #[HttpRoute('GET', '/api/search')]
 public function search(Request $request): Response
 {
-    $url = $request->getUrl(); // 'http://localhost:6001/api/search?q=test&limit=10'
-    $urlWithoutQuery = $request->getUrl(false); // 'http://localhost:6001/api/search'
+    $url = $request->getUrl(); // 'https://api.example.com/api/search?q=test&limit=10'
+    $urlWithoutQuery = $request->getUrl(false); // 'https://api.example.com/api/search'
     
     return Response::json(['url' => $url, 'urlWithoutQuery' => $urlWithoutQuery]);
 }
 ```
+
+### getScheme()
+
+```php
+public function getScheme(): string
+```
+
+Returns the request scheme (http or https). Respects X-Forwarded-Proto header when proxy is trusted.
+
+**Returns:** `string` - The request scheme ('http' or 'https')
+
+**Example:**
+```php
+#[HttpRoute('GET', '/api/info')]
+public function getInfo(Request $request): Response
+{
+    $scheme = $request->getScheme(); // 'https' when behind reverse proxy with HTTPS
+    
+    return Response::json([
+        'scheme' => $scheme,
+        'isSecure' => $scheme === 'https'
+    ]);
+}
+```
+
+### getHost()
+
+```php
+public function getHost(): string
+```
+
+Returns the request hostname. Respects X-Forwarded-Host header when proxy is trusted.
+
+**Returns:** `string` - The request hostname
+
+**Example:**
+```php
+#[HttpRoute('GET', '/api/info')]
+public function getInfo(Request $request): Response
+{
+    $host = $request->getHost(); // 'api.example.com' when behind reverse proxy
+    
+    return Response::json(['host' => $host]);
+}
+```
+
+### getPort()
+
+```php
+public function getPort(): int
+```
+
+Returns the request port number. Respects X-Forwarded-Port header when proxy is trusted.
+
+**Returns:** `int` - The request port number
+
+**Example:**
+```php
+#[HttpRoute('GET', '/api/info')]
+public function getInfo(Request $request): Response
+{
+    $port = $request->getPort(); // 443 when behind reverse proxy with HTTPS
+    
+    return Response::json(['port' => $port]);
+}
+```
+
+### getIpAddress()
+
+```php
+public function getIpAddress(bool $fallbackToDefault = false): ?string
+```
+
+Returns the client IP address. Respects trust proxy settings and checks X-Forwarded-For header when proxy is trusted.
+
+**Parameters:**
+- `$fallbackToDefault` (`bool`): Whether to return '127.0.0.1' if no IP is found (default: false)
+
+**Returns:** `string|null` - The client IP address or null/default
+
+**Example:**
+```php
+#[HttpRoute('GET', '/api/request-details')]
+public function getRequestDetails(Request $request): Response
+{
+    $ip = $request->getIpAddress(); // Real client IP when behind reverse proxy
+    
+    return Response::json([
+        'ip_address' => $ip,
+        'is_local' => in_array($ip, ['127.0.0.1', '::1'])
+    ]);
+}
+```
+
+**Note**: The method checks multiple headers in order:
+1. `CF-Connecting-IP` (Cloudflare)
+2. `X-Forwarded-For` (Standard proxy header)
+3. `X-Real-IP` (Nginx)
+4. `REMOTE_ADDR` (Direct connection)
 
 ---
 
@@ -669,9 +768,58 @@ class DataController extends SocketController
 
 ---
 
+## Reverse Proxy Support
+
+When your Sockeon server is behind a reverse proxy or load balancer, the Request class automatically handles proxy headers to provide accurate client information.
+
+### Configuration
+
+Enable trust proxy in your server configuration:
+
+```php
+use Sockeon\Sockeon\Config\ServerConfig;
+
+$config = new ServerConfig([
+    'trust_proxy' => [
+        '127.0.0.1',      // Localhost
+        '10.0.0.0/8',     // Private network
+        '192.168.0.0/16', // Private network
+    ],
+]);
+```
+
+### Proxy Headers
+
+The following headers are automatically processed when trust proxy is enabled:
+
+- **X-Forwarded-For**: Real client IP address
+- **X-Forwarded-Proto**: Original protocol (http/https)
+- **X-Forwarded-Host**: Original hostname
+- **X-Forwarded-Port**: Original port number
+- **Forwarded**: RFC 7239 standard header (also supported)
+
+### Example: Getting Real Client Information
+
+```php
+#[HttpRoute('GET', '/api/request-details')]
+public function getRequestDetails(Request $request): Response
+{
+    return Response::json([
+        'ip_address' => $request->getIpAddress(),      // Real client IP
+        'scheme' => $request->getScheme(),              // Original protocol
+        'host' => $request->getHost(),                  // Original hostname
+        'port' => $request->getPort(),                  // Original port
+        'url' => $request->getUrl(),                    // Full URL with correct info
+    ]);
+}
+```
+
+For detailed information about reverse proxy configuration, see the [Reverse Proxy and Load Balancing Guide](../advanced/reverse-proxy.md).
+
 ## See Also
 
 - [Response API](api/response.md) - Creating HTTP responses
 - [Controller API](api/controller.md) - Controller base class methods
 - [Routing Guide](core/routing.md) - HTTP routing patterns
 - [HTTP Guide](http/request-response.md) - Request/response handling
+- [Server Configuration](core/server-configuration.md) - Trust proxy configuration
