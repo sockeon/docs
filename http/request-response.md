@@ -152,7 +152,7 @@ class StatusController extends SocketController
 
 ### Validation Error Handling
 
-For comprehensive validation and sanitization, see the [Data Validation](validation/validation.md) documentation.
+For comprehensive validation and sanitization, see the [Data Validation](/v2.0/validation/validation.md) documentation.
 
 ```php
 class ValidationController extends SocketController

@@ -608,7 +608,7 @@ class DocsController extends SocketController
 
 ## Next Steps
 
-- [Middleware](core/middleware.md) - Learn about request/response processing
-- [HTTP Features](http/routing.md) - Advanced HTTP routing features
-- [WebSocket Events](websocket/events.md) - Deep dive into WebSocket event handling
-- [Rate Limiting](advanced/rate-limiting.md) - Protect your routes from abuse
+- [Middleware](/v2.0/core/middleware.md) - Learn about request/response processing
+- [HTTP Features](/v2.0/http/routing.md) - Advanced HTTP routing features
+- [WebSocket Events](/v2.0/websocket/events.md) - Deep dive into WebSocket event handling
+- [Rate Limiting](/v2.0/advanced/rate-limiting.md) - Protect your routes from abuse

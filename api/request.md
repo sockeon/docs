@@ -814,12 +814,12 @@ public function getRequestDetails(Request $request): Response
 }
 ```
 
-For detailed information about reverse proxy configuration, see the [Reverse Proxy and Load Balancing Guide](../advanced/reverse-proxy.md).
+For detailed information about reverse proxy configuration, see the [Reverse Proxy and Load Balancing Guide](/v2.0/advanced/reverse-proxy.md).
 
 ## See Also
 
-- [Response API](api/response.md) - Creating HTTP responses
-- [Controller API](api/controller.md) - Controller base class methods
-- [Routing Guide](core/routing.md) - HTTP routing patterns
-- [HTTP Guide](http/request-response.md) - Request/response handling
-- [Server Configuration](core/server-configuration.md) - Trust proxy configuration
+- [Response API](/v2.0/api/response.md) - Creating HTTP responses
+- [Controller API](/v2.0/api/controller.md) - Controller base class methods
+- [Routing Guide](/v2.0/core/routing.md) - HTTP routing patterns
+- [HTTP Guide](/v2.0/http/request-response.md) - Request/response handling
+- [Server Configuration](/v2.0/core/server-configuration.md) - Trust proxy configuration

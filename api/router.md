@@ -536,7 +536,7 @@ class ChatController extends SocketController
 
 ## See Also
 
-- [Controller API](api/controller.md) - Controller base class methods
-- [Middleware Guide](core/middleware.md) - Creating custom middleware
-- [Routing Guide](core/routing.md) - Advanced routing patterns
-- [Server API](api/server.md) - Server configuration and methods
+- [Controller API](/v2.0/api/controller.md) - Controller base class methods
+- [Middleware Guide](/v2.0/core/middleware.md) - Creating custom middleware
+- [Routing Guide](/v2.0/core/routing.md) - Advanced routing patterns
+- [Server API](/v2.0/api/server.md) - Server configuration and methods

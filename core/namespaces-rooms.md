@@ -687,6 +687,6 @@ public function joinRoom(int $clientId, array $data): void
 
 ## Next Steps
 
-- [WebSocket Events](websocket/events.md) - Advanced event handling
-- [Broadcasting](websocket/broadcasting.md) - Targeted message broadcasting
-- [Examples](examples/) - See namespaces and rooms in real applications
+- [WebSocket Events](/v2.0/websocket/events.md) - Advanced event handling
+- [Broadcasting](/v2.0/websocket/broadcasting.md) - Targeted message broadcasting
+- [Examples](/v2.0/examples/) - See namespaces and rooms in real applications

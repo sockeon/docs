@@ -400,7 +400,7 @@ server {
 
 ## See Also
 
-- [Server Configuration](../core/server-configuration.md) - Complete server configuration guide
-- [Request API](../api/request.md) - Request methods for proxy headers
-- [Server API](../api/server.md) - Server uptime and health check methods
+- [Server Configuration](/v2.0/core/server-configuration.md) - Complete server configuration guide
+- [Request API](/v2.0/api/request.md) - Request methods for proxy headers
+- [Server API](/v2.0/api/server.md) - Server uptime and health check methods
 

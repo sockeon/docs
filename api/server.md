@@ -702,6 +702,6 @@ public function getServerInfo(Request $request): Response
 
 ## See Also
 
-- [Controller API](api/controller.md) - Controller base class methods
-- [Router API](api/router.md) - Routing system API
-- [Server Configuration](core/server-configuration.md) - Server configuration options
+- [Controller API](/v2.0/api/controller.md) - Controller base class methods
+- [Router API](/v2.0/api/router.md) - Routing system API
+- [Server Configuration](/v2.0/core/server-configuration.md) - Server configuration options

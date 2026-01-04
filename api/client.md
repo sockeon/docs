@@ -886,6 +886,6 @@ try {
 
 ## See Also
 
-- [Server API](api/server.md) - Server configuration and methods
-- [WebSocket Events](websocket/events.md) - Event handling patterns
-- [Server Configuration](core/server-configuration.md) - Server setup and configuration
+- [Server API](/v2.0/api/server.md) - Server configuration and methods
+- [WebSocket Events](/v2.0/websocket/events.md) - Event handling patterns
+- [Server Configuration](/v2.0/core/server-configuration.md) - Server setup and configuration

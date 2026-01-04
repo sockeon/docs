@@ -960,7 +960,7 @@ class ContentController extends SocketController
 
 ## See Also
 
-- [Request API](api/request.md) - HTTP request handling
-- [Controller API](api/controller.md) - Controller base class methods
-- [HTTP Guide](http/request-response.md) - Request/response patterns
-- [CORS Guide](http/cors.md) - Cross-origin resource sharing
+- [Request API](/v2.0/api/request.md) - HTTP request handling
+- [Controller API](/v2.0/api/controller.md) - Controller base class methods
+- [HTTP Guide](/v2.0/http/request-response.md) - Request/response patterns
+- [CORS Guide](/v2.0/http/cors.md) - Cross-origin resource sharing

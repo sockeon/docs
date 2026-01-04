@@ -768,7 +768,7 @@ class GameController extends SocketController
 
 ## See Also
 
-- [Server API](api/server.md) - Server instance methods
-- [Request API](api/request.md) - HTTP request handling
-- [Response API](api/response.md) - HTTP response creation
-- [Routing Guide](core/routing.md) - Advanced routing patterns
+- [Server API](/v2.0/api/server.md) - Server instance methods
+- [Request API](/v2.0/api/request.md) - HTTP request handling
+- [Response API](/v2.0/api/response.md) - HTTP response creation
+- [Routing Guide](/v2.0/core/routing.md) - Advanced routing patterns

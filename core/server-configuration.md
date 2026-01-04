@@ -418,7 +418,7 @@ location / {
 }
 ```
 
-For more details, see the [Reverse Proxy and Load Balancing Guide](../advanced/reverse-proxy.md).
+For more details, see the [Reverse Proxy and Load Balancing Guide](/v2.0/advanced/reverse-proxy.md).
 
 ## Rate Limiting Configuration
 
@@ -951,8 +951,8 @@ if (isset($configData['trusted_proxy_ips'])) {
 
 ## Next Steps
 
-- [Controllers](core/controllers.md) - Learn about creating and organizing controllers
-- [Middleware](core/middleware.md) - Implement request/response processing
-- [Rate Limiting](advanced/rate-limiting.md) - Deep dive into rate limiting
-- [Logging](advanced/logging.md) - Advanced logging configuration
-- [Reverse Proxy and Load Balancing](advanced/reverse-proxy.md) - Complete reverse proxy guide
+- [Controllers](/v2.0/core/controllers.md) - Learn about creating and organizing controllers
+- [Middleware](/v2.0/core/middleware.md) - Implement request/response processing
+- [Rate Limiting](/v2.0/advanced/rate-limiting.md) - Deep dive into rate limiting
+- [Logging](/v2.0/advanced/logging.md) - Advanced logging configuration
+- [Reverse Proxy and Load Balancing](/v2.0/advanced/reverse-proxy.md) - Complete reverse proxy guide
