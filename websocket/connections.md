@@ -1,8 +1,8 @@
 ---
 title: "WebSocket Connection Management - Sockeon Documentation"
 description: "Learn how to manage WebSocket connections, client data, and connection lifecycle in Sockeon framework"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Connection Management
@@ -22,7 +22,7 @@ use Sockeon\Sockeon\WebSocket\Attributes\OnDisconnect;
 class ConnectionController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Welcome the new client
         $this->emit($clientId, 'welcome', [
@@ -38,7 +38,7 @@ class ConnectionController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         // Notify other clients
         $this->broadcast('user.disconnected', [
@@ -57,7 +57,7 @@ class ConnectionController extends SocketController
 class ClientInfoController extends SocketController
 {
     #[SocketOn('client.info')]
-    public function getClientInfo(int $clientId, array $data): void
+    public function getClientInfo(string $clientId, array $data): void
     {
         $clientInfo = [
             'id' => $clientId,
@@ -69,7 +69,7 @@ class ClientInfoController extends SocketController
     }
     
     #[SocketOn('server.stats')]
-    public function getServerStats(int $clientId, array $data): void
+    public function getServerStats(string $clientId, array $data): void
     {
         $stats = [
             'total_clients' => $this->getClientCount(),
@@ -89,7 +89,7 @@ class ClientInfoController extends SocketController
 class ClientDataController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Store initial client data
         $this->setClientData($clientId, 'connected_at', time());
@@ -97,7 +97,7 @@ class ClientDataController extends SocketController
     }
 
     #[SocketOn('user.update')]
-    public function updateUser(int $clientId, array $data): void
+    public function updateUser(string $clientId, array $data): void
     {
         $name = $data['name'] ?? '';
         $email = $data['email'] ?? '';
@@ -113,7 +113,7 @@ class ClientDataController extends SocketController
     }
 
     #[SocketOn('user.info')]
-    public function getUserInfo(int $clientId, array $data): void
+    public function getUserInfo(string $clientId, array $data): void
     {
         $name = $this->getClientData($clientId, 'name');
         $email = $this->getClientData($clientId, 'email');
@@ -136,7 +136,7 @@ class ClientDataController extends SocketController
 class NamespaceController extends SocketController
 {
     #[SocketOn('namespace.join')]
-    public function joinNamespace(int $clientId, array $data): void
+    public function joinNamespace(string $clientId, array $data): void
     {
         $namespace = $data['namespace'] ?? '';
         
@@ -154,7 +154,7 @@ class NamespaceController extends SocketController
     }
 
     #[SocketOn('namespace.leave')]
-    public function leaveNamespace(int $clientId, array $data): void
+    public function leaveNamespace(string $clientId, array $data): void
     {
         // Move client to default namespace
         $this->moveClientToNamespace($clientId, '/');
@@ -174,7 +174,7 @@ class NamespaceController extends SocketController
 class RoomController extends SocketController
 {
     #[SocketOn('room.join')]
-    public function joinRoom(int $clientId, array $data): void
+    public function joinRoom(string $clientId, array $data): void
     {
         $room = $data['room'] ?? '';
         
@@ -198,7 +198,7 @@ class RoomController extends SocketController
     }
 
     #[SocketOn('room.leave')]
-    public function leaveRoom(int $clientId, array $data): void
+    public function leaveRoom(string $clientId, array $data): void
     {
         $room = $data['room'] ?? '';
         

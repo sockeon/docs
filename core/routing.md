@@ -1,8 +1,8 @@
 ---
 title: "Routing - Sockeon Documentation"
 description: "Learn how to use attribute-based routing in Sockeon framework for HTTP routes and WebSocket events"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Routing
@@ -23,25 +23,25 @@ use Sockeon\Sockeon\WebSocket\Attributes\OnDisconnect;
 class ChatController extends SocketController
 {
     #[OnConnect]
-    public function handleConnection(int $clientId): void
+    public function handleConnection(string $clientId): void
     {
         // Automatically called when client connects
     }
 
     #[OnDisconnect] 
-    public function handleDisconnection(int $clientId): void
+    public function handleDisconnection(string $clientId): void
     {
         // Automatically called when client disconnects
     }
 
     #[SocketOn('chat.message')]
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         // Called when client sends 'chat.message' event
     }
 
     #[SocketOn('user.typing')]
-    public function handleTyping(int $clientId, array $data): void
+    public function handleTyping(string $clientId, array $data): void
     {
         // Called when client sends 'user.typing' event
     }
@@ -244,7 +244,7 @@ WebSocket events receive data as arrays:
 
 ```php
 #[SocketOn('chat.message')]
-public function handleChatMessage(int $clientId, array $data): void
+public function handleChatMessage(string $clientId, array $data): void
 {
     // Extract data with defaults
     $message = $data['message'] ?? '';
@@ -271,7 +271,7 @@ public function handleChatMessage(int $clientId, array $data): void
 }
 
 #[SocketOn('game.move')]
-public function handleGameMove(int $clientId, array $data): void
+public function handleGameMove(string $clientId, array $data): void
 {
     // Structured data handling
     $gameData = [
@@ -389,13 +389,13 @@ use App\Middleware\ChatModerationMiddleware;
 class ChatController extends SocketController
 {
     #[SocketOn('chat.message', middlewares: [WebSocketAuthMiddleware::class, ChatModerationMiddleware::class])]
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         // Requires authentication and moderation checks
     }
 
     #[SocketOn('admin.command', middlewares: [WebSocketAuthMiddleware::class, AdminMiddleware::class])]
-    public function handleAdminCommand(int $clientId, array $data): void
+    public function handleAdminCommand(string $clientId, array $data): void
     {
         // Admin-only commands
     }
@@ -416,7 +416,7 @@ public function healthCheck(Request $request): Response
 
 // Exclude global auth middleware for public WebSocket events
 #[SocketOn('public.announcement', excludeGlobalMiddlewares: [WebSocketAuthMiddleware::class])]
-public function handlePublicAnnouncement(int $clientId, array $data): void
+public function handlePublicAnnouncement(string $clientId, array $data): void
 {
     // Public event - no auth required
 }
@@ -508,7 +508,7 @@ class ConditionalController extends SocketController
     }
 
     #[SocketOn('data.request')]
-    public function handleDataRequest(int $clientId, array $data): void
+    public function handleDataRequest(string $clientId, array $data): void
     {
         $type = $data['type'] ?? 'default';
         

@@ -1,8 +1,8 @@
 ---
 title: "Logging - Sockeon Documentation"
 description: "Learn how to use logging in Sockeon framework for debugging and monitoring applications"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Logging
@@ -51,7 +51,7 @@ $logger = new Logger(
 class ChatController extends SocketController
 {
     #[SocketOn('chat.message')]
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         // Log info message
         $this->getLogger()->info('Chat message received', [
@@ -66,7 +66,7 @@ class ChatController extends SocketController
     }
     
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Log debug message
         $this->getLogger()->debug('Client connected', [
@@ -78,7 +78,7 @@ class ChatController extends SocketController
     }
     
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         // Log warning message
         $this->getLogger()->warning('Client disconnected', [
@@ -196,7 +196,7 @@ class ApiController extends SocketController
 class ErrorController extends SocketController
 {
     #[SocketOn('risky.operation')]
-    public function handleRiskyOperation(int $clientId, array $data): void
+    public function handleRiskyOperation(string $clientId, array $data): void
     {
         try {
             // Perform risky operation

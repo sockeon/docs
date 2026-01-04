@@ -1,8 +1,8 @@
 ---
 title: "WebSocket Client - Sockeon Documentation"
 description: "Learn how to create WebSocket clients to connect to Sockeon servers using PHP"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # WebSocket Client

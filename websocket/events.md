@@ -1,8 +1,8 @@
 ---
 title: "WebSocket Events - Sockeon Documentation"
 description: "Learn how to handle WebSocket events and create real-time applications with Sockeon framework"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # WebSocket Events
@@ -31,7 +31,7 @@ use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
 class ChatController extends SocketController
 {
     #[SocketOn('chat.message')]
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         
@@ -49,7 +49,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('user.typing')]
-    public function handleTyping(int $clientId, array $data): void
+    public function handleTyping(string $clientId, array $data): void
     {
         $isTyping = $data['typing'] ?? false;
         
@@ -73,7 +73,7 @@ use Sockeon\Sockeon\WebSocket\Attributes\OnDisconnect;
 class ConnectionController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Called automatically when a client connects
         $this->emit($clientId, 'welcome', [
@@ -89,7 +89,7 @@ class ConnectionController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         // Called automatically when a client disconnects
         $this->broadcast('user.disconnected', [
@@ -108,7 +108,7 @@ Use hierarchical naming with dots for organization:
 class GameController extends SocketController
 {
     #[SocketOn('game.join')]
-    public function joinGame(int $clientId, array $data): void
+    public function joinGame(string $clientId, array $data): void
     {
         $gameId = $data['gameId'] ?? '';
         $this->moveClientToNamespace($clientId, "/game/{$gameId}");
@@ -117,7 +117,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.move')]
-    public function handleMove(int $clientId, array $data): void
+    public function handleMove(string $clientId, array $data): void
     {
         $move = $data['move'] ?? '';
         $this->broadcast('game.move', [
@@ -127,7 +127,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.chat')]
-    public function handleGameChat(int $clientId, array $data): void
+    public function handleGameChat(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         $this->broadcast('game.chat', [
@@ -144,7 +144,7 @@ class GameController extends SocketController
 class DataController extends SocketController
 {
     #[SocketOn('user.update')]
-    public function updateUser(int $clientId, array $data): void
+    public function updateUser(string $clientId, array $data): void
     {
         $name = $data['name'] ?? '';
         $email = $data['email'] ?? '';
@@ -166,7 +166,7 @@ class DataController extends SocketController
     }
 
     #[SocketOn('user.info')]
-    public function getUserInfo(int $clientId, array $data): void
+    public function getUserInfo(string $clientId, array $data): void
     {
         $name = $this->getClientData($clientId, 'name');
         $email = $this->getClientData($clientId, 'email');

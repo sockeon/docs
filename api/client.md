@@ -1,8 +1,8 @@
 ---
 title: "Client API - Sockeon Documentation"
 description: "Complete API reference for Sockeon Client class with methods for connecting to WebSocket servers"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Client API Reference

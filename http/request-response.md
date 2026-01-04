@@ -1,8 +1,8 @@
 ---
 title: "HTTP Request and Response - Sockeon Documentation"
 description: "Learn how to handle HTTP requests and create responses in Sockeon framework"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Request and Response Handling

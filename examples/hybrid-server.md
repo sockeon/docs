@@ -1,8 +1,8 @@
 ---
 title: "Hybrid Server Example - Sockeon Documentation"
 description: "Complete example of a hybrid WebSocket and HTTP server using Sockeon framework"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Hybrid Server Example
@@ -31,7 +31,7 @@ class HybridController extends SocketController
 {
     // WebSocket Events
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         echo "WebSocket client {$clientId} connected\n";
         
@@ -42,13 +42,13 @@ class HybridController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         echo "WebSocket client {$clientId} disconnected\n";
     }
 
     #[SocketOn('chat.message')]
-    public function handleChatMessage(int $clientId, array $data): void
+    public function handleChatMessage(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         
@@ -65,7 +65,7 @@ class HybridController extends SocketController
     }
 
     #[SocketOn('notification.send')]
-    public function sendNotification(int $clientId, array $data): void
+    public function sendNotification(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         $type = $data['type'] ?? 'info';
@@ -130,7 +130,7 @@ class HybridController extends SocketController
     #[HttpRoute('POST', '/api/message/{clientId}')]
     public function sendToClient(Request $request): Response
     {
-        $clientId = (int)$request->getParam('clientId');
+        $clientId = $request->getParam('clientId');
         $data = $request->all();
         $message = $data['message'] ?? '';
         

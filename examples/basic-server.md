@@ -1,8 +1,8 @@
 ---
 title: "Basic WebSocket Server Example - Sockeon Documentation"
 description: "Complete example of a basic WebSocket server using Sockeon framework with chat functionality"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Basic WebSocket Server Example
@@ -27,7 +27,7 @@ use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
 class ChatController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         echo "Client {$clientId} connected\n";
         
@@ -43,7 +43,7 @@ class ChatController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         echo "Client {$clientId} disconnected\n";
         
@@ -54,7 +54,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('chat.message')]
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         
@@ -71,7 +71,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('user.typing')]
-    public function handleTyping(int $clientId, array $data): void
+    public function handleTyping(string $clientId, array $data): void
     {
         $isTyping = $data['typing'] ?? false;
         

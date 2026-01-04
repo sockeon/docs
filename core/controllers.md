@@ -1,8 +1,8 @@
 ---
 title: "Controllers - Sockeon Documentation"
 description: "Learn how to create and use controllers in Sockeon framework with WebSocket events and HTTP routes"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Controllers
@@ -37,7 +37,7 @@ use Sockeon\Sockeon\WebSocket\Attributes\OnDisconnect;
 class ChatController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Called when a client connects
         $this->emit($clientId, 'welcome', [
@@ -54,7 +54,7 @@ class ChatController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         // Called when a client disconnects
         $this->broadcast('user.left', [
@@ -75,7 +75,7 @@ use Sockeon\Sockeon\WebSocket\Attributes\SocketOn;
 class ChatController extends SocketController
 {
     #[SocketOn('chat.message')]
-    public function handleChatMessage(int $clientId, array $data): void
+    public function handleChatMessage(string $clientId, array $data): void
     {
         // Validate message
         if (empty($data['message'])) {
@@ -92,7 +92,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('chat.private')]
-    public function handlePrivateMessage(int $clientId, array $data): void
+    public function handlePrivateMessage(string $clientId, array $data): void
     {
         $targetId = $data['targetId'] ?? null;
         $message = $data['message'] ?? '';
@@ -117,7 +117,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('typing.start')]
-    public function handleTypingStart(int $clientId, array $data): void
+    public function handleTypingStart(string $clientId, array $data): void
     {
         $room = $data['room'] ?? 'general';
         
@@ -128,7 +128,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('typing.stop')]
-    public function handleTypingStop(int $clientId, array $data): void
+    public function handleTypingStop(string $clientId, array $data): void
     {
         $room = $data['room'] ?? 'general';
         
@@ -294,7 +294,7 @@ Controllers provide convenient methods for managing client groups:
 class GameController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Add to game namespace and lobby
         $this->moveClientToNamespace($clientId, '/game');
@@ -307,7 +307,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.create')]
-    public function createGame(int $clientId, array $data): void
+    public function createGame(string $clientId, array $data): void
     {
         $gameId = uniqid('game_');
         
@@ -328,7 +328,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.join')]
-    public function joinGame(int $clientId, array $data): void
+    public function joinGame(string $clientId, array $data): void
     {
         $gameId = $data['gameId'] ?? null;
         
@@ -353,7 +353,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.leave')]
-    public function leaveGame(int $clientId, array $data): void
+    public function leaveGame(string $clientId, array $data): void
     {
         $gameId = $data['gameId'] ?? null;
         
@@ -370,7 +370,7 @@ class GameController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         // Cleanup is automatic when client disconnects
         // But you might want to notify other players
@@ -390,7 +390,7 @@ Controllers inherit these useful methods from `SocketController`:
 #### WebSocket Communication
 ```php
 // Send to specific client
-$this->emit(int $clientId, string $event, array $data): void
+$this->emit(string $clientId, string $event, array $data): void
 
 // Send to all clients
 $this->broadcast(string $event, array $data): void
@@ -405,13 +405,13 @@ $this->broadcastToNamespaceClients(string $event, array $data, string $namespace
 #### Room Management
 ```php
 // Add client to room
-$this->joinRoom(int $clientId, string $room, string $namespace = '/'): void
+$this->joinRoom(string $clientId, string $room, string $namespace = '/'): void
 
 // Remove client from room
-$this->leaveRoom(int $clientId, string $room, string $namespace = '/'): void
+$this->leaveRoom(string $clientId, string $room, string $namespace = '/'): void
 
 // Move client to namespace
-$this->moveClientToNamespace(int $clientId, string $namespace = '/'): void
+$this->moveClientToNamespace(string $clientId, string $namespace = '/'): void
 
 // Note: There is no direct leaveNamespace method - clients are moved between namespaces
 ```
@@ -422,7 +422,7 @@ $this->moveClientToNamespace(int $clientId, string $namespace = '/'): void
 $this->getServer(): Server
 
 // Check if client is connected
-$this->isClientConnected(int $clientId): bool
+$this->isClientConnected(string $clientId): bool
 
 // Get all client IDs
 $this->getAllClients(): array
@@ -431,7 +431,7 @@ $this->getAllClients(): array
 $this->getClientCount(): int
 
 // Get client type
-$this->getClientType(int $clientId): ?string
+$this->getClientType(string $clientId): ?string
 ```
 
 ### Advanced Examples
@@ -478,7 +478,7 @@ class NotificationController extends SocketController
     private array $userSubscriptions = [];
 
     #[SocketOn('notifications.subscribe')]
-    public function subscribe(int $clientId, array $data): void
+    public function subscribe(string $clientId, array $data): void
     {
         $userId = $data['userId'] ?? null;
         $topics = $data['topics'] ?? [];
@@ -539,7 +539,7 @@ class NotificationController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         // Clean up subscriptions
         unset($this->userSubscriptions[$clientId]);

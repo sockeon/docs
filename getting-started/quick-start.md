@@ -1,8 +1,8 @@
 ---
 title: "Quick Start Guide - Sockeon Documentation"
 description: "Build your first Sockeon application with WebSocket and HTTP server in minutes"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Quick Start
@@ -70,7 +70,7 @@ class ChatController extends SocketController
      * Handle new WebSocket connections
      */
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Welcome the new user
         $this->emit($clientId, 'welcome', [
@@ -89,7 +89,7 @@ class ChatController extends SocketController
      * Handle WebSocket disconnections
      */
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         // Notify others about user leaving
         $this->broadcast('user.left', [
@@ -102,7 +102,7 @@ class ChatController extends SocketController
      * Handle chat messages
      */
     #[SocketOn('chat.message')]
-    public function handleChatMessage(int $clientId, array $data): void
+    public function handleChatMessage(string $clientId, array $data): void
     {
         // Broadcast the message to all connected clients
         $this->broadcast('chat.message', [
@@ -116,7 +116,7 @@ class ChatController extends SocketController
      * Handle room joining
      */
     #[SocketOn('room.join')]
-    public function handleRoomJoin(int $clientId, array $data): void
+    public function handleRoomJoin(string $clientId, array $data): void
     {
         $room = $data['room'] ?? 'general';
         

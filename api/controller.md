@@ -1,8 +1,8 @@
 ---
 title: "Controller API - Sockeon Documentation"
 description: "Complete API reference for Sockeon SocketController class with WebSocket and HTTP methods"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Controller API Reference
@@ -48,20 +48,20 @@ Sets the server instance for this controller. This method is called automaticall
 ### emit()
 
 ```php
-public function emit(int $clientId, string $event, array $data): void
+public function emit(string $clientId, string $event, array $data): void
 ```
 
 Sends an event to a specific client.
 
 **Parameters:**
-- `$clientId` (`int`): The client ID to send to
+- `$clientId` (`string`): The client ID to send to
 - `$event` (`string`): The event name
 - `$data` (`array<string, mixed>`): The data to send
 
 **Example:**
 ```php
 #[SocketOn('user.request')]
-public function handleUserRequest(int $clientId, array $data): void
+public function handleUserRequest(string $clientId, array $data): void
 {
     $this->emit($clientId, 'user.response', [
         'message' => 'Request processed',
@@ -87,7 +87,7 @@ Broadcasts an event to clients. Can broadcast to all clients, clients in a names
 **Example:**
 ```php
 #[SocketOn('chat.message')]
-public function handleChatMessage(int $clientId, array $data): void
+public function handleChatMessage(string $clientId, array $data): void
 {
     // Broadcast to all clients
     $this->broadcast('chat.message', [
@@ -129,7 +129,7 @@ Broadcasts an event to all clients in a specific room within a namespace.
 **Example:**
 ```php
 #[SocketOn('room.message')]
-public function handleRoomMessage(int $clientId, array $data): void
+public function handleRoomMessage(string $clientId, array $data): void
 {
     $room = $data['room'] ?? 'general';
     
@@ -178,20 +178,20 @@ public function sendAnnouncement(Request $request): Response
 ### joinRoom()
 
 ```php
-public function joinRoom(int $clientId, string $room, string $namespace = '/'): void
+public function joinRoom(string $clientId, string $room, string $namespace = '/'): void
 ```
 
 Adds a client to a room within a namespace.
 
 **Parameters:**
-- `$clientId` (`int`): The client ID
+- `$clientId` (`string`): The client ID
 - `$room` (`string`): The room name
 - `$namespace` (`string`): The namespace (default: '/')
 
 **Example:**
 ```php
 #[SocketOn('chat.join')]
-public function joinChatRoom(int $clientId, array $data): void
+public function joinChatRoom(string $clientId, array $data): void
 {
     $room = $data['room'] ?? 'general';
     
@@ -211,20 +211,20 @@ public function joinChatRoom(int $clientId, array $data): void
 ### leaveRoom()
 
 ```php
-public function leaveRoom(int $clientId, string $room, string $namespace = '/'): void
+public function leaveRoom(string $clientId, string $room, string $namespace = '/'): void
 ```
 
 Removes a client from a room within a namespace.
 
 **Parameters:**
-- `$clientId` (`int`): The client ID
+- `$clientId` (`string`): The client ID
 - `$room` (`string`): The room name
 - `$namespace` (`string`): The namespace (default: '/')
 
 **Example:**
 ```php
 #[SocketOn('chat.leave')]
-public function leaveChatRoom(int $clientId, array $data): void
+public function leaveChatRoom(string $clientId, array $data): void
 {
     $room = $data['room'] ?? 'general';
     
@@ -243,19 +243,19 @@ public function leaveChatRoom(int $clientId, array $data): void
 ### moveClientToNamespace()
 
 ```php
-public function moveClientToNamespace(int $clientId, string $namespace = '/'): void
+public function moveClientToNamespace(string $clientId, string $namespace = '/'): void
 ```
 
 Moves a client to a namespace.
 
 **Parameters:**
-- `$clientId` (`int`): The client ID
+- `$clientId` (`string`): The client ID
 - `$namespace` (`string`): The namespace (default: '/')
 
 **Example:**
 ```php
 #[OnConnect]
-public function onConnect(int $clientId): void
+public function onConnect(string $clientId): void
 {
     // Move client to chat namespace
     $this->moveClientToNamespace($clientId, '/chat');
@@ -270,18 +270,18 @@ public function onConnect(int $clientId): void
 ### leaveNamespace()
 
 ```php
-public function leaveNamespace(int $clientId): void
+public function leaveNamespace(string $clientId): void
 ```
 
 Removes a client from their current namespace.
 
 **Parameters:**
-- `$clientId` (`int`): The client ID
+- `$clientId` (`string`): The client ID
 
 **Example:**
 ```php
 #[SocketOn('namespace.switch')]
-public function switchNamespace(int $clientId, array $data): void
+public function switchNamespace(string $clientId, array $data): void
 {
     $newNamespace = $data['namespace'] ?? '/';
     
@@ -323,7 +323,7 @@ public function getStatus(Request $request): Response
 }
 
 #[SocketOn('server.info')]
-public function getServerInfo(int $clientId, array $data): void
+public function getServerInfo(string $clientId, array $data): void
 {
     $server = $this->getServer();
     
@@ -347,7 +347,7 @@ Marks a method to be called when a client connects.
 
 ```php
 #[OnConnect]
-public function onConnect(int $clientId): void
+public function onConnect(string $clientId): void
 {
     $this->emit($clientId, 'welcome', [
         'message' => 'Welcome to the server!',
@@ -362,7 +362,7 @@ Marks a method to be called when a client disconnects.
 
 ```php
 #[OnDisconnect]
-public function onDisconnect(int $clientId): void
+public function onDisconnect(string $clientId): void
 {
     $this->broadcast('user.left', [
         'clientId' => $clientId,
@@ -377,13 +377,13 @@ Marks a method to handle a specific WebSocket event.
 
 ```php
 #[SocketOn('chat.message')]
-public function handleChatMessage(int $clientId, array $data): void
+public function handleChatMessage(string $clientId, array $data): void
 {
     // Handle the chat message event
 }
 
 #[SocketOn('user.typing')]
-public function handleTyping(int $clientId, array $data): void
+public function handleTyping(string $clientId, array $data): void
 {
     // Handle typing indicator
 }
@@ -392,13 +392,13 @@ public function handleTyping(int $clientId, array $data): void
 **With Middleware:**
 ```php
 #[SocketOn('admin.command', middlewares: [AdminMiddleware::class])]
-public function handleAdminCommand(int $clientId, array $data): void
+public function handleAdminCommand(string $clientId, array $data): void
 {
     // Only admins can execute this
 }
 
 #[SocketOn('public.event', excludeGlobalMiddlewares: [AuthMiddleware::class])]
-public function handlePublicEvent(int $clientId, array $data): void
+public function handlePublicEvent(string $clientId, array $data): void
 {
     // Public event - no auth required
 }
@@ -459,7 +459,7 @@ Applies rate limiting to a specific method.
 ```php
 #[SocketOn('chat.message')]
 #[RateLimit(maxCount: 10, timeWindow: 60)] // 10 messages per minute
-public function handleChatMessage(int $clientId, array $data): void
+public function handleChatMessage(string $clientId, array $data): void
 {
     // Rate limited chat messages
 }
@@ -494,7 +494,7 @@ class ChatController extends SocketController
     private array $userRooms = [];
 
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Add to chat namespace and default room
         $this->moveClientToNamespace($clientId, '/chat');
@@ -513,7 +513,7 @@ class ChatController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         $room = $this->userRooms[$clientId] ?? 'general';
         
@@ -525,7 +525,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('chat.message')]
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         $room = $this->userRooms[$clientId] ?? 'general';
@@ -543,7 +543,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('room.switch')]
-    public function switchRoom(int $clientId, array $data): void
+    public function switchRoom(string $clientId, array $data): void
     {
         $newRoom = $data['room'] ?? 'general';
         $oldRoom = $this->userRooms[$clientId] ?? 'general';
@@ -613,7 +613,7 @@ class GameController extends SocketController
     private array $playerGames = [];
 
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         $this->moveClientToNamespace($clientId, '/game');
         $this->joinRoom($clientId, 'lobby', '/game');
@@ -624,7 +624,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.create')]
-    public function createGame(int $clientId, array $data): void
+    public function createGame(string $clientId, array $data): void
     {
         $gameId = uniqid('game_');
         
@@ -655,7 +655,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.join')]
-    public function joinGame(int $clientId, array $data): void
+    public function joinGame(string $clientId, array $data): void
     {
         $gameId = $data['gameId'] ?? null;
         
@@ -695,7 +695,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.move')]
-    public function makeMove(int $clientId, array $data): void
+    public function makeMove(string $clientId, array $data): void
     {
         $gameId = $this->playerGames[$clientId] ?? null;
         
@@ -715,7 +715,7 @@ class GameController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         $gameId = $this->playerGames[$clientId] ?? null;
         

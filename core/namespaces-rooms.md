@@ -1,8 +1,8 @@
 ---
 title: "Namespaces and Rooms - Sockeon Documentation"
 description: "Learn how to organize WebSocket clients using namespaces and rooms in Sockeon framework"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Namespaces and Rooms
@@ -62,7 +62,7 @@ Clients are automatically placed in the default namespace (`/`) when they connec
 class ChatController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Client is automatically in '/' namespace
         
@@ -76,7 +76,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('namespace.switch')]
-    public function switchNamespace(int $clientId, array $data): void
+    public function switchNamespace(string $clientId, array $data): void
     {
         $targetNamespace = $data['namespace'] ?? '/';
         
@@ -122,7 +122,7 @@ class NotificationController extends SocketController
     }
 
     #[SocketOn('admin.announcement')]
-    public function adminAnnouncement(int $clientId, array $data): void
+    public function adminAnnouncement(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         $targetNamespace = $data['namespace'] ?? '/';
@@ -151,7 +151,7 @@ class NotificationController extends SocketController
 class ChatController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Move to chat namespace
         $this->moveClientToNamespace($clientId, '/chat');
@@ -167,7 +167,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('room.join')]
-    public function joinChatRoom(int $clientId, array $data): void
+    public function joinChatRoom(string $clientId, array $data): void
     {
         $room = $data['room'] ?? 'general';
         $namespace = '/chat';
@@ -192,7 +192,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('room.leave')]
-    public function leaveChatRoom(int $clientId, array $data): void
+    public function leaveChatRoom(string $clientId, array $data): void
     {
         $room = $data['room'] ?? 'general';
         $namespace = '/chat';
@@ -222,7 +222,7 @@ Send messages to all clients in a specific room:
 class ChatController extends SocketController
 {
     #[SocketOn('chat.message')]
-    public function sendMessage(int $clientId, array $data): void
+    public function sendMessage(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         $room = $data['room'] ?? 'general';
@@ -243,7 +243,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('chat.private')]
-    public function sendPrivateMessage(int $clientId, array $data): void
+    public function sendPrivateMessage(string $clientId, array $data): void
     {
         $targetId = $data['targetId'] ?? null;
         $message = $data['message'] ?? '';
@@ -280,7 +280,7 @@ class GameController extends SocketController
     private array $games = [];
 
     #[SocketOn('game.create')]
-    public function createGame(int $clientId, array $data): void
+    public function createGame(string $clientId, array $data): void
     {
         $gameName = $data['name'] ?? 'Untitled Game';
         $maxPlayers = $data['maxPlayers'] ?? 4;
@@ -318,7 +318,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.join')]
-    public function joinGame(int $clientId, array $data): void
+    public function joinGame(string $clientId, array $data): void
     {
         $gameId = $data['gameId'] ?? null;
         
@@ -360,7 +360,7 @@ class GameController extends SocketController
     }
 
     #[OnDisconnect]
-    public function onDisconnect(int $clientId): void
+    public function onDisconnect(string $clientId): void
     {
         // Clean up games when host disconnects
         foreach ($this->games as $gameId => $game) {
@@ -424,7 +424,7 @@ class RoomManagerController extends SocketController
     }
 
     #[SocketOn('room.list')]
-    public function listAvailableRooms(int $clientId, array $data): void
+    public function listAvailableRooms(string $clientId, array $data): void
     {
         $namespace = $data['namespace'] ?? '/';
         $rooms = $this->getServer()->getNamespaceManager()->getRoomsInNamespace($namespace);
@@ -454,7 +454,7 @@ class RoomManagerController extends SocketController
 class MultiTenantChatController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // Clients start in default namespace
         $this->emit($clientId, 'connected', [
@@ -464,7 +464,7 @@ class MultiTenantChatController extends SocketController
     }
 
     #[SocketOn('tenant.join')]
-    public function joinTenant(int $clientId, array $data): void
+    public function joinTenant(string $clientId, array $data): void
     {
         $tenantId = $data['tenantId'] ?? null;
         $userId = $data['userId'] ?? null;
@@ -501,7 +501,7 @@ class MultiTenantChatController extends SocketController
     }
 
     #[SocketOn('chat.message')]
-    public function sendMessage(int $clientId, array $data): void
+    public function sendMessage(string $clientId, array $data): void
     {
         $userId = $this->getClientData($clientId, 'userId');
         $tenantId = $this->getClientData($clientId, 'tenantId');
@@ -532,7 +532,7 @@ class MultiTenantChatController extends SocketController
 class CollaborationController extends SocketController
 {
     #[SocketOn('document.join')]
-    public function joinDocument(int $clientId, array $data): void
+    public function joinDocument(string $clientId, array $data): void
     {
         $documentId = $data['documentId'] ?? null;
         $userId = $data['userId'] ?? null;
@@ -568,7 +568,7 @@ class CollaborationController extends SocketController
     }
 
     #[SocketOn('document.edit')]
-    public function editDocument(int $clientId, array $data): void
+    public function editDocument(string $clientId, array $data): void
     {
         $userId = $this->getClientData($clientId, 'userId');
         $documentId = $this->getClientData($clientId, 'documentId');
@@ -593,7 +593,7 @@ class CollaborationController extends SocketController
     }
 
     #[SocketOn('cursor.position')]
-    public function updateCursorPosition(int $clientId, array $data): void
+    public function updateCursorPosition(string $clientId, array $data): void
     {
         $userId = $this->getClientData($clientId, 'userId');
         $documentId = $this->getClientData($clientId, 'documentId');
@@ -651,7 +651,7 @@ Always clean up when clients disconnect:
 
 ```php
 #[OnDisconnect]
-public function onDisconnect(int $clientId): void
+public function onDisconnect(string $clientId): void
 {
     // Sockeon automatically removes clients from namespaces and rooms
     // But you should handle application-specific cleanup
@@ -667,7 +667,7 @@ Handle invalid namespace/room operations:
 
 ```php
 #[SocketOn('room.join')]
-public function joinRoom(int $clientId, array $data): void
+public function joinRoom(string $clientId, array $data): void
 {
     $room = $data['room'] ?? null;
     

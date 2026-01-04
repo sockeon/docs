@@ -1,8 +1,8 @@
 ---
 title: "Data Validation - Sockeon Documentation"
 description: "Learn about Sockeon's unified validation system for HTTP and WebSocket data"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Data Validation
@@ -61,7 +61,7 @@ class ChatController extends SocketController
     }
     
     #[SocketOn('message')]
-    public function onMessage(int $clientId, array $data): void
+    public function onMessage(string $clientId, array $data): void
     {
         try {
             // Same Validator class as HTTP
@@ -254,7 +254,7 @@ $validatedData = $request->validated([
 
 ```php
 #[SocketOn('message')]
-public function onMessage(int $clientId, array $data): void
+public function onMessage(string $clientId, array $data): void
 {
     try {
         $this->validator->validate($data, [

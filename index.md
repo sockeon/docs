@@ -1,8 +1,8 @@
 ---
 title: "Sockeon Documentation"
 description: "Complete guide to Sockeon - PHP WebSocket and HTTP server framework with attribute-based routing, namespaces, rooms, and built-in rate limiting"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Sockeon Documentation
@@ -97,13 +97,13 @@ use Sockeon\Sockeon\WebSocket\Attributes\OnConnect;
 class MyController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         $this->emit($clientId, 'welcome', ['message' => 'Hello!']);
     }
 
     #[SocketOn('chat.message')]
-    public function handleChatMessage(int $clientId, array $data): void
+    public function handleChatMessage(string $clientId, array $data): void
     {
         $this->broadcast('chat.message', [
             'user' => $clientId,

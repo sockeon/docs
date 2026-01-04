@@ -1,8 +1,8 @@
 ---
 title: "Installation - Sockeon Documentation"
 description: "Learn how to install Sockeon PHP WebSocket and HTTP server framework with Composer"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Installation

@@ -1,8 +1,8 @@
 ---
 title: "Middleware - Sockeon Documentation"
 description: "Learn how to create and use middleware in Sockeon framework for request/response processing"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Middleware
@@ -242,7 +242,7 @@ use Sockeon\Sockeon\Connection\Server;
 
 class WebSocketAuthMiddleware implements WebsocketMiddleware
 {
-    public function handle(int $clientId, string $event, array $data, callable $next, Server $server): mixed
+    public function handle(string $clientId, string $event, array $data, callable $next, Server $server): mixed
     {
         // Check if client is authenticated
         if (!$this->isClientAuthenticated($clientId, $server)) {
@@ -258,7 +258,7 @@ class WebSocketAuthMiddleware implements WebsocketMiddleware
         return $next($clientId, $event, $data);
     }
 
-    private function isClientAuthenticated(int $clientId, Server $server): bool
+    private function isClientAuthenticated(string $clientId, Server $server): bool
     {
         // Check authentication status (you'd implement this)
         $clientData = $server->getClientData($clientId);
@@ -341,7 +341,7 @@ class MessageValidationMiddleware implements WebsocketMiddleware
         ];
     }
 
-    public function handle(int $clientId, string $event, array $data, callable $next, Server $server): mixed
+    public function handle(string $clientId, string $event, array $data, callable $next, Server $server): mixed
     {
         // Check if we have validation rules for this event
         if (!isset($this->eventSchemas[$event])) {
@@ -428,7 +428,7 @@ class ProfanityFilterMiddleware implements WebsocketMiddleware
         ]);
     }
 
-    public function handle(int $clientId, string $event, array $data, callable $next, Server $server): mixed
+    public function handle(string $clientId, string $event, array $data, callable $next, Server $server): mixed
     {
         // Only filter text-based events
         if (!in_array($event, ['chat.message', 'comment.post', 'review.create'])) {
@@ -474,7 +474,7 @@ use Sockeon\Sockeon\WebSocket\HandshakeRequest;
 
 class WebSocketAuthHandshakeMiddleware implements HandshakeMiddleware
 {
-    public function handle(int $clientId, HandshakeRequest $request, callable $next, Server $server): bool
+    public function handle(string $clientId, HandshakeRequest $request, callable $next, Server $server): bool
     {
         // Check for authentication token in headers
         $authHeader = $request->getHeader('Authorization');
@@ -560,7 +560,7 @@ class ApiController extends SocketController
 
     // WebSocket event with middleware
     #[SocketOn('admin.command', middlewares: [WebSocketAuthMiddleware::class, AdminMiddleware::class])]
-    public function adminCommand(int $clientId, array $data): void
+    public function adminCommand(string $clientId, array $data): void
     {
         // Admin command handling
     }
@@ -583,7 +583,7 @@ class HealthController extends SocketController
 
     // Public WebSocket event (exclude auth)
     #[SocketOn('system.ping', excludeGlobalMiddlewares: [WebSocketAuthMiddleware::class])]
-    public function ping(int $clientId, array $data): void
+    public function ping(string $clientId, array $data): void
     {
         $this->emit($clientId, 'system.pong', ['timestamp' => time()]);
     }
@@ -685,7 +685,7 @@ public function uploadFile(Request $request): Response
 ```php
 #[SocketOn('chat.message')]
 #[RateLimit(maxCount: 10, timeWindow: 60)] // 10 messages per minute
-public function handleChatMessage(int $clientId, array $data): void
+public function handleChatMessage(string $clientId, array $data): void
 {
     // Rate limiting handled automatically
 }

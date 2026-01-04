@@ -1,8 +1,8 @@
 ---
 title: "Server API - Sockeon Documentation"
 description: "Complete API reference for Sockeon Server class with methods for client management and broadcasting"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Server API Reference
@@ -85,7 +85,7 @@ public function getClients(): array
 
 Returns an array of all connected client resources.
 
-**Returns:** `array<int, resource>` - Array of client IDs and their socket resources
+**Returns:** `array<string, resource>` - Array of client IDs and their socket resources
 
 **Example:**
 ```php
@@ -103,7 +103,7 @@ public function getClientTypes(): array
 
 Returns an array mapping client IDs to their connection types.
 
-**Returns:** `array<int, string>` - Array of client IDs and their types ('ws' for WebSocket, 'http' for HTTP)
+**Returns:** `array<string, string>` - Array of client IDs and their types ('ws' for WebSocket, 'http' for HTTP)
 
 **Example:**
 ```php
@@ -121,7 +121,7 @@ public function getClientIds(): array
 
 Returns an array of all connected client IDs.
 
-**Returns:** `array<int, int>` - Array of client IDs
+**Returns:** `array<string>` - Array of client IDs
 
 **Example:**
 ```php
@@ -148,41 +148,41 @@ echo "Total connected clients: {$count}\n";
 ### isClientConnected()
 
 ```php
-public function isClientConnected(int $clientId): bool
+public function isClientConnected(string $clientId): bool
 ```
 
 Checks if a specific client is currently connected.
 
 **Parameters:**
-- `$clientId` (`int`): Client ID to check
+- `$clientId` (`string`): Client ID to check
 
 **Returns:** `bool` - True if connected, false otherwise
 
 **Example:**
 ```php
-if ($server->isClientConnected(123)) {
-    echo "Client 123 is connected\n";
+if ($server->isClientConnected('client-123')) {
+    echo "Client client-123 is connected\n";
 }
 ```
 
 ### getClientType()
 
 ```php
-public function getClientType(int $clientId): ?string
+public function getClientType(string $clientId): ?string
 ```
 
 Gets the connection type for a specific client.
 
 **Parameters:**
-- `$clientId` (`int`): Client ID to check
+- `$clientId` (`string`): Client ID to check
 
 **Returns:** `string|null` - Client type ('ws' or 'http') or null if not found
 
 **Example:**
 ```php
-$type = $server->getClientType(123);
+$type = $server->getClientType('client-123');
 if ($type === 'ws') {
-    echo "Client 123 is a WebSocket connection\n";
+    echo "Client client-123 is a WebSocket connection\n";
 }
 ```
 
@@ -193,19 +193,19 @@ if ($type === 'ws') {
 ### send()
 
 ```php
-public function send(int $clientId, string $event, array $data): void
+public function send(string $clientId, string $event, array $data): void
 ```
 
 Sends a WebSocket message to a specific client.
 
 **Parameters:**
-- `$clientId` (`int`): Target client ID
+- `$clientId` (`string`): Target client ID
 - `$event` (`string`): Event name
 - `$data` (`array<string, mixed>`): Event data
 
 **Example:**
 ```php
-$server->send(123, 'notification', [
+$server->send('client-123', 'notification', [
     'message' => 'Hello!',
     'timestamp' => time()
 ]);
@@ -214,18 +214,18 @@ $server->send(123, 'notification', [
 ### sendToClient()
 
 ```php
-public function sendToClient(int $clientId, string $message): void
+public function sendToClient(string $clientId, string $message): void
 ```
 
 Sends raw message data to a specific client.
 
 **Parameters:**
-- `$clientId` (`int`): Target client ID
+- `$clientId` (`string`): Target client ID
 - `$message` (`string`): Raw message data
 
 **Example:**
 ```php
-$server->sendToClient(123, 'Hello, client!');
+$server->sendToClient('client-123', 'Hello, client!');
 ```
 
 ### broadcast()
@@ -261,54 +261,54 @@ $server->broadcast('chat.message', ['text' => 'Hello room!'], '/chat', 'general'
 ### moveClientToNamespace()
 
 ```php
-public function moveClientToNamespace(int $clientId, string $namespace = '/'): void
+public function moveClientToNamespace(string $clientId, string $namespace = '/'): void
 ```
 
 Moves a client to a namespace.
 
 **Parameters:**
-- `$clientId` (`int`): Client ID
+- `$clientId` (`string`): Client ID
 - `$namespace` (`string`): Namespace to move to (default: '/')
 
 **Example:**
 ```php
-$server->moveClientToNamespace(123, '/chat');
+$server->moveClientToNamespace('client-123', '/chat');
 ```
 
 ### joinRoom()
 
 ```php
-public function joinRoom(int $clientId, string $room, string $namespace = '/'): void
+public function joinRoom(string $clientId, string $room, string $namespace = '/'): void
 ```
 
 Adds a client to a room within a namespace.
 
 **Parameters:**
-- `$clientId` (`int`): Client ID
+- `$clientId` (`string`): Client ID
 - `$room` (`string`): Room name
 - `$namespace` (`string`): Namespace containing the room (default: '/')
 
 **Example:**
 ```php
-$server->joinRoom(123, 'general', '/chat');
+$server->joinRoom('client-123', 'general', '/chat');
 ```
 
 ### leaveRoom()
 
 ```php
-public function leaveRoom(int $clientId, string $room, string $namespace = '/'): void
+public function leaveRoom(string $clientId, string $room, string $namespace = '/'): void
 ```
 
 Removes a client from a room within a namespace.
 
 **Parameters:**
-- `$clientId` (`int`): Client ID
+- `$clientId` (`string`): Client ID
 - `$room` (`string`): Room name
 - `$namespace` (`string`): Namespace containing the room (default: '/')
 
 **Example:**
 ```php
-$server->leaveRoom(123, 'general', '/chat');
+$server->leaveRoom('client-123', 'general', '/chat');
 ```
 
 ---
@@ -528,7 +528,7 @@ class ClientManagerController extends SocketController
     #[HttpRoute('POST', '/api/clients/{clientId}/kick')]
     public function kickClient(Request $request): Response
     {
-        $clientId = (int)$request->getParam('clientId');
+        $clientId = $request->getParam('clientId');
         $reason = $request->all()['reason'] ?? 'Kicked by admin';
         
         if (!$this->getServer()->isClientConnected($clientId)) {
@@ -592,7 +592,7 @@ if ($server->isClientConnected($clientId)) {
 }
 
 // Or use a helper method
-function safeSend(Server $server, int $clientId, string $event, array $data): bool
+function safeSend(Server $server, string $clientId, string $event, array $data): bool
 {
     if ($server->isClientConnected($clientId)) {
         $server->send($clientId, $event, $data);

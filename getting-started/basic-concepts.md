@@ -1,8 +1,8 @@
 ---
 title: "Basic Concepts - Sockeon Documentation"
 description: "Learn the core concepts of Sockeon framework including controllers, events, namespaces, and rooms"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Basic Concepts
@@ -121,19 +121,19 @@ Sockeon uses PHP 8 attributes for clean, declarative routing:
 class ChatController extends SocketController
 {
     #[OnConnect]
-    public function welcome(int $clientId): void
+    public function welcome(string $clientId): void
     {
         $this->emit($clientId, 'welcome', ['message' => 'Hello!']);
     }
 
     #[SocketOn('chat.message')]
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         $this->broadcast('chat.message', $data);
     }
 
     #[OnDisconnect]
-    public function goodbye(int $clientId): void
+    public function goodbye(string $clientId): void
     {
         $this->broadcast('user.left', ['user' => $clientId]);
     }
@@ -193,7 +193,7 @@ $this->broadcastToRoomClients('private.message', $data, 'room1', '/chat');
 class GameController extends SocketController
 {
     #[OnConnect]
-    public function onConnect(int $clientId): void
+    public function onConnect(string $clientId): void
     {
         // All game clients start in the lobby
         $this->joinNamespace($clientId, '/game');
@@ -201,7 +201,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.join')]
-    public function joinGame(int $clientId, array $data): void
+    public function joinGame(string $clientId, array $data): void
     {
         $gameId = $data['gameId'];
         
@@ -247,7 +247,7 @@ use Sockeon\Sockeon\Contracts\WebSocket\WebsocketMiddleware;
 
 class ChatMiddleware implements WebsocketMiddleware
 {
-    public function handle(int $clientId, string $event, array $data, callable $next, Server $server): mixed
+    public function handle(string $clientId, string $event, array $data, callable $next, Server $server): mixed
     {
         // Validate message content
         if (isset($data['message']) && $this->containsProfanity($data['message'])) {
@@ -385,7 +385,7 @@ Controllers can handle errors gracefully:
 
 ```php
 #[SocketOn('risky.operation')]
-public function handleRiskyOperation(int $clientId, array $data): void
+public function handleRiskyOperation(string $clientId, array $data): void
 {
     try {
         $this->performRiskyOperation($data);

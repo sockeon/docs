@@ -1,8 +1,8 @@
 ---
 title: "WebSocket Broadcasting - Sockeon Documentation"
 description: "Learn how to broadcast messages to WebSocket clients using namespaces and rooms in Sockeon framework"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Broadcasting
@@ -19,7 +19,7 @@ Send messages to all connected clients:
 class GlobalBroadcastController extends SocketController
 {
     #[SocketOn('server.announcement')]
-    public function serverAnnouncement(int $clientId, array $data): void
+    public function serverAnnouncement(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         
@@ -46,7 +46,7 @@ Send messages to all clients in a specific namespace:
 class NamespaceBroadcastController extends SocketController
 {
     #[SocketOn('namespace.broadcast')]
-    public function namespaceBroadcast(int $clientId, array $data): void
+    public function namespaceBroadcast(string $clientId, array $data): void
     {
         $namespace = $data['namespace'] ?? '/';
         $message = $data['message'] ?? '';
@@ -74,7 +74,7 @@ Send messages to all clients in a specific room:
 class RoomBroadcastController extends SocketController
 {
     #[SocketOn('room.message')]
-    public function roomMessage(int $clientId, array $data): void
+    public function roomMessage(string $clientId, array $data): void
     {
         $room = $data['room'] ?? '';
         $message = $data['message'] ?? '';
@@ -107,7 +107,7 @@ class RoomBroadcastController extends SocketController
 class ChatController extends SocketController
 {
     #[SocketOn('chat.message')]
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         $message = $data['message'] ?? '';
         $room = $data['room'] ?? 'general';
@@ -127,7 +127,7 @@ class ChatController extends SocketController
     }
 
     #[SocketOn('chat.typing')]
-    public function handleTyping(int $clientId, array $data): void
+    public function handleTyping(string $clientId, array $data): void
     {
         $isTyping = $data['typing'] ?? false;
         $room = $data['room'] ?? 'general';
@@ -148,7 +148,7 @@ class ChatController extends SocketController
 class GameController extends SocketController
 {
     #[SocketOn('game.move')]
-    public function handleMove(int $clientId, array $data): void
+    public function handleMove(string $clientId, array $data): void
     {
         $gameId = $data['gameId'] ?? '';
         $move = $data['move'] ?? '';
@@ -168,7 +168,7 @@ class GameController extends SocketController
     }
 
     #[SocketOn('game.chat')]
-    public function handleGameChat(int $clientId, array $data): void
+    public function handleGameChat(string $clientId, array $data): void
     {
         $gameId = $data['gameId'] ?? '';
         $message = $data['message'] ?? '';
@@ -192,7 +192,7 @@ class GameController extends SocketController
 class BroadcastingExamples extends SocketController
 {
     #[SocketOn('example.broadcast')]
-    public function exampleBroadcast(int $clientId, array $data): void
+    public function exampleBroadcast(string $clientId, array $data): void
     {
         // Broadcast to all clients
         $this->broadcast('event.name', ['data' => 'value']);

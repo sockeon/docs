@@ -1,8 +1,8 @@
 ---
 title: "Rate Limiting - Sockeon Documentation"
 description: "Learn how to implement rate limiting in Sockeon framework using attributes and global configuration"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Rate Limiting
@@ -28,7 +28,7 @@ class ChatController extends SocketController
 {
     #[SocketOn('chat.message')]
     #[RateLimit(maxCount: 10, timeWindow: 60)] // 10 messages per minute
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         $this->broadcast('chat.message', [
             'user' => $clientId,
@@ -38,7 +38,7 @@ class ChatController extends SocketController
 
     #[SocketOn('user.typing')]
     #[RateLimit(maxCount: 30, timeWindow: 60)] // 30 typing events per minute
-    public function handleTyping(int $clientId, array $data): void
+    public function handleTyping(string $clientId, array $data): void
     {
         $this->broadcast('user.typing', [
             'user' => $clientId,
@@ -154,7 +154,7 @@ public function login(Request $request): Response
 ```php
 #[SocketOn('chat.message')]
 #[RateLimit(maxCount: 20, timeWindow: 60)] // 20 messages per minute
-public function handleChatMessage(int $clientId, array $data): void
+public function handleChatMessage(string $clientId, array $data): void
 {
     $message = trim($data['message'] ?? '');
     

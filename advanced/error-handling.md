@@ -1,8 +1,8 @@
 ---
 title: "Error Handling - Sockeon Documentation"
 description: "Learn how to handle errors gracefully in Sockeon framework with try-catch blocks and custom exceptions"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Error Handling
@@ -26,7 +26,7 @@ Error handling in Sockeon is built into the framework. You can:
 class ChatController extends SocketController
 {
     #[SocketOn('chat.message')]
-    public function handleMessage(int $clientId, array $data): void
+    public function handleMessage(string $clientId, array $data): void
     {
         try {
             $message = $data['message'] ?? '';
@@ -121,7 +121,7 @@ class ValidationException extends WebSocketException
 class UserController extends SocketController
 {
     #[SocketOn('user.update')]
-    public function updateUser(int $clientId, array $data): void
+    public function updateUser(string $clientId, array $data): void
     {
         try {
             $userId = $data['userId'] ?? null;

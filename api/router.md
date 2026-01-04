@@ -1,8 +1,8 @@
 ---
 title: "Router API - Sockeon Documentation"
 description: "Complete API reference for Sockeon Router class with route registration and dispatching methods"
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # Router API Reference
@@ -57,20 +57,20 @@ $router->register(new GameController());
 ### dispatch()
 
 ```php
-public function dispatch(int $clientId, string $event, array $data): void
+public function dispatch(string $clientId, string $event, array $data): void
 ```
 
 Routes a WebSocket event to the appropriate handler method.
 
 **Parameters:**
-- `$clientId` (`int`): The client ID that sent the event
+- `$clientId` (`string`): The client ID that sent the event
 - `$event` (`string`): The event name
 - `$data` (`array<string, mixed>`): The event data
 
 **Example:**
 ```php
 // This is called internally by the server
-$router->dispatch(123, 'chat.message', [
+$router->dispatch('client-123', 'chat.message', [
     'message' => 'Hello world!'
 ]);
 ```
@@ -118,35 +118,35 @@ $response = $router->dispatchHttp($request);
 ### routeConnect()
 
 ```php
-public function routeConnect(int $clientId): void
+public function routeConnect(string $clientId): void
 ```
 
 Routes client connection events to registered connect handlers.
 
 **Parameters:**
-- `$clientId` (`int`): The newly connected client ID
+- `$clientId` (`string`): The newly connected client ID
 
 **Example:**
 ```php
 // Called when a client connects
-$router->routeConnect(123);
+$router->routeConnect('client-123');
 ```
 
 ### routeDisconnect()
 
 ```php
-public function routeDisconnect(int $clientId): void
+public function routeDisconnect(string $clientId): void
 ```
 
 Routes client disconnection events to registered disconnect handlers.
 
 **Parameters:**
-- `$clientId` (`int`): The disconnected client ID
+- `$clientId` (`string`): The disconnected client ID
 
 **Example:**
 ```php
 // Called when a client disconnects
-$router->routeDisconnect(123);
+$router->routeDisconnect('client-123');
 ```
 
 ---
@@ -351,13 +351,13 @@ Middleware for WebSocket events is executed in this order:
 class ChatController extends SocketController 
 {
     #[SocketOn('private.message', middlewares: [AuthMiddleware::class, PrivacyMiddleware::class])]
-    public function handlePrivateMessage(int $clientId, array $data): void
+    public function handlePrivateMessage(string $clientId, array $data): void
     {
         // Executed after global + auth + privacy middleware
     }
 
     #[SocketOn('public.message', excludeGlobalMiddlewares: [AuthMiddleware::class])]
-    public function handlePublicMessage(int $clientId, array $data): void
+    public function handlePublicMessage(string $clientId, array $data): void
     {
         // Executed after global middleware except auth
     }
@@ -396,7 +396,7 @@ When a WebSocket handler throws an exception, the router automatically sends an 
 ```php
 // If this throws an exception:
 #[SocketOn('risky.operation')]
-public function riskyOperation(int $clientId, array $data): void
+public function riskyOperation(string $clientId, array $data): void
 {
     throw new Exception('Something went wrong');
 }
@@ -499,27 +499,27 @@ class ChatController extends SocketController
 {
     // Room events
     #[SocketOn('room.join')]
-    public function joinRoom(int $clientId, array $data): void { /* ... */ }
+    public function joinRoom(string $clientId, array $data): void { /* ... */ }
 
     #[SocketOn('room.leave')]
-    public function leaveRoom(int $clientId, array $data): void { /* ... */ }
+    public function leaveRoom(string $clientId, array $data): void { /* ... */ }
 
     #[SocketOn('room.message')]
-    public function roomMessage(int $clientId, array $data): void { /* ... */ }
+    public function roomMessage(string $clientId, array $data): void { /* ... */ }
 
     // User events
     #[SocketOn('user.typing')]
-    public function userTyping(int $clientId, array $data): void { /* ... */ }
+    public function userTyping(string $clientId, array $data): void { /* ... */ }
 
     #[SocketOn('user.status')]
-    public function userStatus(int $clientId, array $data): void { /* ... */ }
+    public function userStatus(string $clientId, array $data): void { /* ... */ }
 
     // Admin events
     #[SocketOn('admin.kick', middlewares: [AdminMiddleware::class])]
-    public function adminKick(int $clientId, array $data): void { /* ... */ }
+    public function adminKick(string $clientId, array $data): void { /* ... */ }
 
     #[SocketOn('admin.broadcast', middlewares: [AdminMiddleware::class])]
-    public function adminBroadcast(int $clientId, array $data): void { /* ... */ }
+    public function adminBroadcast(string $clientId, array $data): void { /* ... */ }
 }
 ```
 
