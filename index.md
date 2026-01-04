@@ -1,8 +1,8 @@
 ---
 title: "Sockeon Documentation v1.0"
 description: "Learn how to set up Sockeon in your PHP project and create a dual-protocol server that handles both WebSockets and HTTP requests. Build real-time applications with unified WebSocket and HTTP endpoints."
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Getting Started with Sockeon

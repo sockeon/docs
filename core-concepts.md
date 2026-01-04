@@ -1,8 +1,8 @@
 ---
 title: "Core Concepts - Sockeon Documentation v1.0"
 description: "Understand the fundamental architecture and core components of Sockeon's dual-protocol server. Learn how WebSocket and HTTP connections are managed simultaneously in PHP applications."
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # WebSocket and HTTP Server Architecture
