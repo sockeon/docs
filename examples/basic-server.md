@@ -1,8 +1,8 @@
 ---
 title: "Basic WebSocket Server Example - Sockeon Documentation"
 description: "Complete example of a basic WebSocket server using Sockeon framework with chat functionality"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Basic WebSocket Server Example

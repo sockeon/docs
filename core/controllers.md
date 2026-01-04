@@ -1,8 +1,8 @@
 ---
 title: "Controllers - Sockeon Documentation"
 description: "Learn how to create and use controllers in Sockeon framework with WebSocket events and HTTP routes"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Controllers

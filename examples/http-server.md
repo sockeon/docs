@@ -1,8 +1,8 @@
 ---
 title: "HTTP API Server Example - Sockeon Documentation"
 description: "Complete example of an HTTP API server using Sockeon framework with REST endpoints"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # HTTP Server Example

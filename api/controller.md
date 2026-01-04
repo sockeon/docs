@@ -1,8 +1,8 @@
 ---
 title: "Controller API - Sockeon Documentation"
 description: "Complete API reference for Sockeon SocketController class with WebSocket and HTTP methods"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Controller API Reference

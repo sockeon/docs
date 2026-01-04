@@ -1,8 +1,8 @@
 ---
 title: "Sockeon Documentation"
 description: "Complete guide to Sockeon - PHP WebSocket and HTTP server framework with attribute-based routing, namespaces, rooms, and built-in rate limiting"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Sockeon Documentation

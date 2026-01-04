@@ -1,8 +1,8 @@
 ---
 title: "Request API - Sockeon Documentation"
 description: "Complete API reference for Sockeon Request class with methods for accessing HTTP request data"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Request API Reference

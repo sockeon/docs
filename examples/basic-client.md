@@ -1,8 +1,8 @@
 ---
 title: "Basic WebSocket Client Example - Sockeon Documentation"
 description: "Complete example of a basic WebSocket client using Sockeon framework to connect to servers"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Basic WebSocket Client Example

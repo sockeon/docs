@@ -1,8 +1,8 @@
 ---
 title: "Response API - Sockeon Documentation"
 description: "Complete API reference for Sockeon Response class with methods for creating HTTP responses"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Response API Reference

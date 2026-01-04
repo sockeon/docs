@@ -1,8 +1,8 @@
 ---
 title: "Router API - Sockeon Documentation"
 description: "Complete API reference for Sockeon Router class with route registration and dispatching methods"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Router API Reference

@@ -1,8 +1,8 @@
 ---
 title: "HTTP Routing - Sockeon Documentation"
 description: "Learn how to create HTTP routes and handle different HTTP methods in Sockeon framework"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # HTTP Routing

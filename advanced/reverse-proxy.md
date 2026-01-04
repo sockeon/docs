@@ -1,8 +1,8 @@
 ---
 title: "Reverse Proxy and Load Balancing - Sockeon Documentation"
 description: "Complete guide to configuring Sockeon behind reverse proxies and load balancers"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Reverse Proxy and Load Balancing

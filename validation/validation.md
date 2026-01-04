@@ -1,8 +1,8 @@
 ---
 title: "Data Validation - Sockeon Documentation"
 description: "Learn about Sockeon's unified validation system for HTTP and WebSocket data"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Data Validation

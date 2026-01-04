@@ -1,8 +1,8 @@
 ---
 title: "Middleware - Sockeon Documentation"
 description: "Learn how to create and use middleware in Sockeon framework for request/response processing"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Middleware

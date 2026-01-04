@@ -1,8 +1,8 @@
 ---
 title: "Quick Start Guide - Sockeon Documentation"
 description: "Build your first Sockeon application with WebSocket and HTTP server in minutes"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Quick Start

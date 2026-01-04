@@ -1,8 +1,8 @@
 ---
 title: "Namespaces and Rooms - Sockeon Documentation"
 description: "Learn how to organize WebSocket clients using namespaces and rooms in Sockeon framework"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Namespaces and Rooms

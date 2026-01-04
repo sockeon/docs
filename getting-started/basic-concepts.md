@@ -1,8 +1,8 @@
 ---
 title: "Basic Concepts - Sockeon Documentation"
 description: "Learn the core concepts of Sockeon framework including controllers, events, namespaces, and rooms"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Basic Concepts

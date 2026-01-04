@@ -1,8 +1,8 @@
 ---
 title: "Data Sanitization - Sockeon Documentation"
 description: "Learn about Sockeon's standalone sanitization utilities for cleaning and normalizing data"
-og_image: "https://sockeon.com/public/logo.png"
-twitter_image: "https://sockeon.com/public/logo.png"
+og_image: "https://sockeon.com/logo.png"
+twitter_image: "https://sockeon.com/logo.png"
 ---
 
 # Data Sanitization
