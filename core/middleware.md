@@ -745,4 +745,4 @@ class AuthMiddlewareTest extends TestCase
 
 - [Namespaces and Rooms](/v2.0/core/namespaces-rooms.md) - Organize client connections
 - [Rate Limiting](/v2.0/advanced/rate-limiting.md) - Built-in rate limiting features
-- [Examples](/v2.0/examples/) - See middleware in action
+- [Examples](/v2.0/examples/basic-server) - See middleware in action

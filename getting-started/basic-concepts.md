@@ -405,7 +405,7 @@ Now that you understand the basic concepts, explore these topics:
 - [Server Configuration](/v2.0/core/server-configuration.md) - Detailed configuration options
 - [Controllers](/v2.0/core/controllers.md) - Advanced controller features
 - [Middleware](/v2.0/core/middleware.md) - Create custom middleware
-- [Examples](/v2.0/examples/) - See real-world applications
+- [Examples](/v2.0/examples/basic-server) - See real-world applications
 
 ## Best Practices
 

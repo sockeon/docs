@@ -689,4 +689,4 @@ public function joinRoom(string $clientId, array $data): void
 
 - [WebSocket Events](/v2.0/websocket/events.md) - Advanced event handling
 - [Broadcasting](/v2.0/websocket/broadcasting.md) - Targeted message broadcasting
-- [Examples](/v2.0/examples/) - See namespaces and rooms in real applications
+- [Examples](/v2.0/examples/hybrid-server) - See namespaces and rooms in real applications

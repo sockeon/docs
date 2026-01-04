@@ -337,7 +337,7 @@ Congratulations! You've created your first Sockeon application. Here's what you 
 - [Server Configuration](/v2.0/core/server-configuration.md) - Learn about advanced configuration options
 - [Middleware](/v2.0/core/middleware.md) - Add authentication and request processing
 - [Rate Limiting](/v2.0/advanced/rate-limiting.md) - Protect your server from abuse
-- [Examples](/v2.0/examples/) - See more complex examples
+- [Examples](/v2.0/examples/hybrid-server) - See more complex examples
 
 ## Common Issues
 
