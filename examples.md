@@ -1,8 +1,8 @@
 ---
 title: "Examples - Sockeon Documentation v1.0"
 description: "Comprehensive code examples and tutorials for implementing WebSocket and HTTP endpoints in PHP. Learn to build real-time features with WebSockets alongside RESTful APIs in unified applications."
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # WebSocket & HTTP Examples

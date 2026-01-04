@@ -1,8 +1,8 @@
 ---
 title: "API Reference - Sockeon Documentation v1.0"
 description: "Complete technical reference for Sockeon's dual-protocol PHP library. Detailed documentation of all classes, methods, and configuration options for WebSocket and HTTP implementations."
-og_image: "https://sockeon.com/assets/logo.png"
-twitter_image: "https://sockeon.com/assets/logo.png"
+og_image: "https://sockeon.com/public/logo.png"
+twitter_image: "https://sockeon.com/public/logo.png"
 ---
 
 # WebSocket & HTTP API Reference
