@@ -279,9 +279,3 @@ The SystemRoomController is thread-safe when used with Sockeon's single-threaded
 3. **Use namespaces** to isolate different parts of your application
 4. **Override with custom logic** when you need authentication or permissions
 5. **Log important room operations** for debugging and analytics
-
-## See Also
-
-- [NamespaceManager](/v2.0/core/namespaces-rooms.md)
-- [Broadcasting](/v2.0/websocket/broadcasting.md)
-- [Client Room Management](../../../sockeon-js/README.md#rooms)
