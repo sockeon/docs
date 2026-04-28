@@ -51,6 +51,7 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 - [Request API](/v2.0/api/request.md)
 - [Response API](/v2.0/api/response.md)
 - [Client API](/v2.0/api/client.md)
+- [Event API](/v2.0/api/event.md)
 
 ### Examples
 - [Basic WebSocket Server](/v2.0/examples/basic-server.md)
@@ -76,7 +77,7 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 
 ## Requirements
 
-- PHP >= 8.0
+- PHP >= 8.1
 - ext-openssl
 - ext-sockets
 

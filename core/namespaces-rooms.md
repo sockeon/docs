@@ -173,7 +173,7 @@ class ChatController extends SocketController
         $namespace = '/chat';
 
         // Leave current room(s) first (optional)
-        $this->leaveAllRooms($clientId, $namespace);
+        $this->leaveAllRooms($clientId);
         
         // Join new room
         $this->joinRoom($clientId, $room, $namespace);
@@ -399,7 +399,7 @@ class RoomManagerController extends SocketController
     public function listRooms(Request $request): Response
     {
         $namespace = $request->getQuery('namespace', '/');
-        $rooms = $this->getServer()->getNamespaceManager()->getRoomsInNamespace($namespace);
+        $rooms = $this->getRooms($namespace);
         
         return Response::json([
             'namespace' => $namespace,
@@ -427,7 +427,7 @@ class RoomManagerController extends SocketController
     public function listAvailableRooms(string $clientId, array $data): void
     {
         $namespace = $data['namespace'] ?? '/';
-        $rooms = $this->getServer()->getNamespaceManager()->getRoomsInNamespace($namespace);
+        $rooms = $this->getRooms($namespace);
         
         $roomList = [];
         foreach ($rooms as $room => $clients) {

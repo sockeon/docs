@@ -73,7 +73,7 @@ class ClientInfoController extends SocketController
     {
         $stats = [
             'total_clients' => $this->getClientCount(),
-            'client_ids' => array_keys($this->getAllClients())
+            'client_ids' => $this->getAllClients()
         ];
         
         $this->emit($clientId, 'server.stats', $stats);
@@ -154,7 +154,7 @@ class NamespaceController extends SocketController
     }
 
     #[SocketOn('namespace.leave')]
-    public function leaveNamespace(string $clientId, array $data): void
+    public function switchToDefaultNamespace(string $clientId, array $data): void
     {
         // Move client to default namespace
         $this->moveClientToNamespace($clientId, '/');
@@ -174,7 +174,7 @@ class NamespaceController extends SocketController
 class RoomController extends SocketController
 {
     #[SocketOn('room.join')]
-    public function joinRoom(string $clientId, array $data): void
+    public function handleJoinRoom(string $clientId, array $data): void
     {
         $room = $data['room'] ?? '';
         
@@ -198,7 +198,7 @@ class RoomController extends SocketController
     }
 
     #[SocketOn('room.leave')]
-    public function leaveRoom(string $clientId, array $data): void
+    public function handleLeaveRoom(string $clientId, array $data): void
     {
         $room = $data['room'] ?? '';
         

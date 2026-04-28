@@ -208,3 +208,54 @@ class BroadcastingExamples extends SocketController
     }
 }
 ```
+
+## Broadcasting With Custom Event Classes
+
+Use this pattern when you need broadcasting outside controller methods (jobs, CLI commands, services).
+
+```php
+<?php
+
+use Sockeon\Sockeon\Contracts\WebSocket\EventableContract;
+use Sockeon\Sockeon\Core\Event;
+
+final class DeploymentFinished implements EventableContract
+{
+    public function __construct(
+        private readonly string $version,
+        private readonly bool $success,
+    ) {
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'deployment.finished';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'version' => $this->version,
+            'success' => $this->success,
+            'time' => time(),
+        ];
+    }
+
+    public function broadcastOn(): ?array
+    {
+        return ['ops-room'];
+    }
+
+    public function broadcastNamespace(): ?string
+    {
+        return '/admin';
+    }
+}
+
+Event::broadcast(new DeploymentFinished('v2.1.0', true));
+```
+
+### Controller vs Custom Event Broadcasting
+
+- Use controller methods (`broadcast`, `broadcastToRoomClients`, `broadcastToNamespaceClients`) for request/event lifecycle broadcasting.
+- Use `Event::broadcast()` + `EventableContract` for decoupled broadcasting from non-controller code.

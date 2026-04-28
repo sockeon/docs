@@ -178,3 +178,62 @@ class DataController extends SocketController
     }
 }
 ```
+
+## Custom Event Classes
+
+For cross-process or non-controller broadcasting, use `Sockeon\Sockeon\Core\Event` with a custom class implementing `EventableContract`.
+
+```php
+<?php
+
+use Sockeon\Sockeon\Contracts\WebSocket\EventableContract;
+
+final class OrderStatusUpdated implements EventableContract
+{
+    public function __construct(
+        private readonly string $orderId,
+        private readonly string $status,
+    ) {
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'orders.status.updated';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'orderId' => $this->orderId,
+            'status' => $this->status,
+            'updatedAt' => time(),
+        ];
+    }
+
+    public function broadcastOn(): ?array
+    {
+        // Event will be broadcast to each room in this list
+        return ['ops', 'admin'];
+    }
+
+    public function broadcastNamespace(): ?string
+    {
+        return '/orders';
+    }
+}
+```
+
+Broadcast the event from anywhere in your app:
+
+```php
+use Sockeon\Sockeon\Core\Event;
+
+Event::broadcast(new OrderStatusUpdated('ord_123', 'shipped'));
+```
+
+### How it works
+
+- `Event::broadcast()` writes a broadcast payload to Sockeon's queue file.
+- The running server consumes that queue and dispatches to clients.
+- `broadcastOn()` should return one or more room names; if it returns `null` or an empty array, nothing is broadcast.
+- `broadcastNamespace()` defaults to `/` when `null`.

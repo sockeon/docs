@@ -113,6 +113,22 @@ foreach ($types as $clientId => $type) {
 }
 ```
 
+### getMaxMessageSize()
+
+```php
+public function getMaxMessageSize(): int
+```
+
+Returns the maximum accepted WebSocket message size in bytes.
+
+**Returns:** `int` - Maximum message size
+
+**Example:**
+```php
+$maxSize = $server->getMaxMessageSize();
+echo "Max WS message size: {$maxSize} bytes\n";
+```
+
 ### getClientIds()
 
 ```php
@@ -258,21 +274,11 @@ $server->broadcast('chat.message', ['text' => 'Hello room!'], '/chat', 'general'
 
 ## Namespace and Room Management
 
-### moveClientToNamespace()
+Access namespace-level operations through the namespace manager:
 
 ```php
-public function moveClientToNamespace(string $clientId, string $namespace = '/'): void
-```
-
-Moves a client to a namespace.
-
-**Parameters:**
-- `$clientId` (`string`): Client ID
-- `$namespace` (`string`): Namespace to move to (default: '/')
-
-**Example:**
-```php
-$server->moveClientToNamespace('client-123', '/chat');
+$namespaceManager = $server->getNamespaceManager();
+$namespaceManager->joinNamespace('client-123', '/chat');
 ```
 
 ### joinRoom()
@@ -318,7 +324,7 @@ $server->leaveRoom('client-123', 'general', '/chat');
 ### addHttpMiddleware()
 
 ```php
-public function addHttpMiddleware(string $middleware): void
+public function addHttpMiddleware(string $middleware): self
 ```
 
 Adds global HTTP middleware to the server.
@@ -335,7 +341,7 @@ $server->addHttpMiddleware(CorsMiddleware::class);
 ### addWebSocketMiddleware()
 
 ```php
-public function addWebSocketMiddleware(string $middleware): void
+public function addWebSocketMiddleware(string $middleware): self
 ```
 
 Adds global WebSocket middleware to the server.
@@ -352,7 +358,7 @@ $server->addWebSocketMiddleware(AuthMiddleware::class);
 ### addHandshakeMiddleware()
 
 ```php
-public function addHandshakeMiddleware(string $middleware): void
+public function addHandshakeMiddleware(string $middleware): self
 ```
 
 Adds WebSocket handshake middleware to the server.
@@ -541,7 +547,7 @@ class ClientManagerController extends SocketController
             'timestamp' => time()
         ]);
         
-        // Disconnect the client (you'd implement this)
+        // Disconnect the client
         $this->disconnectClient($clientId);
         
         return Response::json(['success' => true]);

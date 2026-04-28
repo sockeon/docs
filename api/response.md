@@ -125,20 +125,21 @@ public function healthCheck(Request $request): Response
 }
 ```
 
-### file()
+### download()
 
 ```php
-public static function file(string $filePath, string $mimeType = null, array $headers = []): Response
+public static function download(string $content, string $filename, string $contentType = 'application/octet-stream', array $headers = []): Response
 ```
 
-Creates a file download response.
+Creates a file download response from in-memory content.
 
 **Parameters:**
-- `$filePath` (`string`): Path to the file
-- `$mimeType` (`string|null`): MIME type (auto-detected if null)
+- `$content` (`string`): File contents
+- `$filename` (`string`): Download filename sent in `Content-Disposition`
+- `$contentType` (`string`): MIME type (default: `application/octet-stream`)
 - `$headers` (`array<string, string>`): Additional headers
 
-**Returns:** `Response` - File response with appropriate headers
+**Returns:** `Response` - Download response
 
 **Example:**
 ```php
@@ -152,8 +153,13 @@ public function downloadFile(Request $request): Response
         return Response::json(['error' => 'File not found'], 404);
     }
     
-    return Response::file($filePath, null, [
-        'Content-Disposition' => 'attachment; filename="' . $filename . '"'
+    $content = file_get_contents($filePath);
+    if ($content === false) {
+        return Response::serverError('Could not read file');
+    }
+
+    return Response::download($content, $filename, 'application/octet-stream', [
+        'Cache-Control' => 'no-cache'
     ]);
 }
 
@@ -167,7 +173,12 @@ public function getImage(Request $request): Response
         return Response::json(['error' => 'Image not found'], 404);
     }
     
-    return Response::file($imagePath, 'image/jpeg', [
+    $content = file_get_contents($imagePath);
+    if ($content === false) {
+        return Response::serverError('Could not read image');
+    }
+
+    return Response::download($content, "image-{$imageId}.jpg", 'image/jpeg', [
         'Cache-Control' => 'public, max-age=3600',
         'ETag' => md5_file($imagePath)
     ]);
@@ -177,7 +188,7 @@ public function getImage(Request $request): Response
 ### redirect()
 
 ```php
-public static function redirect(string $url, int $statusCode = 302, array $headers = []): Response
+public static function redirect(string $url, int $status = 302, array $headers = []): Response
 ```
 
 Creates a redirect response.
@@ -236,12 +247,12 @@ public function adminAccess(Request $request): Response
 ### getBody()
 
 ```php
-public function getBody(): string
+public function getBody(): mixed
 ```
 
 Returns the response body content.
 
-**Returns:** `string` - The response body
+**Returns:** `mixed` - The response body
 
 **Example:**
 ```php
@@ -261,13 +272,13 @@ public function previewContent(Request $request): Response
 ### setBody()
 
 ```php
-public function setBody(string $body): Response
+public function setBody(mixed $body): Response
 ```
 
 Sets the response body content.
 
 **Parameters:**
-- `$body` (`string`): The new body content
+- `$body` (`mixed`): The new body content
 
 **Returns:** `Response` - The response instance for method chaining
 
@@ -458,175 +469,12 @@ public function secureEndpoint(Request $request): Response
 }
 ```
 
-### setHeaders()
+`Response` does not include `setHeaders()`, `removeHeader()`, `withCors()`, `withCache()`, or `withoutCache()`. Set headers explicitly with `setHeader()`:
 
 ```php
-public function setHeaders(array $headers): Response
-```
-
-Sets multiple response headers.
-
-**Parameters:**
-- `$headers` (`array<string, string>`): Associative array of headers
-
-**Returns:** `Response` - The response instance for method chaining
-
-**Example:**
-```php
-#[HttpRoute('GET', '/api/cached-data')]
-public function cachedData(Request $request): Response
-{
-    $cacheHeaders = [
-        'Cache-Control' => 'public, max-age=3600',
-        'ETag' => '"' . md5('data') . '"',
-        'Last-Modified' => gmdate('D, d M Y H:i:s T', time() - 3600),
-        'Expires' => gmdate('D, d M Y H:i:s T', time() + 3600)
-    ];
-    
-    return Response::json(['data' => 'cached content'])
-                  ->setHeaders($cacheHeaders);
-}
-
-#[HttpRoute('POST', '/api/upload')]
-public function uploadEndpoint(Request $request): Response
-{
-    $securityHeaders = [
-        'X-Content-Type-Options' => 'nosniff',
-        'X-Frame-Options' => 'DENY',
-        'Content-Security-Policy' => "default-src 'self'",
-        'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains'
-    ];
-    
-    return Response::json(['uploaded' => true], 201)
-                  ->setHeaders($securityHeaders);
-}
-```
-
-### removeHeader()
-
-```php
-public function removeHeader(string $name): Response
-```
-
-Removes a response header.
-
-**Parameters:**
-- `$name` (`string`): The header name to remove
-
-**Returns:** `Response` - The response instance for method chaining
-
-**Example:**
-```php
-#[HttpRoute('GET', '/api/conditional')]
-public function conditionalHeaders(Request $request): Response
-{
-    $response = Response::json(['data' => 'example'], 200, [
-        'Cache-Control' => 'no-cache',
-        'X-Debug' => 'enabled'
-    ]);
-    
-    // Remove debug header in production
-    if (!$this->isDebugMode()) {
-        $response->removeHeader('X-Debug');
-    }
-    
-    return $response;
-}
-```
-
----
-
-## Convenience Methods
-
-### withCors()
-
-```php
-public function withCors(string $origin = '*', array $methods = ['GET', 'POST'], array $headers = []): Response
-```
-
-Adds CORS headers to the response.
-
-**Parameters:**
-- `$origin` (`string`): Allowed origin (default: '*')
-- `$methods` (`array<string>`): Allowed methods
-- `$headers` (`array<string>`): Allowed headers
-
-**Returns:** `Response` - The response instance for method chaining
-
-**Example:**
-```php
-#[HttpRoute('GET', '/api/public')]
-public function publicApi(Request $request): Response
-{
-    return Response::json(['public' => 'data'])
-                  ->withCors('*', ['GET', 'POST'], ['Content-Type', 'Authorization']);
-}
-
-#[HttpRoute('OPTIONS', '/api/users')]
-public function preflight(Request $request): Response
-{
-            return Response::noContent()
-                  ->setStatusCode(204)
-                  ->withCors('https://example.com', ['GET', 'POST', 'PUT', 'DELETE']);
-}
-```
-
-### withCache()
-
-```php
-public function withCache(int $maxAge, bool $public = true): Response
-```
-
-Adds cache control headers.
-
-**Parameters:**
-- `$maxAge` (`int`): Cache max age in seconds
-- `$public` (`bool`): Whether cache is public (default: true)
-
-**Returns:** `Response` - The response instance for method chaining
-
-**Example:**
-```php
-#[HttpRoute('GET', '/api/static-data')]
-public function staticData(Request $request): Response
-{
-    return Response::json(['data' => 'static'])
-                  ->withCache(3600); // Cache for 1 hour
-}
-
-#[HttpRoute('GET', '/api/user-profile')]
-public function userProfile(Request $request): Response
-{
-    return Response::json(['profile' => 'user data'])
-                  ->withCache(300, false); // Private cache for 5 minutes
-}
-```
-
-### withoutCache()
-
-```php
-public function withoutCache(): Response
-```
-
-Adds no-cache headers.
-
-**Returns:** `Response` - The response instance for method chaining
-
-**Example:**
-```php
-#[HttpRoute('GET', '/api/real-time-data')]
-public function realTimeData(Request $request): Response
-{
-    return Response::json(['timestamp' => time()])
-                  ->withoutCache();
-}
-
-#[HttpRoute('POST', '/api/sensitive')]
-public function sensitiveOperation(Request $request): Response
-{
-    return Response::json(['result' => 'processed'])
-                  ->withoutCache();
-}
+return Response::json(['ok' => true])
+    ->setHeader('Access-Control-Allow-Origin', '*')
+    ->setHeader('Cache-Control', 'no-store');
 ```
 
 ---
@@ -665,15 +513,13 @@ class UserApiController extends SocketController
                 'requested_at' => date('c'),
                 'version' => '1.0'
             ]
-        ])->withCache(300); // Cache for 5 minutes
+        ])->setHeader('Cache-Control', 'public, max-age=300');
     }
 
     #[HttpRoute('POST', '/api/users')]
     public function createUser(Request $request): Response
     {
-        $data = $request->isJson() ? 
-                $request->getJsonBody() : 
-                $request->getPostData();
+        $data = $request->all();
         
         // Validation
         $validation = $this->validateUserData($data);
@@ -693,7 +539,7 @@ class UserApiController extends SocketController
                 'message' => 'User created successfully'
             ], 201, [
                 'Location' => '/api/users/' . $user['id']
-            ])->withoutCache();
+            ])->setHeader('Cache-Control', 'no-store');
             
         } catch (DuplicateEmailException $e) {
             return Response::json([
@@ -715,9 +561,7 @@ class UserApiController extends SocketController
     public function updateUser(Request $request): Response
     {
         $userId = (int)$request->getParam('id');
-        $data = $request->isJson() ? 
-                $request->getJsonBody() : 
-                $request->getPostData();
+        $data = $request->all();
         
         $user = $this->findUser($userId);
         if (!$user) {
@@ -738,7 +582,7 @@ class UserApiController extends SocketController
         return Response::json([
             'user' => $updatedUser,
             'message' => 'User updated successfully'
-        ])->withoutCache();
+        ])->setHeader('Cache-Control', 'no-store');
     }
 
     #[HttpRoute('DELETE', '/api/users/{id}')]
@@ -765,14 +609,8 @@ class FileController extends SocketController
     #[HttpRoute('POST', '/api/upload')]
     public function uploadFile(Request $request): Response
     {
-        if (!$request->isMultipart()) {
-            return Response::json([
-                'error' => 'Multipart form data required'
-            ], 400);
-        }
-        
-        $file = $request->getFile('file');
-        if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
+        $file = $request->input('file');
+        if (!is_array($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
             return Response::json([
                 'error' => 'File upload failed'
             ], 400);
@@ -839,11 +677,17 @@ class FileController extends SocketController
         $disposition = $request->getQuery('download') === '1' ? 
                       'attachment' : 'inline';
         
-        return Response::file($file['path'], $file['mime_type'], [
+        $content = file_get_contents($file['path']);
+        if ($content === false) {
+            return Response::serverError('File read failed');
+        }
+        
+        return Response::download($content, $file['original_name'], $file['mime_type'], [
             'Content-Disposition' => $disposition . '; filename="' . $file['original_name'] . '"',
-            'Content-Length' => $file['size'],
-            'Last-Modified' => gmdate('D, d M Y H:i:s T', $file['modified_time'])
-        ])->withCache(86400); // Cache for 24 hours
+            'Content-Length' => (string)$file['size'],
+            'Last-Modified' => gmdate('D, d M Y H:i:s T', $file['modified_time']),
+            'Cache-Control' => 'public, max-age=86400'
+        ]);
     }
 
     #[HttpRoute('GET', '/api/files/{id}/info')]
@@ -865,7 +709,7 @@ class FileController extends SocketController
                 'uploaded_at' => $file['created_at'],
                 'download_url' => '/api/files/' . $file['id']
             ]
-        ])->withCache(3600);
+        ])->setHeader('Cache-Control', 'public, max-age=3600');
     }
 }
 ```

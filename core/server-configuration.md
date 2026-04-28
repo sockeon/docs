@@ -89,6 +89,32 @@ if ($config->isDebug()) {
 }
 ```
 
+### Message Size and System Controllers
+
+#### maxMessageSize
+- **Type**: `int`
+- **Default**: `65536` (64KB)
+- **Description**: Maximum allowed WebSocket message payload size in bytes
+- **Getter**: `getMaxMessageSize()`
+- **Setter**: `setMaxMessageSize(int $maxMessageSize)`
+
+```php
+// 256KB max incoming WebSocket message
+$config->setMaxMessageSize(262144);
+```
+
+#### register_system_controllers
+- **Type**: `bool`
+- **Default**: `true`
+- **Description**: Whether Sockeon auto-registers built-in system controllers
+- **Getter**: `shouldRegisterSystemControllers()`
+- **Setter**: `setRegisterSystemControllers(bool $register)`
+
+```php
+// Disable built-in system endpoints/controllers
+$config->setRegisterSystemControllers(false);
+```
+
 ## CORS Configuration
 
 Configure Cross-Origin Resource Sharing for HTTP requests using the `CorsConfig` class:
@@ -241,7 +267,7 @@ $client->connect();
 use Sockeon\Sockeon\Logging\Logger;
 
 $logger = new Logger();
-$logger->setLogLevel('info');
+$logger->setMinLogLevel('info');
 $logger->setLogToFile(true);
 $logger->setLogDirectory('/var/log/sockeon');
 
@@ -535,7 +561,7 @@ use Sockeon\Sockeon\Logging\Logger;
 
 // Create logger
 $logger = new Logger();
-$logger->setLogLevel('warning'); // Only log warnings and errors in production
+$logger->setMinLogLevel('warning'); // Only log warnings and errors in production
 $logger->setLogToFile(true);
 $logger->setLogDirectory('/var/log/sockeon');
 $logger->setLogToConsole(false); // Disable console logging in production
@@ -622,7 +648,7 @@ $config->setHealthCheckPath('/health');
 
 // Create and set logger
 $logger = new Logger();
-$logger->setLogLevel('warning');
+$logger->setMinLogLevel('warning');
 $logger->setLogToFile(true);
 $logger->setLogDirectory('/var/log/sockeon');
 $logger->setLogToConsole(false);
@@ -912,6 +938,7 @@ if (isset($configData['trusted_proxy_ips'])) {
 | `host` | `string` | `'0.0.0.0'` | Server bind address |
 | `port` | `int` | `6001` | Server port |
 | `debug` | `bool` | `false` | Debug mode |
+| `max_message_size` | `int` | `65536` | Max WS message size in bytes |
 | `cors` | `CorsConfig` | Auto-created | CORS configuration |
 | `logger` | `LoggerInterface\|null` | `null` | Custom logger |
 | `queue_file` | `string\|null` | `null` | Queue file path |
@@ -920,6 +947,7 @@ if (isset($configData['trusted_proxy_ips'])) {
 | `trust_proxy` | `bool\|array<int, string>` | `false` | Trust proxy settings |
 | `proxy_headers` | `array<string, string>\|null` | `null` | Custom proxy headers |
 | `health_check_path` | `string\|null` | `null` | Health check endpoint |
+| `register_system_controllers` | `bool` | `true` | Auto-register built-in system controllers |
 
 ### All Available Methods
 
@@ -927,6 +955,7 @@ if (isset($configData['trusted_proxy_ips'])) {
 - `getHost()`: Get server host
 - `getPort()`: Get server port
 - `isDebug()`: Check if debug is enabled
+- `getMaxMessageSize()`: Get max message size
 - `getCorsConfig()`: Get CORS configuration
 - `getLogger()`: Get logger instance
 - `getQueueFile()`: Get queue file path
@@ -935,11 +964,13 @@ if (isset($configData['trusted_proxy_ips'])) {
 - `getTrustProxy()`: Get trust proxy settings
 - `getProxyHeaders()`: Get custom proxy headers
 - `getHealthCheckPath()`: Get health check path
+- `shouldRegisterSystemControllers()`: Check system controller auto-registration
 
 #### Setters
 - `setHost(string $host)`: Set server host
 - `setPort(int $port)`: Set server port
 - `setDebug(bool $debug)`: Enable/disable debug mode
+- `setMaxMessageSize(int $maxMessageSize)`: Set max message size
 - `setCorsConfig(CorsConfig $config)`: Set CORS configuration
 - `setLogger(?LoggerInterface $logger)`: Set custom logger
 - `setQueueFile(?string $path)`: Set queue file path
@@ -948,6 +979,7 @@ if (isset($configData['trusted_proxy_ips'])) {
 - `setTrustProxy(bool\|array $trustProxy)`: Set trust proxy settings
 - `setProxyHeaders(?array $headers)`: Set custom proxy headers
 - `setHealthCheckPath(?string $path)`: Set health check path
+- `setRegisterSystemControllers(bool $register)`: Enable/disable system controller auto-registration
 
 ## Next Steps
 

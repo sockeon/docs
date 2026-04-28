@@ -230,9 +230,9 @@ public function leaveChatRoom(string $clientId, array $data): void
     
     $this->leaveRoom($clientId, $room, '/chat');
     
-    $this->broadcastToRoom($room, 'user.left', [
+    $this->broadcastToRoomClients('user.left', [
         'clientId' => $clientId
-    ], '/chat');
+    ], $room, '/chat');
     
     $this->emit($clientId, 'room.left', [
         'room' => $room
@@ -267,32 +267,6 @@ public function onConnect(string $clientId): void
 }
 ```
 
-### leaveNamespace()
-
-```php
-public function leaveNamespace(string $clientId): void
-```
-
-Removes a client from their current namespace.
-
-**Parameters:**
-- `$clientId` (`string`): The client ID
-
-**Example:**
-```php
-#[SocketOn('namespace.switch')]
-public function switchNamespace(string $clientId, array $data): void
-{
-    $newNamespace = $data['namespace'] ?? '/';
-    
-    // Move to new namespace
-    $this->moveClientToNamespace($clientId, $newNamespace);
-    
-    $this->emit($clientId, 'namespace.switched', [
-        'namespace' => $newNamespace
-    ]);
-}
-```
 
 ---
 
@@ -301,7 +275,7 @@ public function switchNamespace(string $clientId, array $data): void
 ### getServer()
 
 ```php
-protected function getServer(): Server
+public function getServer(): Server
 ```
 
 Returns the server instance for direct access to server methods.
@@ -331,6 +305,101 @@ public function getServerInfo(string $clientId, array $data): void
         'total_clients' => $server->getClientCount(),
         'your_id' => $clientId,
         'your_type' => $server->getClientType($clientId)
+    ]);
+}
+```
+
+---
+
+## Targeted Broadcasting Helpers
+
+### broadcastTo()
+
+```php
+public function broadcastTo(array $clients, string $event, array $data): void
+```
+
+Sends an event only to the provided client IDs.
+
+### broadcastExcept()
+
+```php
+public function broadcastExcept(array $excepts, string $event, array $data): void
+```
+
+Broadcasts to all connected clients except the provided client IDs.
+
+### broadcastToAll()
+
+```php
+public function broadcastToAll(string $event, array $data): void
+```
+
+Convenience alias for broadcasting to every connected client.
+
+---
+
+## Client and Room Introspection
+
+### Client and connection methods
+
+```php
+public function getAllClients(): array
+public function getClientCount(): int
+public function isClientConnected(string $clientId): bool
+public function getClientType(string $clientId): ?string
+public function disconnectClient(string $clientId): void
+public function getClientIpAddress(string $clientId): ?string
+```
+
+### Client metadata methods
+
+```php
+public function getClientData(string $clientId, ?string $key = null): mixed
+public function setClientData(string $clientId, string $key, mixed $value): void
+```
+
+### Namespace and room query methods
+
+```php
+public function getClientsInNamespace(string $namespace = '/'): array
+public function getClientNamespace(string $clientId): string
+public function getClientsInRoom(string $room, string $namespace = '/'): array
+public function getRooms(string $namespace = '/'): array
+public function getClientRooms(string $clientId): array
+public function leaveAllRooms(string $clientId): void
+```
+
+---
+
+## Runtime Metrics and Async Tasks
+
+These methods expose server telemetry and queue support directly from controllers:
+
+```php
+public function getUptime(): ?int
+public function getUptimeString(): ?string
+public function getStartTime(): ?float
+public function getServerStats(): array
+public function getPerformanceMetrics(): array
+public function getConnectionPoolStats(): array
+public function getTaskQueueStats(): array
+public function queueAsyncTask(string $type, array $data, int $priority = 0): void
+public function recordMetric(string $type, float $value = 0): void
+public function recordError(string $type): void
+```
+
+Example:
+
+```php
+#[HttpRoute('GET', '/api/server/metrics')]
+public function metrics(Request $request): Response
+{
+    return Response::json([
+        'uptime' => $this->getUptimeString(),
+        'performance' => $this->getPerformanceMetrics(),
+        'pool' => $this->getConnectionPoolStats(),
+        'queue' => $this->getTaskQueueStats(),
     ]);
 }
 ```
@@ -507,9 +576,9 @@ class ChatController extends SocketController
             'room' => 'general'
         ]);
         
-        $this->broadcastToRoom('general', 'user.joined', [
+        $this->broadcastToRoomClients('user.joined', [
             'clientId' => $clientId
-        ], '/chat');
+        ], 'general', '/chat');
     }
 
     #[OnDisconnect]
@@ -517,9 +586,9 @@ class ChatController extends SocketController
     {
         $room = $this->userRooms[$clientId] ?? 'general';
         
-        $this->broadcastToRoom($room, 'user.left', [
+        $this->broadcastToRoomClients('user.left', [
             'clientId' => $clientId
-        ], '/chat');
+        ], $room, '/chat');
         
         unset($this->userRooms[$clientId]);
     }
@@ -535,11 +604,11 @@ class ChatController extends SocketController
             return;
         }
         
-        $this->broadcastToRoom($room, 'chat.message', [
+        $this->broadcastToRoomClients('chat.message', [
             'from' => $clientId,
             'message' => $message,
             'timestamp' => time()
-        ], '/chat');
+        ], $room, '/chat');
     }
 
     #[SocketOn('room.switch')]
@@ -550,14 +619,14 @@ class ChatController extends SocketController
         
         // Leave old room
         $this->leaveRoom($clientId, $oldRoom, '/chat');
-        $this->broadcastToRoom($oldRoom, 'user.left', ['clientId' => $clientId], '/chat');
+        $this->broadcastToRoomClients('user.left', ['clientId' => $clientId], $oldRoom, '/chat');
         
         // Join new room
         $this->joinRoom($clientId, $newRoom, '/chat');
         $this->userRooms[$clientId] = $newRoom;
         
         $this->emit($clientId, 'room.switched', ['room' => $newRoom]);
-        $this->broadcastToRoom($newRoom, 'user.joined', ['clientId' => $clientId], '/chat');
+        $this->broadcastToRoomClients('user.joined', ['clientId' => $clientId], $newRoom, '/chat');
     }
 
     #[HttpRoute('GET', '/api/chat/rooms')]
@@ -586,15 +655,15 @@ class ChatController extends SocketController
         }
         
         if ($room) {
-            $this->broadcastToRoom($room, 'admin.message', [
+            $this->broadcastToRoomClients('admin.message', [
+                'message' => $message,
+                'from' => 'admin'
+            ], $room, '/chat');
+        } else {
+            $this->broadcastToNamespaceClients('admin.message', [
                 'message' => $message,
                 'from' => 'admin'
             ], '/chat');
-        } else {
-            $this->broadcastToNamespace('/chat', 'admin.message', [
-                'message' => $message,
-                'from' => 'admin'
-            ]);
         }
         
         return Response::json(['success' => true]);
@@ -648,10 +717,10 @@ class GameController extends SocketController
         ]);
         
         // Notify lobby
-        $this->broadcastToRoom('lobby', 'game.available', [
+        $this->broadcastToRoomClients('game.available', [
             'gameId' => $gameId,
             'host' => $clientId
-        ], '/game');
+        ], 'lobby', '/game');
     }
 
     #[SocketOn('game.join')]
@@ -680,17 +749,17 @@ class GameController extends SocketController
         $this->joinRoom($clientId, $gameId, '/game');
         
         // Notify game players
-        $this->broadcastToRoom($gameId, 'player.joined', [
+        $this->broadcastToRoomClients('player.joined', [
             'playerId' => $clientId,
             'playerCount' => count($game['players'])
-        ], '/game');
+        ], $gameId, '/game');
         
         // Start game if full
         if (count($game['players']) >= 2) {
             $game['status'] = 'playing';
-            $this->broadcastToRoom($gameId, 'game.started', [
+            $this->broadcastToRoomClients('game.started', [
                 'players' => $game['players']
-            ], '/game');
+            ], $gameId, '/game');
         }
     }
 
@@ -707,11 +776,11 @@ class GameController extends SocketController
         $move = $data['move'] ?? null;
         
         // Broadcast move to other players
-        $this->broadcastToRoom($gameId, 'game.move', [
+        $this->broadcastToRoomClients('game.move', [
             'player' => $clientId,
             'move' => $move,
             'timestamp' => time()
-        ], '/game');
+        ], $gameId, '/game');
     }
 
     #[OnDisconnect]
@@ -721,9 +790,9 @@ class GameController extends SocketController
         
         if ($gameId && isset($this->games[$gameId])) {
             // Notify other players
-            $this->broadcastToRoom($gameId, 'player.disconnected', [
+            $this->broadcastToRoomClients('player.disconnected', [
                 'playerId' => $clientId
-            ], '/game');
+            ], $gameId, '/game');
             
             // Remove game if host left
             if ($this->games[$gameId]['host'] === $clientId) {
