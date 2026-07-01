@@ -85,7 +85,7 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 
 ## Requirements
 
-- PHP >= 8.1
+- PHP >= 8.3
 - ext-openssl
 - ext-sockets
 

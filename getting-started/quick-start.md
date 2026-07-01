@@ -31,7 +31,7 @@ Create `composer.json`:
 ```json
 {
     "require": {
-        "sockeon/sockeon": "^2.0"
+        "sockeon/sockeon": "^3.0"
     },
     "autoload": {
         "psr-4": {

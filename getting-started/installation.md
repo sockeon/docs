@@ -11,7 +11,7 @@ twitter_image: "https://sockeon.github.io/logo.png"
 
 Before installing Sockeon, ensure your system meets the following requirements:
 
-- **PHP >= 8.1**
+- **PHP >= 8.3**
 - **ext-openssl** - Required for secure WebSocket connections
 - **ext-sockets** - Required for socket operations
 
