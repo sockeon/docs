@@ -1,8 +1,8 @@
 ---
 title: "Controllers - Sockeon Documentation"
 description: "Learn how to create and use controllers in Sockeon framework with WebSocket events and HTTP routes"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Controllers
@@ -685,7 +685,7 @@ $server->registerController(new UserController($userRepository, $authService));
 
 ## Next Steps
 
-- [Routing](/v2.0/core/routing.md) - Learn about advanced routing features
-- [Middleware](/v2.0/core/middleware.md) - Add request/response processing
-- [WebSocket Events](/v2.0/websocket/events.md) - Deep dive into WebSocket handling
-- [HTTP Features](/v2.0/http/routing.md) - Advanced HTTP request handling
+- [Routing](/v3.0/core/routing.md) - Learn about advanced routing features
+- [Middleware](/v3.0/core/middleware.md) - Add request/response processing
+- [WebSocket Events](/v3.0/websocket/events.md) - Deep dive into WebSocket handling
+- [HTTP Features](/v3.0/http/routing.md) - Advanced HTTP request handling

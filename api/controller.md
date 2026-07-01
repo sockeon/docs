@@ -1,8 +1,8 @@
 ---
 title: "Controller API - Sockeon Documentation"
 description: "Complete API reference for Sockeon SocketController class with WebSocket and HTTP methods"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Controller API Reference
@@ -837,7 +837,7 @@ class GameController extends SocketController
 
 ## See Also
 
-- [Server API](/v2.0/api/server.md) - Server instance methods
-- [Request API](/v2.0/api/request.md) - HTTP request handling
-- [Response API](/v2.0/api/response.md) - HTTP response creation
-- [Routing Guide](/v2.0/core/routing.md) - Advanced routing patterns
+- [Server API](/v3.0/api/server.md) - Server instance methods
+- [Request API](/v3.0/api/request.md) - HTTP request handling
+- [Response API](/v3.0/api/response.md) - HTTP response creation
+- [Routing Guide](/v3.0/core/routing.md) - Advanced routing patterns

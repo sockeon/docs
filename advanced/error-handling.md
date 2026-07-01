@@ -1,8 +1,8 @@
 ---
 title: "Error Handling - Sockeon Documentation"
 description: "Learn how to handle errors gracefully in Sockeon framework with try-catch blocks and custom exceptions"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Error Handling

@@ -1,8 +1,8 @@
 ---
 title: "Routing - Sockeon Documentation"
 description: "Learn how to use attribute-based routing in Sockeon framework for HTTP routes and WebSocket events"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Routing
@@ -608,7 +608,7 @@ class DocsController extends SocketController
 
 ## Next Steps
 
-- [Middleware](/v2.0/core/middleware.md) - Learn about request/response processing
-- [HTTP Features](/v2.0/http/routing.md) - Advanced HTTP routing features
-- [WebSocket Events](/v2.0/websocket/events.md) - Deep dive into WebSocket event handling
-- [Rate Limiting](/v2.0/advanced/rate-limiting.md) - Protect your routes from abuse
+- [Middleware](/v3.0/core/middleware.md) - Learn about request/response processing
+- [HTTP Features](/v3.0/http/routing.md) - Advanced HTTP routing features
+- [WebSocket Events](/v3.0/websocket/events.md) - Deep dive into WebSocket event handling
+- [Rate Limiting](/v3.0/advanced/rate-limiting.md) - Protect your routes from abuse

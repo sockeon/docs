@@ -1,8 +1,8 @@
 ---
 title: "Reverse Proxy and Load Balancing - Sockeon Documentation"
 description: "Complete guide to configuring Sockeon behind reverse proxies and load balancers"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Reverse Proxy and Load Balancing
@@ -400,7 +400,7 @@ server {
 
 ## See Also
 
-- [Server Configuration](/v2.0/core/server-configuration.md) - Complete server configuration guide
-- [Request API](/v2.0/api/request.md) - Request methods for proxy headers
-- [Server API](/v2.0/api/server.md) - Server uptime and health check methods
+- [Server Configuration](/v3.0/core/server-configuration.md) - Complete server configuration guide
+- [Request API](/v3.0/api/request.md) - Request methods for proxy headers
+- [Server API](/v3.0/api/server.md) - Server uptime and health check methods
 

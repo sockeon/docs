@@ -1,8 +1,8 @@
 ---
 title: "Installation - Sockeon Documentation"
 description: "Learn how to install Sockeon PHP WebSocket and HTTP server framework with Composer"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Installation
@@ -11,9 +11,28 @@ twitter_image: "https://sockeon.com/logo.png"
 
 Before installing Sockeon, ensure your system meets the following requirements:
 
-- **PHP >= 8.0**
+- **PHP >= 8.1**
 - **ext-openssl** - Required for secure WebSocket connections
 - **ext-sockets** - Required for socket operations
+
+### Optional Extensions
+
+For high-concurrency and multi-node deployments:
+
+- **ext-openswoole** (or ext-swoole) — enables `engine=swoole` for tens of thousands of concurrent WebSocket connections per node. See [Engines](/v3.0/core/engines.md).
+- **ext-redis** — enables Redis-backed pub/sub and room registry for multi-node clusters. See [Scaling and Clustering](/v3.0/advanced/scaling.md).
+
+Composer lists both as **suggested** dependencies — they are not installed by default:
+
+```bash
+# High-concurrency single node
+pecl install openswoole
+
+# Multi-node cluster
+pecl install openswoole redis
+```
+
+Upgrading from Sockeon 2.x? See the [Migration Guide](/v3.0/getting-started/migration-v3.md).
 
 ## Installation via Composer
 
@@ -114,6 +133,8 @@ ulimit -n 65536
 
 ## Next Steps
 
-- [Quick Start Guide](/v2.0/getting-started/quick-start.md) - Build your first Sockeon application
-- [Basic Concepts](/v2.0/getting-started/basic-concepts.md) - Learn the core concepts
-- [Server Configuration](/v2.0/core/server-configuration.md) - Detailed configuration options
+- [Quick Start Guide](/v3.0/getting-started/quick-start.md) - Build your first Sockeon application
+- [Basic Concepts](/v3.0/getting-started/basic-concepts.md) - Learn the core concepts
+- [Engines](/v3.0/core/engines.md) - Choose stream_select or swoole
+- [Migrating to 3.x](/v3.0/getting-started/migration-v3.md) - Upgrade from Sockeon 2.x
+- [Server Configuration](/v3.0/core/server-configuration.md) - Detailed configuration options

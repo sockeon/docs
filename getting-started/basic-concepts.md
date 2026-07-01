@@ -1,8 +1,8 @@
 ---
 title: "Basic Concepts - Sockeon Documentation"
 description: "Learn the core concepts of Sockeon framework including controllers, events, namespaces, and rooms"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Basic Concepts
@@ -402,10 +402,10 @@ public function handleRiskyOperation(string $clientId, array $data): void
 
 Now that you understand the basic concepts, explore these topics:
 
-- [Server Configuration](/v2.0/core/server-configuration.md) - Detailed configuration options
-- [Controllers](/v2.0/core/controllers.md) - Advanced controller features
-- [Middleware](/v2.0/core/middleware.md) - Create custom middleware
-- [Examples](/v2.0/examples/basic-server) - See real-world applications
+- [Server Configuration](/v3.0/core/server-configuration.md) - Detailed configuration options
+- [Controllers](/v3.0/core/controllers.md) - Advanced controller features
+- [Middleware](/v3.0/core/middleware.md) - Create custom middleware
+- [Examples](/v3.0/examples/basic-server) - See real-world applications
 
 ## Best Practices
 

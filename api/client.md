@@ -1,8 +1,8 @@
 ---
 title: "Client API - Sockeon Documentation"
 description: "Accurate API reference for Sockeon PHP Client wrapper and WebSocket client usage"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Client API Reference
@@ -76,6 +76,6 @@ $client->run();
 
 ## See Also
 
-- [Server API](/v2.0/api/server.md)
-- [WebSocket Events](/v2.0/websocket/events.md)
-- [WebSocket Client Guide](/v2.0/websocket/client.md)
+- [Server API](/v3.0/api/server.md)
+- [WebSocket Events](/v3.0/websocket/events.md)
+- [WebSocket Client Guide](/v3.0/websocket/client.md)

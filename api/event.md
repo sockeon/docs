@@ -1,8 +1,8 @@
 ---
 title: "Event API - Sockeon Documentation"
 description: "Reference for Sockeon's Event broadcaster and EventableContract for custom event classes"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Event API Reference
@@ -80,5 +80,5 @@ Event::broadcast(new InventoryChanged('SKU-123', 42));
 
 ## See Also
 
-- [WebSocket Events](/v2.0/websocket/events.md)
-- [Broadcasting](/v2.0/websocket/broadcasting.md)
+- [WebSocket Events](/v3.0/websocket/events.md)
+- [Broadcasting](/v3.0/websocket/broadcasting.md)

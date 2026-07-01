@@ -1,8 +1,8 @@
 ---
 title: "Quick Start Guide - Sockeon Documentation"
 description: "Build your first Sockeon application with WebSocket and HTTP server in minutes"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Quick Start
@@ -333,11 +333,11 @@ curl -X POST http://localhost:6001/api/broadcast \
 
 Congratulations! You've created your first Sockeon application. Here's what you can explore next:
 
-- [Basic Concepts](/v2.0/getting-started/basic-concepts.md) - Understand core Sockeon concepts
-- [Server Configuration](/v2.0/core/server-configuration.md) - Learn about advanced configuration options
-- [Middleware](/v2.0/core/middleware.md) - Add authentication and request processing
-- [Rate Limiting](/v2.0/advanced/rate-limiting.md) - Protect your server from abuse
-- [Examples](/v2.0/examples/hybrid-server) - See more complex examples
+- [Basic Concepts](/v3.0/getting-started/basic-concepts.md) - Understand core Sockeon concepts
+- [Server Configuration](/v3.0/core/server-configuration.md) - Learn about advanced configuration options
+- [Middleware](/v3.0/core/middleware.md) - Add authentication and request processing
+- [Rate Limiting](/v3.0/advanced/rate-limiting.md) - Protect your server from abuse
+- [Examples](/v3.0/examples/hybrid-server) - See more complex examples
 
 ## Common Issues
 

@@ -1,8 +1,8 @@
 ---
 title: "Middleware - Sockeon Documentation"
 description: "Learn how to create and use middleware in Sockeon framework for request/response processing"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Middleware
@@ -743,6 +743,6 @@ class AuthMiddlewareTest extends TestCase
 
 ## Next Steps
 
-- [Namespaces and Rooms](/v2.0/core/namespaces-rooms.md) - Organize client connections
-- [Rate Limiting](/v2.0/advanced/rate-limiting.md) - Built-in rate limiting features
-- [Examples](/v2.0/examples/basic-server) - See middleware in action
+- [Namespaces and Rooms](/v3.0/core/namespaces-rooms.md) - Organize client connections
+- [Rate Limiting](/v3.0/advanced/rate-limiting.md) - Built-in rate limiting features
+- [Examples](/v3.0/examples/basic-server) - See middleware in action

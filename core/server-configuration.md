@@ -1,8 +1,8 @@
 ---
 title: "Server Configuration - Sockeon Documentation"
 description: "Learn how to configure Sockeon server with host, port, CORS, rate limiting, and authentication settings"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Server Configuration
@@ -444,7 +444,7 @@ location / {
 }
 ```
 
-For more details, see the [Reverse Proxy and Load Balancing Guide](/v2.0/advanced/reverse-proxy.md).
+For more details, see the [Reverse Proxy and Load Balancing Guide](/v3.0/advanced/reverse-proxy.md).
 
 ## Rate Limiting Configuration
 
@@ -546,6 +546,170 @@ $config = new ServerConfig([
     ]
 ]);
 ```
+
+## Engine Configuration
+
+Sockeon 3.x decouples transport from routing. The engine owns the event loop and socket I/O; controllers and middleware stay the same.
+
+### engine
+- **Type**: `string`
+- **Default**: `'stream_select'`
+- **Values**: `'stream_select'` | `'swoole'`
+- **Getter**: `getEngine()`
+- **Setter**: `setEngine(string $engine)`
+
+```php
+$config = new ServerConfig([
+    'engine' => 'stream_select',  // default — no extra extensions
+]);
+
+// High concurrency
+$config = new ServerConfig([
+    'engine' => 'swoole',
+]);
+```
+
+| Engine | Extension | Typical capacity |
+|--------|-----------|-----------------|
+| `stream_select` | None (core PHP) | Hundreds to ~2k connections |
+| `swoole` | `ext-openswoole` or `ext-swoole` | 10k–500k connections per node |
+
+See [Engines](/v3.0/core/engines.md) for selection guidance.
+
+## Survivability Configuration
+
+Hard connection limits enforced at accept time. Configure under the `survivability` key:
+
+```php
+$config = new ServerConfig([
+    'survivability' => [
+        'max_connections' => 10_000,
+        'write_buffer_limit' => 65536,
+        'heartbeat_idle_time' => 600,
+        'heartbeat_check_interval' => 60,
+    ],
+]);
+```
+
+### Survivability options
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `max_connections` | `int` | `10000` | Hard cap on total connections |
+| `write_buffer_limit` | `int` | `65536` | Outbound buffer limit (Swoole, bytes) |
+| `heartbeat_idle_time` | `int` | `600` | Max idle seconds before disconnect (Swoole) |
+| `heartbeat_check_interval` | `int` | `60` | Idle scan interval (Swoole) |
+
+```php
+use Sockeon\Sockeon\Config\SurvivabilityConfig;
+
+$survivability = new SurvivabilityConfig(['max_connections' => 50_000]);
+$config->setSurvivabilityConfig($survivability);
+
+$config->getSurvivabilityConfig()->getMaxConnections();
+```
+
+Align `max_connections` with `rate_limit.maxGlobalConnections` in production. See [Survivability](/v3.0/core/survivability.md).
+
+## Swoole Engine Configuration
+
+Swoole-specific options under the `swoole` key (only used when `engine=swoole`):
+
+```php
+$config = new ServerConfig([
+    'engine' => 'swoole',
+    'swoole' => [
+        'worker_num' => 8,
+        'task_worker_num' => 0,
+        'max_connection' => 100_000,
+        'client_table_size' => null,
+        'coroutine_dispatch' => true,
+    ],
+]);
+```
+
+### Swoole options
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `worker_num` | `int\|null` | CPU count | Worker process count |
+| `task_worker_num` | `int` | `0` | Background task workers |
+| `max_connection` | `int` | `100000` | Swoole connection ceiling |
+| `client_table_size` | `int\|null` | auto | Shared memory table rows |
+| `coroutine_dispatch` | `bool` | `true` | Run handlers in coroutines |
+
+```php
+use Sockeon\Sockeon\Config\SwooleEngineConfig;
+
+$swoole = new SwooleEngineConfig(['worker_num' => 4, 'max_connection' => 50_000]);
+$config->setSwooleEngineConfig($swoole);
+
+$config->getSwooleEngineConfig()->getWorkerNum();
+$config->getSwooleEngineConfig()->getMaxConnection();
+```
+
+See [Swoole Engine](/v3.0/advanced/swoole-engine.md) for tuning and capacity planning.
+
+## Scale Configuration
+
+Multi-node clustering via Redis pub/sub and shared room registry. Configure under the `scale` key:
+
+```php
+$config = new ServerConfig([
+    'engine' => 'swoole',
+    'scale' => [
+        'node_id' => 'node-west-2a',
+        'publisher' => 'redis',
+        'registry' => 'redis',
+        'presence_ttl' => 300,
+        'redis' => [
+            'host' => '127.0.0.1',
+            'port' => 6379,
+            'password' => null,
+            'database' => 0,
+            'channel' => 'sockeon:broadcast',
+            'prefix' => 'sockeon:',
+        ],
+    ],
+]);
+```
+
+### Scale options
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `node_id` | `string` | `'node-1'` | Unique identifier per server instance |
+| `publisher` | `string` | `'local'` | `'local'` or `'redis'` cross-node broadcast |
+| `registry` | `string` | `'local'` | `'local'` or `'redis'` shared room membership |
+| `presence_ttl` | `int` | `300` | Node presence key TTL in Redis (seconds) |
+| `redis` | `array` | see below | Redis connection settings |
+
+### Redis sub-options
+
+| Key | Default | Description |
+|-----|---------|-------------|
+| `host` | `127.0.0.1` | Redis hostname |
+| `port` | `6379` | Redis port |
+| `password` | `null` | Optional password |
+| `database` | `0` | Redis database index |
+| `channel` | `sockeon:broadcast` | Pub/sub channel |
+| `prefix` | `sockeon:` | Registry key prefix |
+
+```php
+use Sockeon\Sockeon\Config\ScaleConfig;
+
+$scale = new ScaleConfig([
+    'node_id' => getenv('SOCKEON_NODE_ID') ?: 'node-1',
+    'publisher' => 'redis',
+    'registry' => 'redis',
+]);
+$config->setScaleConfig($scale);
+
+$config->getScaleConfig()->getNodeId();
+$config->getScaleConfig()->isRedisPublisher();
+```
+
+Requires `ext-redis` when using Redis publisher or registry. See [Scaling and Clustering](/v3.0/advanced/scaling.md).
 
 ## Complete Configuration Example
 
@@ -948,6 +1112,10 @@ if (isset($configData['trusted_proxy_ips'])) {
 | `proxy_headers` | `array<string, string>\|null` | `null` | Custom proxy headers |
 | `health_check_path` | `string\|null` | `null` | Health check endpoint |
 | `register_system_controllers` | `bool` | `true` | Auto-register built-in system controllers |
+| `engine` | `string` | `'stream_select'` | Runtime engine (`stream_select` or `swoole`) |
+| `survivability` | `SurvivabilityConfig` | defaults | Hard connection caps and heartbeats |
+| `swoole` | `SwooleEngineConfig` | defaults | Swoole worker and connection settings |
+| `scale` | `ScaleConfig` | defaults | Multi-node publisher, registry, and Redis |
 
 ### All Available Methods
 
@@ -965,6 +1133,10 @@ if (isset($configData['trusted_proxy_ips'])) {
 - `getProxyHeaders()`: Get custom proxy headers
 - `getHealthCheckPath()`: Get health check path
 - `shouldRegisterSystemControllers()`: Check system controller auto-registration
+- `getEngine()`: Get runtime engine name
+- `getSurvivabilityConfig()`: Get survivability configuration
+- `getSwooleEngineConfig()`: Get Swoole engine configuration
+- `getScaleConfig()`: Get scale/cluster configuration
 
 #### Setters
 - `setHost(string $host)`: Set server host
@@ -980,11 +1152,19 @@ if (isset($configData['trusted_proxy_ips'])) {
 - `setProxyHeaders(?array $headers)`: Set custom proxy headers
 - `setHealthCheckPath(?string $path)`: Set health check path
 - `setRegisterSystemControllers(bool $register)`: Enable/disable system controller auto-registration
+- `setEngine(string $engine)`: Set runtime engine
+- `setSurvivabilityConfig(SurvivabilityConfig $config)`: Set survivability configuration
+- `setSwooleEngineConfig(SwooleEngineConfig $config)`: Set Swoole engine configuration
+- `setScaleConfig(ScaleConfig $config)`: Set scale/cluster configuration
 
 ## Next Steps
 
-- [Controllers](/v2.0/core/controllers.md) - Learn about creating and organizing controllers
-- [Middleware](/v2.0/core/middleware.md) - Implement request/response processing
-- [Rate Limiting](/v2.0/advanced/rate-limiting.md) - Deep dive into rate limiting
-- [Logging](/v2.0/advanced/logging.md) - Advanced logging configuration
-- [Reverse Proxy and Load Balancing](/v2.0/advanced/reverse-proxy.md) - Complete reverse proxy guide
+- [Engines](/v3.0/core/engines.md) - Choose stream_select vs swoole
+- [Survivability](/v3.0/core/survivability.md) - Connection caps and heartbeats
+- [Swoole Engine](/v3.0/advanced/swoole-engine.md) - High-concurrency tuning
+- [Scaling and Clustering](/v3.0/advanced/scaling.md) - Multi-node Redis deployment
+- [Controllers](/v3.0/core/controllers.md) - Learn about creating and organizing controllers
+- [Middleware](/v3.0/core/middleware.md) - Implement request/response processing
+- [Rate Limiting](/v3.0/advanced/rate-limiting.md) - Deep dive into rate limiting
+- [Logging](/v3.0/advanced/logging.md) - Advanced logging configuration
+- [Reverse Proxy and Load Balancing](/v3.0/advanced/reverse-proxy.md) - Complete reverse proxy guide

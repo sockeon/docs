@@ -1,8 +1,8 @@
 ---
 title: "Router API - Sockeon Documentation"
 description: "Accurate API reference for Sockeon Router route registration and dispatch methods"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Router API Reference
@@ -49,6 +49,6 @@ These are useful for debugging tooling but are not intended as stable schema con
 
 ## See Also
 
-- [Controller API](/v2.0/api/controller.md)
-- [WebSocket Events](/v2.0/websocket/events.md)
-- [HTTP Routing](/v2.0/http/routing.md)
+- [Controller API](/v3.0/api/controller.md)
+- [WebSocket Events](/v3.0/websocket/events.md)
+- [HTTP Routing](/v3.0/http/routing.md)

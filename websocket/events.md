@@ -1,8 +1,8 @@
 ---
 title: "WebSocket Events - Sockeon Documentation"
 description: "Learn how to handle WebSocket events and create real-time applications with Sockeon framework"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # WebSocket Events

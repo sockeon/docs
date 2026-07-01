@@ -1,8 +1,8 @@
 ---
 title: "Sockeon Documentation"
 description: "Complete guide to Sockeon - PHP WebSocket and HTTP server framework with attribute-based routing, namespaces, rooms, and built-in rate limiting"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Sockeon Documentation
@@ -12,54 +12,62 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 ## Table of Contents
 
 ### Getting Started
-- [Installation](/v2.0/getting-started/installation.md)
-- [Quick Start](/v2.0/getting-started/quick-start.md)
-- [Basic Concepts](/v2.0/getting-started/basic-concepts.md)
+- [Installation](/v3.0/getting-started/installation.md)
+- [Quick Start](/v3.0/getting-started/quick-start.md)
+- [Basic Concepts](/v3.0/getting-started/basic-concepts.md)
+- [Migrating to 3.x](/v3.0/getting-started/migration-v3.md)
 
 ### Core Components
-- [Server Configuration](/v2.0/core/server-configuration.md)
-- [Controllers](/v2.0/core/controllers.md)
-- [Routing](/v2.0/core/routing.md)
-- [Middleware](/v2.0/core/middleware.md)
-- [Namespaces and Rooms](/v2.0/core/namespaces-rooms.md)
+- [Server Configuration](/v3.0/core/server-configuration.md)
+- [Engines](/v3.0/core/engines.md)
+- [Survivability](/v3.0/core/survivability.md)
+- [Controllers](/v3.0/core/controllers.md)
+- [Routing](/v3.0/core/routing.md)
+- [Middleware](/v3.0/core/middleware.md)
+- [Namespaces and Rooms](/v3.0/core/namespaces-rooms.md)
 
 ### WebSocket Features
-- [WebSocket Events](/v2.0/websocket/events.md)
-- [Connection Management](/v2.0/websocket/connections.md)
-- [Broadcasting](/v2.0/websocket/broadcasting.md)
-- [WebSocket Client](/v2.0/websocket/client.md)
+- [WebSocket Events](/v3.0/websocket/events.md)
+- [Connection Management](/v3.0/websocket/connections.md)
+- [Broadcasting](/v3.0/websocket/broadcasting.md)
+- [WebSocket Client](/v3.0/websocket/client.md)
 
 ### HTTP Features
-- [HTTP Routing](/v2.0/http/routing.md)
-- [Request and Response](/v2.0/http/request-response.md)
-- [CORS Configuration](/v2.0/http/cors.md)
+- [HTTP Routing](/v3.0/http/routing.md)
+- [Request and Response](/v3.0/http/request-response.md)
+- [CORS Configuration](/v3.0/http/cors.md)
 
 ### Data Validation and Sanitization
-- [Data Validation](/v2.0/validation/validation.md)
-- [Data Sanitization](/v2.0/validation/sanitization.md)
+- [Data Validation](/v3.0/validation/validation.md)
+- [Data Sanitization](/v3.0/validation/sanitization.md)
 
 ### Advanced Features
-- [Rate Limiting](/v2.0/advanced/rate-limiting.md)
-- [Logging](/v2.0/advanced/logging.md)
-- [Error Handling](/v2.0/advanced/error-handling.md)
-- [Reverse Proxy and Load Balancing](/v2.0/advanced/reverse-proxy.md)
+- [Swoole Engine](/v3.0/advanced/swoole-engine.md)
+- [Scaling and Clustering](/v3.0/advanced/scaling.md)
+- [Rate Limiting](/v3.0/advanced/rate-limiting.md)
+- [Logging](/v3.0/advanced/logging.md)
+- [Error Handling](/v3.0/advanced/error-handling.md)
+- [Reverse Proxy and Load Balancing](/v3.0/advanced/reverse-proxy.md)
 
 ### API Reference
-- [Server API](/v2.0/api/server.md)
-- [Controller API](/v2.0/api/controller.md)
-- [Router API](/v2.0/api/router.md)
-- [Request API](/v2.0/api/request.md)
-- [Response API](/v2.0/api/response.md)
-- [Client API](/v2.0/api/client.md)
-- [Event API](/v2.0/api/event.md)
+- [Server API](/v3.0/api/server.md)
+- [Controller API](/v3.0/api/controller.md)
+- [Router API](/v3.0/api/router.md)
+- [Request API](/v3.0/api/request.md)
+- [Response API](/v3.0/api/response.md)
+- [Client API](/v3.0/api/client.md)
+- [Event API](/v3.0/api/event.md)
 
 ### Examples
-- [Basic WebSocket Server](/v2.0/examples/basic-server.md)
-- [HTTP API Server](/v2.0/examples/http-server.md)
+- [Basic WebSocket Server](/v3.0/examples/basic-server.md)
+- [HTTP API Server](/v3.0/examples/http-server.md)
 
 ## Features Overview
 
 - **WebSocket and HTTP Combined Server** - Single server handling both protocols
+- **Pluggable Engines** - `stream_select` for zero-deps installs or `swoole` for high concurrency
+- **Swoole Scaling** - Tens of thousands of concurrent WebSocket connections per node
+- **Redis Cluster** - Multi-node broadcast and room membership via pub/sub
 - **Attribute-based Routing** - Clean, declarative routing with PHP 8 attributes
 - **Namespaces and Rooms** - Organized client grouping and broadcasting
 - **Middleware Support** - Flexible request/response processing with HTTP and WebSocket middleware
@@ -80,6 +88,13 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 - PHP >= 8.1
 - ext-openssl
 - ext-sockets
+
+### Optional Extensions
+
+- **ext-openswoole** (or ext-swoole) — required for `engine=swoole` high-concurrency mode
+- **ext-redis** — required for `scale.publisher=redis` or `scale.registry=redis` multi-node clustering
+
+Both are listed as Composer **suggested** dependencies and are not needed for default single-node `stream_select` deployments.
 
 ## Quick Example
 

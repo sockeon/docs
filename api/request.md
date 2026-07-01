@@ -1,8 +1,8 @@
 ---
 title: "Request API - Sockeon Documentation"
 description: "Complete API reference for Sockeon Request class with methods for accessing HTTP request data"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Request API Reference
@@ -814,12 +814,12 @@ public function getRequestDetails(Request $request): Response
 }
 ```
 
-For detailed information about reverse proxy configuration, see the [Reverse Proxy and Load Balancing Guide](/v2.0/advanced/reverse-proxy.md).
+For detailed information about reverse proxy configuration, see the [Reverse Proxy and Load Balancing Guide](/v3.0/advanced/reverse-proxy.md).
 
 ## See Also
 
-- [Response API](/v2.0/api/response.md) - Creating HTTP responses
-- [Controller API](/v2.0/api/controller.md) - Controller base class methods
-- [Routing Guide](/v2.0/core/routing.md) - HTTP routing patterns
-- [HTTP Guide](/v2.0/http/request-response.md) - Request/response handling
-- [Server Configuration](/v2.0/core/server-configuration.md) - Trust proxy configuration
+- [Response API](/v3.0/api/response.md) - Creating HTTP responses
+- [Controller API](/v3.0/api/controller.md) - Controller base class methods
+- [Routing Guide](/v3.0/core/routing.md) - HTTP routing patterns
+- [HTTP Guide](/v3.0/http/request-response.md) - Request/response handling
+- [Server Configuration](/v3.0/core/server-configuration.md) - Trust proxy configuration

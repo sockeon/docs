@@ -1,8 +1,8 @@
 ---
 title: "HTTP Request and Response - Sockeon Documentation"
 description: "Learn how to handle HTTP requests and create responses in Sockeon framework"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Request and Response Handling
@@ -152,7 +152,7 @@ class StatusController extends SocketController
 
 ### Validation Error Handling
 
-For comprehensive validation and sanitization, see the [Data Validation](/v2.0/validation/validation.md) documentation.
+For comprehensive validation and sanitization, see the [Data Validation](/v3.0/validation/validation.md) documentation.
 
 ```php
 class ValidationController extends SocketController

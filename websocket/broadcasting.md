@@ -1,8 +1,8 @@
 ---
 title: "WebSocket Broadcasting - Sockeon Documentation"
 description: "Learn how to broadcast messages to WebSocket clients using namespaces and rooms in Sockeon framework"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Broadcasting

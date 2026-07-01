@@ -1,8 +1,8 @@
 ---
 title: "Response API - Sockeon Documentation"
 description: "Complete API reference for Sockeon Response class with methods for creating HTTP responses"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Response API Reference
@@ -804,7 +804,7 @@ class ContentController extends SocketController
 
 ## See Also
 
-- [Request API](/v2.0/api/request.md) - HTTP request handling
-- [Controller API](/v2.0/api/controller.md) - Controller base class methods
-- [HTTP Guide](/v2.0/http/request-response.md) - Request/response patterns
-- [CORS Guide](/v2.0/http/cors.md) - Cross-origin resource sharing
+- [Request API](/v3.0/api/request.md) - HTTP request handling
+- [Controller API](/v3.0/api/controller.md) - Controller base class methods
+- [HTTP Guide](/v3.0/http/request-response.md) - Request/response patterns
+- [CORS Guide](/v3.0/http/cors.md) - Cross-origin resource sharing

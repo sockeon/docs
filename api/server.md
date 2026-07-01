@@ -1,8 +1,8 @@
 ---
 title: "Server API - Sockeon Documentation"
 description: "Complete API reference for Sockeon Server class with methods for client management and broadcasting"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Server API Reference
@@ -708,6 +708,6 @@ public function getServerInfo(Request $request): Response
 
 ## See Also
 
-- [Controller API](/v2.0/api/controller.md) - Controller base class methods
-- [Router API](/v2.0/api/router.md) - Routing system API
-- [Server Configuration](/v2.0/core/server-configuration.md) - Server configuration options
+- [Controller API](/v3.0/api/controller.md) - Controller base class methods
+- [Router API](/v3.0/api/router.md) - Routing system API
+- [Server Configuration](/v3.0/core/server-configuration.md) - Server configuration options

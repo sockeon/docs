@@ -1,8 +1,8 @@
 ---
 title: "Logging - Sockeon Documentation"
 description: "Learn how to use logging in Sockeon framework for debugging and monitoring applications"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Logging

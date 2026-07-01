@@ -1,8 +1,8 @@
 ---
 title: "Hybrid Server Example - Sockeon Documentation"
 description: "Complete example of a hybrid WebSocket and HTTP server using Sockeon framework"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Hybrid Server Example

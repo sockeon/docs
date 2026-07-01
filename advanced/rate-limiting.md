@@ -1,8 +1,8 @@
 ---
 title: "Rate Limiting - Sockeon Documentation"
 description: "Learn how to implement rate limiting in Sockeon framework using attributes and global configuration"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Rate Limiting

@@ -1,8 +1,8 @@
 ---
 title: "Namespaces and Rooms - Sockeon Documentation"
 description: "Learn how to organize WebSocket clients using namespaces and rooms in Sockeon framework"
-og_image: "https://sockeon.com/logo.png"
-twitter_image: "https://sockeon.com/logo.png"
+og_image: "https://sockeon.github.io/logo.png"
+twitter_image: "https://sockeon.github.io/logo.png"
 ---
 
 # Namespaces and Rooms
@@ -687,6 +687,6 @@ public function joinRoom(string $clientId, array $data): void
 
 ## Next Steps
 
-- [WebSocket Events](/v2.0/websocket/events.md) - Advanced event handling
-- [Broadcasting](/v2.0/websocket/broadcasting.md) - Targeted message broadcasting
-- [Examples](/v2.0/examples/hybrid-server) - See namespaces and rooms in real applications
+- [WebSocket Events](/v3.0/websocket/events.md) - Advanced event handling
+- [Broadcasting](/v3.0/websocket/broadcasting.md) - Targeted message broadcasting
+- [Examples](/v3.0/examples/hybrid-server) - See namespaces and rooms in real applications
