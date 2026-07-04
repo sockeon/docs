@@ -44,6 +44,7 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 ### Advanced Features
 - [Swoole Engine](/v3.0/advanced/swoole-engine.md)
 - [Scaling and Clustering](/v3.0/advanced/scaling.md)
+- [Performance Overview](/v3.0/advanced/benchmark-report.md)
 - [Rate Limiting](/v3.0/advanced/rate-limiting.md)
 - [Logging](/v3.0/advanced/logging.md)
 - [Error Handling](/v3.0/advanced/error-handling.md)
@@ -66,7 +67,7 @@ Welcome to the comprehensive documentation for Sockeon - a framework-agnostic PH
 
 - **WebSocket and HTTP Combined Server** - Single server handling both protocols
 - **Pluggable Engines** - `stream_select` for zero-deps installs or `swoole` for high concurrency
-- **Swoole Scaling** - Tens of thousands of concurrent WebSocket connections per node
+- **Swoole Scaling** - Tens of thousands of concurrent WebSocket connections per node ([benchmarked](/v3.0/advanced/benchmark-report.md))
 - **Redis Cluster** - Multi-node broadcast and room membership via pub/sub
 - **Attribute-based Routing** - Clean, declarative routing with PHP 8 attributes
 - **Namespaces and Rooms** - Organized client grouping and broadcasting

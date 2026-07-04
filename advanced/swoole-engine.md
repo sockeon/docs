@@ -120,7 +120,7 @@ Rough per-connection memory on Linux: **2–8 KB** idle. Example sizing:
 
 | Target connections | RAM (estimate) | Notes |
 |-------------------|----------------|-------|
-| 10,000 | 20–80 MB | Modest VPS |
+| 10,000 | 20–80 MB | Modest VPS; **688 MB peak observed** in a 10k/300s soak ([report](/v3.0/advanced/benchmark-report.md)) |
 | 50,000 | 100–400 MB | 4–8 GB VPS recommended |
 | 100,000 | 200–800 MB | Dedicated tuning, high `ulimit` |
 
@@ -174,6 +174,7 @@ services:
 
 ## Next steps
 
+- [Performance Overview](/v3.0/advanced/benchmark-report.md) — 10k soak, latency, and broadcast measurements
 - [Engines](/v3.0/core/engines.md) — when to use Swoole vs stream_select
 - [Survivability](/v3.0/core/survivability.md) — caps and heartbeats
 - [Scaling](/v3.0/advanced/scaling.md) — multi-node deployment

@@ -106,6 +106,7 @@ You do not implement this interface in application code. Sockeon selects the eng
 
 ## Next steps
 
+- [Performance Overview](/v3.0/advanced/benchmark-report.md) — measured latency, soak, and broadcast results
 - [Survivability](/v3.0/core/survivability.md) — connection caps, heartbeats, write buffers
 - [Swoole Engine](/v3.0/advanced/swoole-engine.md) — worker and concurrency tuning
 - [Scaling](/v3.0/advanced/scaling.md) — multi-node Redis pub/sub

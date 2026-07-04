@@ -241,6 +241,7 @@ return [
 
 ## Next steps
 
+- [Performance Overview](/v3.0/advanced/benchmark-report.md) — Swoole 3.x capacity and latency
 - [Engines](/v3.0/core/engines.md) — engine selection guide
 - [Survivability](/v3.0/core/survivability.md) — connection limits
 - [Swoole Engine](/v3.0/advanced/swoole-engine.md) — high-concurrency tuning

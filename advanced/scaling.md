@@ -9,7 +9,7 @@ twitter_image: "https://sockeon.github.io/logo.png"
 
 Sockeon 3.x scales horizontally by running multiple server nodes behind a load balancer. Each node handles its own WebSocket connections; **Redis** coordinates cross-node broadcasts and shared room membership.
 
-Single-node capacity tops out around **50k–500k** idle connections with the [Swoole engine](/v3.0/advanced/swoole-engine.md). Millions of concurrent users require a cluster.
+Single-node capacity tops out around **50k–500k** idle connections with the [Swoole engine](/v3.0/advanced/swoole-engine.md). **10,000 idle connections** were held for 5 minutes in benchmark testing ([report](/v3.0/advanced/benchmark-report.md)). Millions of concurrent users require a cluster.
 
 ## Architecture
 
@@ -266,12 +266,14 @@ Origin node ID is included in every pub/sub payload to prevent echo loops.
 |---------|--------------|-----|
 | Broadcasts only reach local clients | `publisher=local` | Set `publisher=redis` |
 | Room members missing on other nodes | `registry=local` | Set `registry=redis` |
+| Cross-node delivery fails (0 subscribers) | Redis not wired or duplicate `node_id` | Set `publisher=redis` and `registry=redis`; ensure unique `node_id` per node. See [Scaling](/v3.0/advanced/scaling.md) |
 | Cross-node delivery silent on stream_select | No Swoole coroutine subscriber | Use `engine=swoole` on cluster nodes |
 | Duplicate messages | Misconfigured `node_id` collision | Ensure unique `node_id` per instance |
 | Redis connection errors at startup | Missing `ext-redis` or wrong host | Install extension; verify `scale.redis` settings |
 
 ## Next steps
 
+- [Performance Overview](/v3.0/advanced/benchmark-report.md) — multi-node broadcast and capacity numbers
 - [Swoole Engine](/v3.0/advanced/swoole-engine.md) — per-node worker and connection tuning
 - [Survivability](/v3.0/core/survivability.md) — hard connection caps and heartbeats
 - [Reverse Proxy and Load Balancing](/v3.0/advanced/reverse-proxy.md) — proxy headers and health checks
