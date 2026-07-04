@@ -267,7 +267,7 @@ public function onMessage(string $clientId, array $data): void
         
     } catch (ValidationException $e) {
         // Send error to client
-        $this->server->sendToClient($clientId, json_encode([
+        $this->server->sendRaw($clientId, json_encode([
             'event' => 'error',
             'data' => [
                 'message' => 'Invalid message format',

@@ -67,7 +67,7 @@ class ChatController extends SocketController
         // Client is automatically in '/' namespace
         
         // Move to chat namespace
-        $this->moveClientToNamespace($clientId, '/chat');
+        $this->joinNamespace($clientId, '/chat');
         
         $this->emit($clientId, 'namespace.joined', [
             'namespace' => '/chat',
@@ -88,7 +88,7 @@ class ChatController extends SocketController
         }
 
         // Move to new namespace
-        $this->moveClientToNamespace($clientId, $targetNamespace);
+        $this->joinNamespace($clientId, $targetNamespace);
         
         $this->emit($clientId, 'namespace.switched', [
             'namespace' => $targetNamespace
@@ -105,14 +105,14 @@ Send messages to all clients in a specific namespace:
 class NotificationController extends SocketController
 {
     #[HttpRoute('POST', '/api/notifications/broadcast')]
-    public function broadcastToNamespace(Request $request): Response
+    public function postNamespaceBroadcast(Request $request): Response
     {
         $data = $request->all();
         $namespace = $data['namespace'] ?? '/';
         $message = $data['message'] ?? '';
 
         // Broadcast to all clients in the namespace
-        $this->broadcastToNamespaceClients('notification', [
+        $this->broadcastToNamespace('notification', [
             'message' => $message,
             'timestamp' => time(),
             'type' => 'system'
@@ -128,7 +128,7 @@ class NotificationController extends SocketController
         $targetNamespace = $data['namespace'] ?? '/';
 
         // Send announcement to specific namespace
-        $this->broadcastToNamespaceClients('announcement', [
+        $this->broadcastToNamespace('announcement', [
             'message' => $message,
             'from' => 'admin',
             'timestamp' => time()
@@ -154,16 +154,16 @@ class ChatController extends SocketController
     public function onConnect(string $clientId): void
     {
         // Move to chat namespace
-        $this->moveClientToNamespace($clientId, '/chat');
+        $this->joinNamespace($clientId, '/chat');
         
         // Join default room
         $this->joinRoom($clientId, 'general', '/chat');
         
         // Notify room about new user
-        $this->broadcastToRoomClients('user.joined', [
+        $this->broadcastToRoom('user.joined', [
             'clientId' => $clientId,
             'message' => "User {$clientId} joined the room"
-        ], 'general', '/chat');
+        ], '/chat', 'general');
     }
 
     #[SocketOn('room.join')]
@@ -185,10 +185,10 @@ class ChatController extends SocketController
         ]);
         
         // Notify room members
-        $this->broadcastToRoomClients('user.joined', [
+        $this->broadcastToRoom('user.joined', [
             'clientId' => $clientId,
             'room' => $room
-        ], $room, $namespace);
+        ], $namespace, $room);
     }
 
     #[SocketOn('room.leave')]
@@ -201,10 +201,10 @@ class ChatController extends SocketController
         $this->leaveRoom($clientId, $room, $namespace);
         
         // Notify remaining room members
-        $this->broadcastToRoomClients('user.left', [
+        $this->broadcastToRoom('user.left', [
             'clientId' => $clientId,
             'room' => $room
-        ], $room, $namespace);
+        ], $namespace, $room);
         
         // Confirm to user
         $this->emit($clientId, 'room.left', [
@@ -234,12 +234,12 @@ class ChatController extends SocketController
         }
 
         // Broadcast to room
-        $this->broadcastToRoomClients('chat.message', [
+        $this->broadcastToRoom('chat.message', [
             'clientId' => $clientId,
             'message' => $message,
             'room' => $room,
             'timestamp' => time()
-        ], $room, $namespace);
+        ], $namespace, $room);
     }
 
     #[SocketOn('chat.private')]
@@ -248,7 +248,7 @@ class ChatController extends SocketController
         $targetId = $data['targetId'] ?? null;
         $message = $data['message'] ?? '';
 
-        if (!$targetId || !$this->isClientConnected($targetId)) {
+        if (!$targetId || !$this->isConnected($targetId)) {
             $this->emit($clientId, 'error', ['message' => 'Target user not found']);
             return;
         }
@@ -261,7 +261,7 @@ class ChatController extends SocketController
         $this->joinRoom($targetId, $privateRoom, '/chat');
         
         // Send message to private room
-        $this->broadcastToRoomClients('chat.private', [
+        $this->broadcastToRoom('chat.private', [
             'from' => $clientId,
             'message' => $message,
             'timestamp' => time()
@@ -298,7 +298,7 @@ class GameController extends SocketController
         ];
 
         // Move host to game namespace and room
-        $this->moveClientToNamespace($clientId, '/game');
+        $this->joinNamespace($clientId, '/game');
         $this->joinRoom($clientId, $gameId, '/game');
         
         // Notify host
@@ -308,13 +308,13 @@ class GameController extends SocketController
         ]);
         
         // Notify lobby about new game
-        $this->broadcastToRoomClients('game.available', [
+        $this->broadcastToRoom('game.available', [
             'gameId' => $gameId,
             'name' => $gameName,
             'host' => $clientId,
             'players' => 1,
             'maxPlayers' => $maxPlayers
-        ], 'lobby', '/game');
+        ], '/game', 'lobby');
     }
 
     #[SocketOn('game.join')]
@@ -339,23 +339,23 @@ class GameController extends SocketController
         $game['players'][] = $clientId;
         
         // Move player to game namespace and room
-        $this->moveClientToNamespace($clientId, '/game');
+        $this->joinNamespace($clientId, '/game');
         $this->joinRoom($clientId, $gameId, '/game');
         
         // Notify all players in the game
-        $this->broadcastToRoomClients('player.joined', [
+        $this->broadcastToRoom('player.joined', [
             'playerId' => $clientId,
             'playerCount' => count($game['players']),
             'maxPlayers' => $game['maxPlayers']
-        ], $gameId, '/game');
+        ], '/game', $gameId);
         
         // If game is now full, start it
         if (count($game['players']) >= $game['maxPlayers']) {
             $game['status'] = 'playing';
-            $this->broadcastToRoomClients('game.started', [
+            $this->broadcastToRoom('game.started', [
                 'gameId' => $gameId,
                 'players' => $game['players']
-            ], $gameId, '/game');
+            ], '/game', $gameId);
         }
     }
 
@@ -366,9 +366,9 @@ class GameController extends SocketController
         foreach ($this->games as $gameId => $game) {
             if ($game['host'] === $clientId) {
                 // Notify players
-                $this->broadcastToRoomClients('game.ended', [
+                $this->broadcastToRoom('game.ended', [
                     'reason' => 'Host disconnected'
-                ], $gameId, '/game');
+                ], '/game', $gameId);
                 
                 // Remove game
                 unset($this->games[$gameId]);
@@ -380,10 +380,10 @@ class GameController extends SocketController
                 );
                 
                 // Notify remaining players
-                $this->broadcastToRoomClients('player.left', [
+                $this->broadcastToRoom('player.left', [
                     'playerId' => $clientId,
                     'playerCount' => count($this->games[$gameId]['players'])
-                ], $gameId, '/game');
+                ], '/game', $gameId);
             }
         }
     }
@@ -478,17 +478,17 @@ class MultiTenantChatController extends SocketController
         $namespace = "/tenant_{$tenantId}";
         
         // Join tenant namespace
-        $this->moveClientToNamespace($clientId, $namespace);
+        $this->joinNamespace($clientId, $namespace);
         
         // Join general room in tenant
         $this->joinRoom($clientId, 'general', $namespace);
         
         // Store user info
-        $this->setClientData($clientId, 'userId', $userId);
-        $this->setClientData($clientId, 'tenantId', $tenantId);
+        $this->putData($clientId, 'userId', $userId);
+        $this->putData($clientId, 'tenantId', $tenantId);
         
         // Notify tenant about new user
-        $this->broadcastToNamespaceClients('user.joined', [
+        $this->broadcastToNamespace('user.joined', [
             'userId' => $userId,
             'clientId' => $clientId,
             'tenantId' => $tenantId
@@ -503,8 +503,8 @@ class MultiTenantChatController extends SocketController
     #[SocketOn('chat.message')]
     public function sendMessage(string $clientId, array $data): void
     {
-        $userId = $this->getClientData($clientId, 'userId');
-        $tenantId = $this->getClientData($clientId, 'tenantId');
+        $userId = $this->data($clientId, 'userId');
+        $tenantId = $this->data($clientId, 'tenantId');
         
         if (!$tenantId) {
             $this->emit($clientId, 'error', ['message' => 'Not connected to any tenant']);
@@ -516,12 +516,12 @@ class MultiTenantChatController extends SocketController
         $namespace = "/tenant_{$tenantId}";
         
         // Broadcast to tenant room
-        $this->broadcastToRoomClients('chat.message', [
+        $this->broadcastToRoom('chat.message', [
             'userId' => $userId,
             'message' => $message,
             'room' => $room,
             'timestamp' => time()
-        ], $room, $namespace);
+        ], $namespace, $room);
     }
 }
 ```
@@ -544,22 +544,22 @@ class CollaborationController extends SocketController
 
         // Join collaboration namespace
         $namespace = '/collaboration';
-        $this->moveClientToNamespace($clientId, $namespace);
+        $this->joinNamespace($clientId, $namespace);
         
         // Join document-specific room
         $room = "doc_{$documentId}";
         $this->joinRoom($clientId, $room, $namespace);
         
         // Store user info
-        $this->setClientData($clientId, 'userId', $userId);
-        $this->setClientData($clientId, 'documentId', $documentId);
+        $this->putData($clientId, 'userId', $userId);
+        $this->putData($clientId, 'documentId', $documentId);
         
         // Notify other collaborators
-        $this->broadcastToRoomClients('user.joined.document', [
+        $this->broadcastToRoom('user.joined.document', [
             'userId' => $userId,
             'documentId' => $documentId,
             'clientId' => $clientId
-        ], $room, $namespace);
+        ], $namespace, $room);
         
         $this->emit($clientId, 'document.joined', [
             'documentId' => $documentId,
@@ -570,8 +570,8 @@ class CollaborationController extends SocketController
     #[SocketOn('document.edit')]
     public function editDocument(string $clientId, array $data): void
     {
-        $userId = $this->getClientData($clientId, 'userId');
-        $documentId = $this->getClientData($clientId, 'documentId');
+        $userId = $this->data($clientId, 'userId');
+        $documentId = $this->data($clientId, 'documentId');
         
         if (!$documentId) {
             $this->emit($clientId, 'error', ['message' => 'Not connected to any document']);
@@ -582,21 +582,21 @@ class CollaborationController extends SocketController
         $room = "doc_{$documentId}";
         
         // Broadcast edit to all collaborators except sender
-        $this->broadcastToRoomClients('document.edit', [
+        $this->broadcastToRoom('document.edit', [
             'userId' => $userId,
             'documentId' => $documentId,
             'operation' => $data['operation'] ?? null,
             'position' => $data['position'] ?? null,
             'content' => $data['content'] ?? null,
             'timestamp' => time()
-        ], $room, $namespace);
+        ], $namespace, $room);
     }
 
     #[SocketOn('cursor.position')]
     public function updateCursorPosition(string $clientId, array $data): void
     {
-        $userId = $this->getClientData($clientId, 'userId');
-        $documentId = $this->getClientData($clientId, 'documentId');
+        $userId = $this->data($clientId, 'userId');
+        $documentId = $this->data($clientId, 'documentId');
         
         if (!$documentId) {
             return;
@@ -606,11 +606,11 @@ class CollaborationController extends SocketController
         $room = "doc_{$documentId}";
         
         // Broadcast cursor position to other collaborators
-        $this->broadcastToRoomClients('cursor.position', [
+        $this->broadcastToRoom('cursor.position', [
             'userId' => $userId,
             'position' => $data['position'] ?? null,
             'selection' => $data['selection'] ?? null
-        ], $room, $namespace);
+        ], $namespace, $room);
     }
 }
 ```

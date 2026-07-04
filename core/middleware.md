@@ -247,7 +247,7 @@ class WebSocketAuthMiddleware implements WebsocketMiddleware
         // Check if client is authenticated
         if (!$this->isClientAuthenticated($clientId, $server)) {
             // Send error to client
-            $server->send($clientId, 'error', [
+            $server->emit($clientId, 'error', [
                 'code' => 'AUTHENTICATION_REQUIRED',
                 'message' => 'You must authenticate before sending events'
             ]);
@@ -353,7 +353,7 @@ class MessageValidationMiddleware implements WebsocketMiddleware
         // Validate required fields
         foreach ($schema['required'] as $field) {
             if (!isset($data[$field])) {
-                $server->send($clientId, 'validation.error', [
+                $server->emit($clientId, 'validation.error', [
                     'event' => $event,
                     'field' => $field,
                     'message' => "Field '{$field}' is required"
@@ -365,7 +365,7 @@ class MessageValidationMiddleware implements WebsocketMiddleware
         // Validate field rules
         foreach ($schema['rules'] as $field => $rules) {
             if (isset($data[$field]) && !$this->validateField($data[$field], $rules)) {
-                $server->send($clientId, 'validation.error', [
+                $server->emit($clientId, 'validation.error', [
                     'event' => $event,
                     'field' => $field,
                     'message' => "Field '{$field}' validation failed"
@@ -439,7 +439,7 @@ class ProfanityFilterMiddleware implements WebsocketMiddleware
         $message = $data['message'] ?? $data['content'] ?? $data['text'] ?? '';
         
         if ($this->containsProfanity($message)) {
-            $server->send($clientId, 'message.blocked', [
+            $server->emit($clientId, 'message.blocked', [
                 'reason' => 'Inappropriate content detected',
                 'original_event' => $event
             ]);

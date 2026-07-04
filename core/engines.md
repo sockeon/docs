@@ -57,7 +57,7 @@ The Swoole extension is required for engine=swoole. Install ext-swoole or ext-op
  (stream_select loop)  (multi-worker WS)
 ```
 
-The public `Server` API — `send()`, `broadcast()`, `getClientCount()`, controller registration — is unchanged. Internally, outbound messages go through `$this->engine->send()` instead of writing directly to client sockets.
+The public `Server` API — `emit()`, `broadcast()`, `getClientCount()`, controller registration — is unchanged. Internally, outbound messages go through `$this->engine->send()` instead of writing directly to client sockets.
 
 ## Stream select engine
 

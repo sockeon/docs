@@ -52,7 +52,7 @@ class NamespaceBroadcastController extends SocketController
         $message = $data['message'] ?? '';
         
         // Broadcast to specific namespace
-        $this->broadcastToNamespaceClients('namespace.message', [
+        $this->broadcastToNamespace('namespace.message', [
             'message' => $message,
             'from_client' => $clientId,
             'namespace' => $namespace,
@@ -85,12 +85,12 @@ class RoomBroadcastController extends SocketController
         }
         
         // Broadcast to specific room
-        $this->broadcastToRoomClients('room.message', [
+        $this->broadcastToRoom('room.message', [
             'message' => $message,
             'from_client' => $clientId,
             'room' => $room,
             'timestamp' => time()
-        ], $room);
+        ], '/', $room);
         
         $this->emit($clientId, 'message.sent', [
             'room' => $room
@@ -118,12 +118,12 @@ class ChatController extends SocketController
         }
         
         // Broadcast to room
-        $this->broadcastToRoomClients('chat.message', [
+        $this->broadcastToRoom('chat.message', [
             'from' => $clientId,
             'message' => $message,
             'room' => $room,
             'timestamp' => time()
-        ], $room);
+        ], '/', $room);
     }
 
     #[SocketOn('chat.typing')]
@@ -133,11 +133,11 @@ class ChatController extends SocketController
         $room = $data['room'] ?? 'general';
         
         // Broadcast typing status to room
-        $this->broadcastToRoomClients('chat.typing', [
+        $this->broadcastToRoom('chat.typing', [
             'clientId' => $clientId,
             'typing' => $isTyping,
             'room' => $room
-        ], $room);
+        ], '/', $room);
     }
 }
 ```
@@ -159,7 +159,7 @@ class GameController extends SocketController
         }
         
         // Broadcast move to game room
-        $this->broadcastToRoomClients('game.move', [
+        $this->broadcastToRoom('game.move', [
             'player' => $clientId,
             'move' => $move,
             'gameId' => $gameId,
@@ -174,7 +174,7 @@ class GameController extends SocketController
         $message = $data['message'] ?? '';
         
         // Broadcast chat to game room
-        $this->broadcastToRoomClients('game.chat', [
+        $this->broadcastToRoom('game.chat', [
             'player' => $clientId,
             'message' => $message,
             'gameId' => $gameId,
@@ -198,10 +198,10 @@ class BroadcastingExamples extends SocketController
         $this->broadcast('event.name', ['data' => 'value']);
         
         // Broadcast to specific namespace
-        $this->broadcastToNamespaceClients('event.name', ['data' => 'value'], '/namespace');
+        $this->broadcastToNamespace('event.name', ['data' => 'value'], '/namespace');
         
         // Broadcast to specific room
-        $this->broadcastToRoomClients('event.name', ['data' => 'value'], 'room_name');
+        $this->broadcastToRoom('event.name', ['data' => 'value'], '/', 'room_name');
         
         // Send to specific client
         $this->emit($clientId, 'event.name', ['data' => 'value']);
@@ -257,5 +257,5 @@ Event::broadcast(new DeploymentFinished('v2.1.0', true));
 
 ### Controller vs Custom Event Broadcasting
 
-- Use controller methods (`broadcast`, `broadcastToRoomClients`, `broadcastToNamespaceClients`) for request/event lifecycle broadcasting.
+- Use controller methods (`broadcast`, `broadcastToRoom`, `broadcastToNamespace`) for request/event lifecycle broadcasting.
 - Use `Event::broadcast()` + `EventableContract` for decoupled broadcasting from non-controller code.

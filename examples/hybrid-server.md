@@ -119,7 +119,7 @@ class HybridController extends SocketController
     #[HttpRoute('GET', '/api/clients')]
     public function getClients(Request $request): Response
     {
-        $clients = array_keys($this->getAllClients());
+        $clients = $this->getClientIds();
         
         return Response::json([
             'clients' => $clients,
@@ -128,7 +128,7 @@ class HybridController extends SocketController
     }
 
     #[HttpRoute('POST', '/api/message/{clientId}')]
-    public function sendToClient(Request $request): Response
+    public function sendRaw(Request $request): Response
     {
         $clientId = $request->getParam('clientId');
         $data = $request->all();
@@ -140,7 +140,7 @@ class HybridController extends SocketController
             ], 400);
         }
         
-        if (!$this->isClientConnected($clientId)) {
+        if (!$this->isConnected($clientId)) {
             return Response::json([
                 'error' => 'Client not connected'
             ], 404);

@@ -68,14 +68,24 @@ class MyController extends SocketController
 
 ```php
 // WebSocket methods
-$this->emit($clientId, 'event', $data);                    // Send to specific client
-$this->broadcast('event', $data);                          // Send to all clients
-$this->broadcastToRoomClients('event', $data, 'room');     // Send to room
-$this->broadcastToNamespaceClients('event', $data, 'ns');  // Send to namespace
+$this->emit($clientId, 'event', $data);                         // Send to one client
+$this->sendRaw($clientId, $payload);                            // Send raw payload
+$this->broadcast('event', $data);                               // Send to all clients
+$this->broadcastTo('event', $data, $clientIds);                 // Send to specific clients
+$this->broadcastExcept('event', $data, $exceptClientIds);       // Send to all except some
+$this->broadcastToNamespace('event', $data, '/chat');          // Send to namespace
+$this->broadcastToRoom('event', $data, '/chat', 'room');        // Send to room
 
-// Room management
+// Namespace and room management
+$this->joinNamespace($clientId, '/chat');
+$this->leaveNamespace($clientId);
 $this->joinRoom($clientId, 'room');
 $this->leaveRoom($clientId, 'room');
+
+// Client helpers
+$this->isConnected($clientId);
+$this->disconnect($clientId);
+$this->getClientIp($clientId);
 
 // Server access
 $this->getServer();                               // Access server instance
@@ -171,7 +181,7 @@ $this->joinNamespace($clientId, '/chat');
 $this->joinNamespace($clientId, '/game');
 
 // Broadcast to specific namespace
-$this->broadcastToNamespaceClients('message', $data, '/chat');
+$this->broadcastToNamespace('message', $data, '/chat');
 ```
 
 ### Rooms
@@ -184,7 +194,7 @@ $this->joinRoom($clientId, 'room1', '/chat');
 $this->joinRoom($clientId, 'lobby', '/game');
 
 // Broadcast to specific room
-$this->broadcastToRoomClients('private.message', $data, 'room1', '/chat');
+$this->broadcastToRoom('private.message', $data, '/chat', 'room1');
 ```
 
 ### Practical Example
@@ -210,7 +220,7 @@ class GameController extends SocketController
         $this->joinRoom($clientId, "game_{$gameId}", '/game');
         
         // Notify other players in the game
-        $this->broadcastToRoomClients('player.joined', [
+        $this->broadcastToRoom('player.joined', [
             'playerId' => $clientId
         ], "game_{$gameId}", '/game');
     }

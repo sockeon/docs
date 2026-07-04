@@ -97,7 +97,7 @@ class ChatController extends SocketController
         $targetId = $data['targetId'] ?? null;
         $message = $data['message'] ?? '';
 
-        if (!$targetId || !$this->isClientConnected($targetId)) {
+        if (!$targetId || !$this->isConnected($targetId)) {
             $this->emit($clientId, 'error', ['message' => 'Target user not found']);
             return;
         }
@@ -121,10 +121,10 @@ class ChatController extends SocketController
     {
         $room = $data['room'] ?? 'general';
         
-        $this->broadcastToRoomClients('user.typing', [
+        $this->broadcastToRoom('user.typing', [
             'clientId' => $clientId,
             'typing' => true
-        ], $room);
+        ], '/', $room);
     }
 
     #[SocketOn('typing.stop')]
@@ -132,10 +132,10 @@ class ChatController extends SocketController
     {
         $room = $data['room'] ?? 'general';
         
-        $this->broadcastToRoomClients('user.typing', [
+        $this->broadcastToRoom('user.typing', [
             'clientId' => $clientId,
             'typing' => false
-        ], $room);
+        ], '/', $room);
     }
 }
 ```
@@ -166,7 +166,7 @@ class ApiController extends SocketController
     public function getClients(Request $request): Response
     {
         $clients = [];
-        foreach (array_keys($this->getAllClients()) as $clientId) {
+        foreach ($this->getClientIds() as $clientId) {
             $clients[] = [
                 'id' => $clientId,
                 'type' => $this->getClientType($clientId),
@@ -297,7 +297,7 @@ class GameController extends SocketController
     public function onConnect(string $clientId): void
     {
         // Add to game namespace and lobby
-        $this->moveClientToNamespace($clientId, '/game');
+        $this->joinNamespace($clientId, '/game');
         $this->joinRoom($clientId, 'lobby', '/game');
         
         $this->emit($clientId, 'game.status', [
@@ -321,10 +321,10 @@ class GameController extends SocketController
         ]);
         
         // Notify lobby about new game
-        $this->broadcastToRoomClients('game.available', [
+        $this->broadcastToRoom('game.available', [
             'gameId' => $gameId,
             'host' => $clientId
-        ], 'lobby', '/game');
+        ], '/game', 'lobby');
     }
 
     #[SocketOn('game.join')]
@@ -342,9 +342,9 @@ class GameController extends SocketController
         $this->joinRoom($clientId, $gameId, '/game');
         
         // Notify game participants
-        $this->broadcastToRoomClients('player.joined', [
+        $this->broadcastToRoom('player.joined', [
             'playerId' => $clientId
-        ], $gameId, '/game');
+        ], '/game', $gameId);
         
         $this->emit($clientId, 'game.joined', [
             'gameId' => $gameId,
@@ -363,9 +363,9 @@ class GameController extends SocketController
             $this->joinRoom($clientId, 'lobby', '/game');
             
             // Notify remaining players
-            $this->broadcastToRoomClients('player.left', [
+            $this->broadcastToRoom('player.left', [
                 'playerId' => $clientId
-            ], $gameId, '/game');
+            ], '/game', $gameId);
         }
     }
 
@@ -396,10 +396,16 @@ $this->emit(string $clientId, string $event, array $data): void
 $this->broadcast(string $event, array $data): void
 
 // Send to clients in a specific room
-$this->broadcastToRoomClients(string $event, array $data, string $room, string $namespace = '/'): void
+$this->broadcastToRoom(string $event, array $data, string $namespace, string $room): void
 
 // Send to clients in a specific namespace
-$this->broadcastToNamespaceClients(string $event, array $data, string $namespace): void
+$this->broadcastToNamespace(string $event, array $data, string $namespace): void
+
+// Send to specific client IDs
+$this->broadcastTo(string $event, array $data, array $clientIds): void
+
+// Send to all except specific client IDs
+$this->broadcastExcept(string $event, array $data, array $exceptClientIds): void
 ```
 
 #### Room Management
@@ -410,10 +416,13 @@ $this->joinRoom(string $clientId, string $room, string $namespace = '/'): void
 // Remove client from room
 $this->leaveRoom(string $clientId, string $room, string $namespace = '/'): void
 
-// Move client to namespace
-$this->moveClientToNamespace(string $clientId, string $namespace = '/'): void
+// Join client to namespace
+$this->joinNamespace(string $clientId, string $namespace = '/'): void
 
-// Note: There is no direct leaveNamespace method - clients are moved between namespaces
+// Leave current namespace
+$this->leaveNamespace(string $clientId): void
+
+// Note: moving between namespaces is done via joinNamespace
 ```
 
 #### Server Access
@@ -422,10 +431,10 @@ $this->moveClientToNamespace(string $clientId, string $namespace = '/'): void
 $this->getServer(): Server
 
 // Check if client is connected
-$this->isClientConnected(string $clientId): bool
+$this->isConnected(string $clientId): bool
 
 // Get all client IDs
-$this->getAllClients(): array
+$this->getClientIds(): array
 
 // Get client count
 $this->getClientCount(): int

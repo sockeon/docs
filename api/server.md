@@ -206,13 +206,13 @@ if ($type === 'ws') {
 
 ## Communication Methods
 
-### send()
+### emit()
 
 ```php
-public function send(string $clientId, string $event, array $data): void
+public function emit(string $clientId, string $event, array $data): void
 ```
 
-Sends a WebSocket message to a specific client.
+Emits a WebSocket event to a specific client.
 
 **Parameters:**
 - `$clientId` (`string`): Target client ID
@@ -221,16 +221,16 @@ Sends a WebSocket message to a specific client.
 
 **Example:**
 ```php
-$server->send('client-123', 'notification', [
+$server->emit('client-123', 'notification', [
     'message' => 'Hello!',
     'timestamp' => time()
 ]);
 ```
 
-### sendToClient()
+### sendRaw()
 
 ```php
-public function sendToClient(string $clientId, string $message): void
+public function sendRaw(string $clientId, string $message): void
 ```
 
 Sends raw message data to a specific client.
@@ -241,7 +241,7 @@ Sends raw message data to a specific client.
 
 **Example:**
 ```php
-$server->sendToClient('client-123', 'Hello, client!');
+$server->sendRaw('client-123', 'Hello, client!');
 ```
 
 ### broadcast()
@@ -542,13 +542,13 @@ class ClientManagerController extends SocketController
         }
         
         // Send kick message to client
-        $this->getServer()->send($clientId, 'kicked', [
+        $this->getServer()->emit($clientId, 'kicked', [
             'reason' => $reason,
             'timestamp' => time()
         ]);
         
         // Disconnect the client
-        $this->disconnectClient($clientId);
+        $this->disconnect($clientId);
         
         return Response::json(['success' => true]);
     }
@@ -592,7 +592,7 @@ The Server class methods generally follow these error handling patterns:
 ```php
 // Always check if client is connected before sending
 if ($server->isClientConnected($clientId)) {
-    $server->send($clientId, 'message', ['data' => 'value']);
+    $server->emit($clientId, 'message', ['data' => 'value']);
 } else {
     echo "Client {$clientId} is not connected\n";
 }
@@ -601,7 +601,7 @@ if ($server->isClientConnected($clientId)) {
 function safeSend(Server $server, string $clientId, string $event, array $data): bool
 {
     if ($server->isClientConnected($clientId)) {
-        $server->send($clientId, $event, $data);
+        $server->emit($clientId, $event, $data);
         return true;
     }
     return false;

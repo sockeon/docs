@@ -261,13 +261,13 @@ public function handleChatMessage(string $clientId, array $data): void
     }
 
     // Process the event
-    $this->broadcastToRoomClients('chat.message', [
+    $this->broadcastToRoom('chat.message', [
         'id' => uniqid(),
         'from' => $clientId,
         'message' => $message,
         'type' => $type,
         'timestamp' => time()
-    ], $room);
+    ], '/', $room);
 }
 
 #[SocketOn('game.move')]
@@ -293,7 +293,7 @@ public function handleGameMove(string $clientId, array $data): void
     }
 
     // Broadcast move to game room
-    $this->broadcastToRoomClients('game.move', $gameData, $gameData['gameId']);
+    $this->broadcastToRoom('game.move', $gameData, '/game', $gameData['gameId']);
 }
 ```
 

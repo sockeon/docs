@@ -151,7 +151,7 @@ class ChatController extends SocketController
     {
         return Response::json([
             'count' => $this->getClientCount(),
-            'clients' => array_keys($this->getAllClients())
+            'clients' => $this->getClientIds()
         ]);
     }
 

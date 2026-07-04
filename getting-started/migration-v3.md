@@ -7,7 +7,7 @@ twitter_image: "https://sockeon.github.io/logo.png"
 
 # Migrating to Sockeon 3.x
 
-Sockeon 3.x introduces pluggable engines, survivability caps, Swoole high-concurrency mode, and Redis-backed clustering. Controllers, routing attributes, middleware, and the public `Server` API remain compatible — most migrations are configuration changes.
+Sockeon 3.x introduces pluggable engines, survivability caps, Swoole high-concurrency mode, and Redis-backed clustering. Controllers, routing attributes, and middleware patterns remain the same — most migrations are configuration changes plus a small set of API renames (see below).
 
 ## What changed
 
@@ -32,7 +32,32 @@ Confirm PHP 8.1+:
 php -v
 ```
 
-## Step 2: Engine (optional)
+## Step 2: Run the upgrade script
+
+Sockeon ships a codemod that renames v2 API calls and patches common config defaults:
+
+```bash
+# Preview changes
+vendor/bin/sockeon-upgrade . --dry-run
+
+# Apply to your project
+vendor/bin/sockeon-upgrade .
+
+# Controllers only
+vendor/bin/sockeon-upgrade app/Controllers --code-only
+
+# Config only
+vendor/bin/sockeon-upgrade config/sockeon.php --config-only
+```
+
+The script updates:
+
+- **Code:** `send` → `emit`, `sendToClient` → `sendRaw`, controller renames, `broadcastTo` / `broadcastExcept` argument order, `broadcastToRoom` namespace/room order, `getClientData` → `data` / `allData`
+- **Config:** adds `engine`, `survivability.max_connections`, and `rate_limit` connection caps when missing
+
+Review the diff after running — complex `broadcastToRoom()` calls may still need a manual pass. See the rename table below.
+
+## Step 3: Engine (optional)
 
 Sockeon 2.x always used `stream_select` internally. There was no config key to change the transport — the reactor was hardcoded.
 
@@ -45,7 +70,7 @@ Sockeon 2.x always used `stream_select` internally. There was no config key to c
 
 No code changes are required for the default engine. Controllers, `emit()`, `broadcast()`, and middleware work unchanged.
 
-## Step 3: Add survivability settings
+## Step 4: Add survivability settings
 
 2.x enforced a hardcoded 10,000 connection cap. 3.x makes this configurable:
 
@@ -57,7 +82,7 @@ No code changes are required for the default engine. Controllers, `emit()`, `bro
 
 If you previously relied on the implicit 10k cap, set `max_connections` to `10000` explicitly. For production, align with `rate_limit.maxGlobalConnections`. See [Survivability](/v3.0/core/survivability.md).
 
-## Step 4: Review rate limit enforcement
+## Step 5: Review rate limit enforcement
 
 In 3.x, **connection limits are enforced at accept time** when `rate_limit` config is present — independent of the `enabled` flag for HTTP/WebSocket message rate limiting.
 
@@ -93,7 +118,7 @@ The `enabled` flag still controls HTTP and WebSocket **message** rate limiting o
 
 See [Rate Limiting](/v3.0/advanced/rate-limiting.md).
 
-## Step 5: Optional — enable Swoole engine
+## Step 6: Optional — enable Swoole engine
 
 For deployments needing more than ~1,000–2,000 concurrent connections on one node:
 
@@ -116,7 +141,7 @@ pecl install openswoole
 
 See [Engines](/v3.0/core/engines.md) and [Swoole Engine](/v3.0/advanced/swoole-engine.md).
 
-## Step 6: Optional — enable cluster scaling
+## Step 7: Optional — enable cluster scaling
 
 For multi-node deployments behind a load balancer:
 
@@ -207,13 +232,30 @@ return [
 
 ## Application code changes
 
-**No changes required** for typical applications:
+**No changes required** for typical applications, except the public API renames below.
 
-- Controllers extending `SocketController`
-- `#[SocketOn]`, `#[OnConnect]`, `#[HttpRoute]` attributes
-- `$this->emit()`, `$this->broadcast()`, namespace/room methods
-- Middleware registration
-- `Server` instantiation and `run()`
+### API method renames (3.x)
+
+| Old name | New name | Layer |
+|----------|----------|-------|
+| `Server::send()` | `Server::emit()` | Server |
+| `Server::sendToClient()` | `Server::sendRaw()` | Server |
+| `broadcastToRoomClients()` | `broadcastToRoom($event, $data, $namespace, $room)` | Controller |
+| `broadcastToNamespaceClients()` | `broadcastToNamespace()` | Controller |
+| `moveClientToNamespace()` | `joinNamespace()` | Controller |
+| `getAllClients()` | `getClientIds()` | Controller |
+| `broadcastToAll()` | `broadcast()` | Controller (removed alias) |
+| `broadcastTo($clients, ...)` | `broadcastTo($event, $data, $clientIds)` | Controller |
+| `broadcastExcept($excepts, ...)` | `broadcastExcept($event, $data, $exceptClientIds)` | Controller |
+| `disconnectClient()` | `disconnect()` | Controller |
+| `isClientConnected()` | `isConnected()` | Controller |
+| `getClientIpAddress()` | `getClientIp()` | Controller |
+| `getClientData()` | `data()` / `allData()` | Controller |
+| `setClientData()` | `putData()` | Controller |
+| `hasClientData()` | `hasData()` | Controller |
+| `forgetData()` | new in 3.x | Controller |
+
+Run `vendor/bin/sockeon-upgrade` to apply most of these automatically.
 
 **Optional improvements:**
 
@@ -224,6 +266,7 @@ return [
 ## Verification checklist
 
 - [ ] `composer update` succeeds on PHP 8.1+
+- [ ] `vendor/bin/sockeon-upgrade . --dry-run` reviewed and applied
 - [ ] Server starts with `engine=stream_select` (default behavior)
 - [ ] WebSocket connect, emit, and broadcast work
 - [ ] HTTP routes respond correctly

@@ -62,7 +62,7 @@ class ClientInfoController extends SocketController
         $clientInfo = [
             'id' => $clientId,
             'type' => $this->getClientType($clientId),
-            'connected' => $this->isClientConnected($clientId)
+            'connected' => $this->isConnected($clientId)
         ];
         
         $this->emit($clientId, 'client.info', $clientInfo);
@@ -73,7 +73,7 @@ class ClientInfoController extends SocketController
     {
         $stats = [
             'total_clients' => $this->getClientCount(),
-            'client_ids' => $this->getAllClients()
+            'client_ids' => $this->getClientIds()
         ];
         
         $this->emit($clientId, 'server.stats', $stats);
@@ -92,8 +92,8 @@ class ClientDataController extends SocketController
     public function onConnect(string $clientId): void
     {
         // Store initial client data
-        $this->setClientData($clientId, 'connected_at', time());
-        $this->setClientData($clientId, 'status', 'online');
+        $this->putData($clientId, 'connected_at', time());
+        $this->putData($clientId, 'status', 'online');
     }
 
     #[SocketOn('user.update')]
@@ -103,8 +103,8 @@ class ClientDataController extends SocketController
         $email = $data['email'] ?? '';
         
         // Store user data
-        $this->setClientData($clientId, 'name', $name);
-        $this->setClientData($clientId, 'email', $email);
+        $this->putData($clientId, 'name', $name);
+        $this->putData($clientId, 'email', $email);
         
         $this->emit($clientId, 'user.updated', [
             'name' => $name,
@@ -115,9 +115,9 @@ class ClientDataController extends SocketController
     #[SocketOn('user.info')]
     public function getUserInfo(string $clientId, array $data): void
     {
-        $name = $this->getClientData($clientId, 'name');
-        $email = $this->getClientData($clientId, 'email');
-        $connectedAt = $this->getClientData($clientId, 'connected_at');
+        $name = $this->data($clientId, 'name');
+        $email = $this->data($clientId, 'email');
+        $connectedAt = $this->data($clientId, 'connected_at');
         
         $this->emit($clientId, 'user.info', [
             'name' => $name,
@@ -136,7 +136,7 @@ class ClientDataController extends SocketController
 class NamespaceController extends SocketController
 {
     #[SocketOn('namespace.join')]
-    public function joinNamespace(string $clientId, array $data): void
+    public function onNamespaceJoin(string $clientId, array $data): void
     {
         $namespace = $data['namespace'] ?? '';
         
@@ -145,8 +145,7 @@ class NamespaceController extends SocketController
             return;
         }
         
-        // Move client to namespace
-        $this->moveClientToNamespace($clientId, $namespace);
+        $this->joinNamespace($clientId, $namespace);
         
         $this->emit($clientId, 'namespace.joined', [
             'namespace' => $namespace
@@ -157,7 +156,7 @@ class NamespaceController extends SocketController
     public function switchToDefaultNamespace(string $clientId, array $data): void
     {
         // Move client to default namespace
-        $this->moveClientToNamespace($clientId, '/');
+        $this->joinNamespace($clientId, '/');
         
         $this->emit($clientId, 'namespace.left', [
             'message' => 'Left namespace'
@@ -191,10 +190,10 @@ class RoomController extends SocketController
         ]);
         
         // Notify others in the room
-        $this->broadcastToRoomClients('room.user_joined', [
+        $this->broadcastToRoom('room.user_joined', [
             'clientId' => $clientId,
             'room' => $room
-        ], $room);
+        ], '/', $room);
     }
 
     #[SocketOn('room.leave')]
@@ -215,10 +214,10 @@ class RoomController extends SocketController
         ]);
         
         // Notify others in the room
-        $this->broadcastToRoomClients('room.user_left', [
+        $this->broadcastToRoom('room.user_left', [
             'clientId' => $clientId,
             'room' => $room
-        ], $room);
+        ], '/', $room);
     }
 }
 ```

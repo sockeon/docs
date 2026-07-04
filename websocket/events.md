@@ -111,7 +111,7 @@ class GameController extends SocketController
     public function joinGame(string $clientId, array $data): void
     {
         $gameId = $data['gameId'] ?? '';
-        $this->moveClientToNamespace($clientId, "/game/{$gameId}");
+        $this->joinNamespace($clientId, "/game/{$gameId}");
         
         $this->emit($clientId, 'game.joined', ['gameId' => $gameId]);
     }
@@ -156,8 +156,8 @@ class DataController extends SocketController
         }
         
         // Update user data
-        $this->setClientData($clientId, 'name', $name);
-        $this->setClientData($clientId, 'email', $email);
+        $this->putData($clientId, 'name', $name);
+        $this->putData($clientId, 'email', $email);
         
         $this->emit($clientId, 'user.updated', [
             'name' => $name,
@@ -168,8 +168,8 @@ class DataController extends SocketController
     #[SocketOn('user.info')]
     public function getUserInfo(string $clientId, array $data): void
     {
-        $name = $this->getClientData($clientId, 'name');
-        $email = $this->getClientData($clientId, 'email');
+        $name = $this->data($clientId, 'name');
+        $email = $this->data($clientId, 'email');
         
         $this->emit($clientId, 'user.info', [
             'name' => $name,
