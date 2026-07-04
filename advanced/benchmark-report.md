@@ -154,7 +154,7 @@ Requires `scale.publisher=redis`, `scale.registry=redis`, and a **unique `node_i
 - **Handler complexity** — database, cache, and third-party APIs matter more than the framework
 - **Network** — LAN and WAN add far more latency than Sockeon routing
 - **Message size** — large payloads increase memory and transfer time
-- **Connection count** — align `survivability.max_connections`, Swoole `max_connection`, and `ulimit -n`
+- **Connection count** — raise `survivability.max_connections` and match `swoole.max_connection` (defaults cap at 10k via `min()`); set `ulimit -n` above your target
 - **Multi-node** — register client presence on connect when using Redis room registry
 
 ---

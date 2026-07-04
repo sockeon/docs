@@ -596,7 +596,7 @@ $config = new ServerConfig([
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `max_connections` | `int` | `10000` | Hard cap on total connections |
-| `write_buffer_limit` | `int` | `65536` | Outbound buffer limit (Swoole, bytes) |
+| `write_buffer_limit` | `int` | `65536` | Slow-client threshold (SurvivabilityConfig API) |
 | `heartbeat_idle_time` | `int` | `600` | Max idle seconds before disconnect (Swoole) |
 | `heartbeat_check_interval` | `int` | `60` | Idle scan interval (Swoole) |
 
@@ -634,18 +634,29 @@ $config = new ServerConfig([
 |-----|------|---------|-------------|
 | `worker_num` | `int\|null` | CPU count | Worker process count |
 | `task_worker_num` | `int` | `0` | Background task workers |
-| `max_connection` | `int` | `100000` | Swoole connection ceiling |
-| `client_table_size` | `int\|null` | auto | Shared memory table rows |
+| `max_connection` | `int` | `100000` | Swoole connection ceiling (effective: `min` with `survivability.max_connections`) |
+| `client_table_size` | `int` | auto | `min(131072, max(2048, max_connection + 2048))` |
+| `socket_buffer_size` | `int` | auto | 32/64/128 KB tier from `max_connection` |
+| `buffer_output_size` | `int` | auto | Defaults to `socket_buffer_size` |
+| `memory_limit` | `string\|null` | auto | PHP `memory_limit` at Swoole startup (`2G` / `1G` / scaled) |
 | `coroutine_dispatch` | `bool` | `true` | Run handlers in coroutines |
+
+With stock config (`survivability.max_connections=10000`, `swoole.max_connection=100000`), Sockeon accepts at most **10,000** connections. Buffer and memory auto-tuning use the `swoole.max_connection` value, not the effective cap.
 
 ```php
 use Sockeon\Sockeon\Config\SwooleEngineConfig;
 
-$swoole = new SwooleEngineConfig(['worker_num' => 4, 'max_connection' => 50_000]);
+$swoole = new SwooleEngineConfig([
+    'worker_num' => 4,
+    'max_connection' => 50_000,
+    'memory_limit' => '2G',
+]);
 $config->setSwooleEngineConfig($swoole);
 
 $config->getSwooleEngineConfig()->getWorkerNum();
 $config->getSwooleEngineConfig()->getMaxConnection();
+$config->getSwooleEngineConfig()->getSocketBufferSize();
+$config->getSwooleEngineConfig()->getMemoryLimit();
 ```
 
 See [Swoole Engine](/v3.0/advanced/swoole-engine.md) for tuning and capacity planning.

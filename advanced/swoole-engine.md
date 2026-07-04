@@ -49,11 +49,24 @@ All Swoole-specific options live under the `swoole` key:
 'swoole' => [
     'worker_num' => null,           // null = CPU core count
     'task_worker_num' => 0,         // background task workers (0 = disabled)
-    'max_connection' => 100_000,    // Swoole connection limit
+    'max_connection' => 100_000,    // Swoole connection limit (see effective cap below)
     'client_table_size' => null,    // auto-sized from max_connection
-    'coroutine_dispatch' => true, // run handlers in coroutines
+    'socket_buffer_size' => null,   // auto-sized from max_connection
+    'buffer_output_size' => null,   // defaults to socket_buffer_size
+    'memory_limit' => null,         // auto PHP memory_limit at startup
+    'coroutine_dispatch' => true,   // run handlers in coroutines
 ],
 ```
+
+### Effective connection ceiling
+
+At runtime Sockeon passes Swoole:
+
+```text
+max_connection = min(swoole.max_connection, survivability.max_connections)
+```
+
+Out of the box that is `min(100_000, 10_000)` → **10,000** connections. Raise `survivability.max_connections` (and match `swoole.max_connection`) when you need more than the default survivability cap.
 
 ### worker_num
 
@@ -74,7 +87,35 @@ Swoole's per-server connection ceiling. Align this with `survivability.max_conne
 
 ### client_table_size
 
-Rows in the shared memory table that maps Swoole file descriptors to Sockeon client IDs. Auto-calculated from `max_connection` when not set (capped at 131072).
+Rows in the shared memory table that maps Swoole file descriptors to Sockeon client IDs. When omitted, Sockeon sizes the table as `min(131072, max(2048, max_connection + 2048))` — e.g. `12_048` rows for `max_connection=10_000`.
+
+### socket_buffer_size and buffer_output_size
+
+Kernel socket buffer sizes passed to Swoole's `socket_buffer_size` and `buffer_output_size`. When omitted, Sockeon picks a tier from `swoole.max_connection`:
+
+| `max_connection` | Default buffer size |
+|------------------|---------------------|
+| ≥ 10,000 | 32 KB (32768) |
+| ≥ 5,000 | 64 KB (65536) |
+| &lt; 5,000 | 128 KB (131072) |
+
+`buffer_output_size` defaults to `socket_buffer_size`. At 10k+ connections the smaller 32 KB tier avoids multi-gigabyte kernel buffer budgets. Override explicitly if you send large frames to many clients at once.
+
+### memory_limit
+
+PHP `memory_limit` applied via `ini_set()` when the Swoole engine starts. When omitted, Sockeon derives a limit from `swoole.max_connection`:
+
+| `max_connection` | Default |
+|------------------|---------|
+| ≥ 10,000 | `2G` |
+| ≥ 5,000 | `1G` |
+| &lt; 5,000 | `128M` + headroom (`max(256M, 128 + ceil(max_connection / 64))`) |
+
+Set explicitly for containers with fixed cgroup memory:
+
+```php
+'memory_limit' => '1G',
+```
 
 ### coroutine_dispatch
 

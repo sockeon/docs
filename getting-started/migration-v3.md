@@ -148,7 +148,7 @@ See [Scaling](/v3.0/advanced/scaling.md).
 |---------|---------|
 | `engine` | `stream_select` (default) or `swoole` |
 | `survivability` | Hard connection caps, heartbeats, write buffer limits |
-| `swoole` | Worker count, max connections, coroutine dispatch |
+| `swoole` | Worker count, max connections, buffer/memory auto-tuning, coroutine dispatch |
 | `scale` | `node_id`, `publisher`, `registry`, Redis settings |
 
 ### Unchanged keys

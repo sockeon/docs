@@ -43,16 +43,18 @@ When the server is at capacity, new TCP connections are rejected before the WebS
     'max_connections' => 50_000,
 ],
 'swoole' => [
-    'max_connection' => 50_000,  // Swoole's own limit — align with survivability
+    'max_connection' => 50_000,  // align with survivability (see note below)
 ],
 ```
+
+On the Swoole engine, the value passed to Swoole is `min(swoole.max_connection, survivability.max_connections)`. With defaults (`100_000` and `10_000`), the effective ceiling is **10,000** until you raise survivability.
 
 ### write_buffer_limit
 
 - **Type:** `int` (bytes)
 - **Default:** `65536` (64 KB)
 
-Used by the Swoole engine to detect slow clients whose outbound write buffers grow too large. Clients that cannot keep up may be disconnected to protect worker memory.
+Configured via `SurvivabilityConfig` for application-level slow-client policies. Kernel-level outbound buffering on Swoole is tuned separately via `swoole.socket_buffer_size` and `swoole.buffer_output_size` — see [Swoole Engine](/v3.0/advanced/swoole-engine.md).
 
 ### heartbeat_idle_time
 

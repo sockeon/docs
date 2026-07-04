@@ -216,7 +216,7 @@ Rough idle WebSocket memory: **2–8 KB per connection** on Linux.
 | 50,000 | 100–400 MB | 4–8 vCPU, 8 GB |
 | 100,000 | 200–800 MB | 8+ vCPU, 16 GB |
 
-Add headroom for PHP workers, Redis client buffers, and OS page cache. Align `survivability.max_connections`, `swoole.max_connection`, and `rate_limit.maxGlobalConnections` to the same ceiling.
+Add headroom for PHP workers, Redis client buffers, and OS page cache. Raise `survivability.max_connections` and set `swoole.max_connection` to the same value — Sockeon uses `min()` of the two at runtime (default effective cap: 10,000). Align `rate_limit.maxGlobalConnections` to the same ceiling.
 
 ### Cluster totals
 
