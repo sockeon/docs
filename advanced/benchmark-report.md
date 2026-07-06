@@ -122,7 +122,9 @@ With two server nodes and shared Redis:
 
 Requires `scale.publisher=redis`, `scale.registry=redis`, and a **unique `node_id` per server**. See [Scaling and Clustering](/v3.0/advanced/scaling.md).
 
-**Important:** Room broadcast across Swoole workers on a **single server** needs one worker or local room state. Redis scaling is for **multiple servers**, not splitting one machine across many workers.
+### Multi-worker (single server)
+
+With `scale.publisher=redis` and multiple Swoole workers, broadcasts relay to sibling workers on the same node via Redis pub/sub. Use `scale.registry=local` on a single machine unless you also run multiple server nodes.
 
 ---
 

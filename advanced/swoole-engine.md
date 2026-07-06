@@ -153,7 +153,7 @@ Swoole workers share client state through a `Swoole\Table`:
 | `type` | Connection type (`ws`, `http`, etc.) |
 | `workerId` | Owning worker process |
 
-For room membership that spans workers in multi-worker mode, set `scale.registry` to `redis`. See [Scaling](/v3.0/advanced/scaling.md).
+For cross-worker room broadcasts on one server, set `scale.publisher` to `redis`. For multi-node clusters, also set `scale.registry` to `redis`. See [Scaling](/v3.0/advanced/scaling.md).
 
 ## Capacity planning
 
@@ -177,7 +177,7 @@ Master process
 └── Worker N
 ```
 
-Workers do not share PHP heap memory. Shared state for connections uses `Swoole\Table`; shared room state uses Redis when `scale.registry=redis`.
+Workers do not share PHP heap memory. Shared state for connections uses `Swoole\Table`; cross-worker broadcasts use Redis when `scale.publisher=redis`; shared room membership across nodes uses Redis when `scale.registry=redis`.
 
 ## Docker example
 
@@ -210,7 +210,7 @@ services:
 |---------|--------------|-----|
 | Startup error about missing Swoole class | Extension not installed | `pecl install openswoole` |
 | Connections plateau below config | `ulimit -n` too low | Raise file descriptor limit |
-| Rooms empty across workers | In-process registry per worker | `scale.registry=redis` |
+| Room broadcast reaches only same worker | `publisher=local` with multiple workers | `scale.publisher=redis` |
 | Slow clients accumulate | Write buffer growth | Lower `write_buffer_limit` or disconnect slow clients |
 
 ## Next steps

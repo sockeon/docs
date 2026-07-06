@@ -18,7 +18,7 @@ Sockeon 3.x introduces pluggable engines, survivability caps, Swoole high-concur
 | High concurrency | Limited by reactor | `engine=swoole` with OpenSwoole |
 | Multi-node | Not supported | `scale` config with Redis pub/sub |
 | Connection rate limits | HTTP/WS message limits only | `maxGlobalConnections` and `maxConnectionsPerIp` enforced at accept |
-| PHP version | `>= 8.0` | `>= 8.1` |
+| PHP version | `>= 8.0` | `>= 8.3` |
 
 ## Step 1: Update Composer
 
@@ -26,7 +26,7 @@ Sockeon 3.x introduces pluggable engines, survivability caps, Swoole high-concur
 composer require sockeon/sockeon:^3.0
 ```
 
-Confirm PHP 8.1+:
+Confirm PHP 8.3+:
 
 ```bash
 php -v
@@ -265,7 +265,7 @@ Run `vendor/bin/sockeon-upgrade` to apply most of these automatically.
 
 ## Verification checklist
 
-- [ ] `composer update` succeeds on PHP 8.1+
+- [ ] `composer update` succeeds on PHP 8.3+
 - [ ] `vendor/bin/sockeon-upgrade . --dry-run` reviewed and applied
 - [ ] Server starts with `engine=stream_select` (default behavior)
 - [ ] WebSocket connect, emit, and broadcast work

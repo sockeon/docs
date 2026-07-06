@@ -104,7 +104,7 @@ Cross-node broadcast requires `publisher=redis` **and** `engine=swoole`. The Red
 | `local` | Namespace and room membership stored in-process (per worker on Swoole) |
 | `redis` | Shared membership in Redis; `getClientsInRoom()` returns only clients on the local node |
 
-Set `registry=redis` when rooms span multiple nodes or Swoole workers. Room joins are written to Redis sets; broadcasts target clients that are both in the room **and** connected locally.
+Set `registry=redis` when rooms span **multiple server nodes**. On a single machine with multiple Swoole workers, set `publisher=redis` so broadcasts relay to sibling workers; `registry=local` is enough unless you also run a cluster. Room joins are written to Redis sets when `registry=redis`; broadcasts always target clients that are both in the room **and** connected on the local worker.
 
 ### Redis options
 
@@ -265,6 +265,7 @@ Origin node ID is included in every pub/sub payload to prevent echo loops.
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | Broadcasts only reach local clients | `publisher=local` | Set `publisher=redis` |
+| Rooms empty across workers on one server | `publisher=local` with `worker_num > 1` | Set `publisher=redis` (keep `registry=local` unless clustering) |
 | Room members missing on other nodes | `registry=local` | Set `registry=redis` |
 | Cross-node delivery fails (0 subscribers) | Redis not wired or duplicate `node_id` | Set `publisher=redis` and `registry=redis`; ensure unique `node_id` per node. See [Scaling](/v3.0/advanced/scaling.md) |
 | Cross-node delivery silent on stream_select | No Swoole coroutine subscriber | Use `engine=swoole` on cluster nodes |
