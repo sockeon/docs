@@ -261,7 +261,7 @@ class WebSocketAuthMiddleware implements WebsocketMiddleware
     private function isClientAuthenticated(string $clientId, Server $server): bool
     {
         // Check authentication status (you'd implement this)
-        $clientData = $server->getClientData($clientId);
+        $clientData = $server->allData($clientId);
         return isset($clientData['authenticated']) && $clientData['authenticated'] === true;
     }
 }
@@ -490,8 +490,8 @@ class WebSocketAuthHandshakeMiddleware implements HandshakeMiddleware
         }
 
         // Store auth info for later use
-        $server->setClientData($clientId, 'authenticated', true);
-        $server->setClientData($clientId, 'token', $token);
+        $server->putData($clientId, 'authenticated', true);
+        $server->putData($clientId, 'token', $token);
 
         return $next($clientId, $request);
     }

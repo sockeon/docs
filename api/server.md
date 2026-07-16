@@ -202,6 +202,31 @@ if ($type === 'ws') {
 }
 ```
 
+### Client metadata methods
+
+```php
+public function allData(string $clientId): ?array
+public function data(string $clientId, string $key): mixed
+public function putData(string $clientId, string $key, mixed $value): void
+public function hasData(string $clientId, string $key): bool
+public function forgetData(string $clientId, ?string $key = null): void
+```
+
+`allData()` returns the full data bag for a connection. `data()` reads a single key. `forgetData()` removes one key, or all data when `$key` is omitted.
+
+**Example:**
+```php
+$server->putData($clientId, 'authenticated', true);
+$server->putData($clientId, 'role', 'admin');
+
+if ($server->hasData($clientId, 'authenticated')) {
+    $role = $server->data($clientId, 'role');
+}
+
+$bag = $server->allData($clientId);
+$server->forgetData($clientId, 'role');
+```
+
 ---
 
 ## Communication Methods
