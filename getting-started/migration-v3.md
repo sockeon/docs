@@ -250,9 +250,10 @@ return [
 | `disconnectClient()` | `disconnect()` | Controller |
 | `isClientConnected()` | `isConnected()` | Controller |
 | `getClientIpAddress()` | `getClientIp()` | Controller |
-| `getClientData()` | `data()` / `allData()` | Controller |
-| `setClientData()` | `putData()` | Controller |
-| `hasClientData()` | `hasData()` | Controller |
+| `getClientData()` | `data()` / `allData()` | Controller / Server |
+| `setClientData()` | `putData()` | Controller / Server |
+| `hasClientData()` | `hasData()` | Controller / Server |
+| `forgetClientData()` | `forgetData()` | Server |
 | `forgetData()` | new in 3.x | Controller |
 
 Run `vendor/bin/sockeon-upgrade` to apply most of these automatically.
